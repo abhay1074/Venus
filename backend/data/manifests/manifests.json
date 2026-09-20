@@ -93,7 +93,26 @@
       "grades": {
         "5": 1142
       },
-      "referable_fraction": 1.0
+      "referable_fraction": 0.0
+    },
+    "external_test_messidor2": {
+      "n": 1744,
+      "sha256": "a93ab0285bd9f0e6b8d646adfb7fc60c918f44a3871b258a635f1252f98b620b",
+      "datasets": {
+        "messidor2": 1744
+      },
+      "grades": {
+        "0": 1017,
+        "1": 270,
+        "2": 347,
+        "3": 75,
+        "4": 35
+      },
+      "referable_fraction": 0.262,
+      "patients": 874,
+      "near_duplicates_of_training_excluded": 0,
+      "frozen_at": "2026-09-20T17:00:49.143857+00:00",
+      "labels": "Krause et al. 2018 adjudicated ICDR grades (messidor_data.csv)"
     }
   }
 }

@@ -1,0 +1,5 @@
+image_id,dataset,grade,patient,source_split,cache_path,quality_label,quality_score,phash256,adjudicated_dme,adjudicated_gradable
+messidor2/20060411_58550_0200_PP,messidor2,5,messidor2/pair0357,test,/home/asvin_laptop/venus-cache/stage0_512/messidor2/20060411_58550_0200_PP.jpg,good,0.997,9150955a47ead2aa0aabcab56a554a35681f4ab5692a694a2de8ad4a2df0ad42,,0
+messidor2/IM002385,messidor2,5,messidor2/pair0706,test,/home/asvin_laptop/venus-cache/stage0_512/messidor2/IM002385.jpg,good,0.986,95508d5a57aa702a4aaecab56a555ab5695f4a356d2b3d402de8a54a25a0a54a,,0
+messidor2/IM003718,messidor2,5,messidor2/pair0798,test,/home/asvin_laptop/venus-cache/stage0_512/messidor2/IM003718.jpg,good,0.912,c5103bda17fad4422abf88ad7a1153fd7846aaa0282bc7503d788f4a2df0ad02,,0
+messidor2/IM004176,messidor2,5,messidor2/pair0829,test,/home/asvin_laptop/venus-cache/stage0_512/messidor2/IM004176.jpg,good,0.947,c0002d5213ffe4064ffe30b83e01d2a17c0fc2a5387f9e5538f8835229f08f42,,0

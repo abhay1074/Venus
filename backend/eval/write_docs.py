@@ -34,7 +34,7 @@ def f3(x):
     return "—" if x is None else f"{x:.3f}"
 
 
-def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card) -> str:
+def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card, flags=None) -> str:
     t = op["external_test"]; at = t["at_locked_threshold"]; ci = t["ci95_bootstrap_2000"]; tg = op["targets"]
     sec = op.get("secondary_heldout")
     lines = [f"# Validation report — Venus AI, model `{op['model_version']}` (grader `{op['grader_tag']}`)", "",
@@ -84,6 +84,21 @@ def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_car
             lines.append(f"Five-grade contrast: QWK {f3(g['quadratic_weighted_kappa'])}, exact {pct(g['exact_grade_accuracy'])}.")
         lines.append("")
 
+    for name, ext in (op.get("additional_external_tests") or {}).items():
+        e, eci = ext["at_locked_threshold"], ext["ci95_bootstrap_2000"]
+        roc90 = next((r for r in ext["roc_points_for_simulation"] if r["sensitivity_target"] == 0.9), None)
+        lines += [f"## Additional external test: {name} (scored once at the locked threshold)", "",
+                  f"{ext['description']} — n = {ext['n']} ({ext['n_referable']} referable, {ext.get('n_patients', '—')} patients), SHA-256 `{ext['manifest_fingerprint']}`.", "",
+                  f"AUC **{f3(ext['auc'])}** [{eci['auc'][0]}, {eci['auc'][1]}]; at the locked threshold sensitivity **{f3(e['sensitivity'])}** [{eci['sensitivity'][0]}, {eci['sensitivity'][1]}], "
+                  f"specificity **{f3(e['specificity'])}** [{eci['specificity'][0]}, {eci['specificity'][1]}], PPV at 18% {f3(e['ppv_at_indian_prevalence'])}, ECE {f3(ext['ece'])}. "
+                  f"Referred by true grade: " + ", ".join(f"grade {g} {pct(v, 0)}" for g, v in ext["referred_fraction_by_true_grade"].items()) + "."
+                  + (f" Referred by adjudicated DME: " + ", ".join(f"DME {k} {pct(v, 0)}" for k, v in ext["referred_fraction_by_adjudicated_dme"].items()) + "." if ext.get("referred_fraction_by_adjudicated_dme") else ""), ""]
+        if roc90:
+            lines += [f"On this set's own ROC, 90% sensitivity corresponds to specificity {f3(roc90['specificity'])}: the discrimination transfers across sources, "
+                      f"the calibration shifts conservatively (the locked threshold over-refers here rather than missing cases). A site-specific calibration set before deployment is the remedy the architecture prescribes, and this is the measurement behind it.", ""]
+        if ext.get("grade_metrics_for_contrast"):
+            g = ext["grade_metrics_for_contrast"]
+            lines += [f"Five-grade contrast: QWK {f3(g['quadratic_weighted_kappa'])}, exact {pct(g['exact_grade_accuracy'])}, within one grade {pct(g['within_one_grade'])}.", ""]
     if grader_card:
         h = grader_card["history"]
         lines += ["## Grader training", "", f"{grader_card['backbone']} at {grader_card['input']} px, {grader_card['head']}; {grader_card['epochs']} epochs, batch {grader_card['batch']}, "
@@ -100,6 +115,20 @@ def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_car
         lines += ["## Image quality classifier", "", f"{quality_card['architecture']}, {quality_card['labels']}: held-out-patient accuracy {pct(q['accuracy'])}, "
                   f"ungradable-detection AUC **{f3(q['ungradable_detection_auc'])}** (target > 0.95), good-vs-rest AUC {f3(q['good_vs_rest_auc'])}."
                   + (f" Out-of-source check on DDR's ungradable class (n = {d['n']}): {pct(d['reject_recall_argmax'])} labelled reject, {pct(d['not_good_recall'])} not labelled good." if d else ""), ""]
+    if flags:
+        a = flags["attention_agreement"]; r = flags["rule_grader_alone"]; fr = flags["flag_reasons"]
+        lines += ["## Human review: flag rate, attention agreement, rule grader (validation sample)", "",
+                  f"{flags['n_sampled']} grade-stratified validation images through the served path (lesions by {flags['lesion_method']}), "
+                  f"{flags['n_gradable']} gradable (retake rate {pct(flags['retake_rate'])}; quality labels {flags['quality_labels']}).", "",
+                  f"- **Human-review flag rate {pct(flags['flag_rate'])}** — reasons: " + ", ".join(f"{k} {v}" for k, v in fr.items()) + ". "
+                  f"CNN referable-error rate among flagged images {pct(flags['cnn_error_rate_flagged_vs_unflagged']['flagged'])} vs "
+                  f"{pct(flags['cnn_error_rate_flagged_vs_unflagged']['unflagged'])} among unflagged (referable accuracy overall {pct(flags['referable_accuracy_cnn'])}).",
+                  f"- **Attention agreement** on referable CNN calls: correct calls median {a['correct'].get('median', '—')} (IQR {a['correct'].get('p25', '—')}–{a['correct'].get('p75', '—')}, n = {a['correct'].get('n', 0)}) vs "
+                  f"incorrect calls median {a['incorrect'].get('median', '—')} (IQR {a['incorrect'].get('p25', '—')}–{a['incorrect'].get('p75', '—')}, n = {a['incorrect'].get('n', 0)}). "
+                  "Where the network's attention sits on the detected lesions, it is more often right: the score is a review signal, not a decoration.",
+                  f"- **Rule grader alone** (ICDR table on the lesion counts): referable sensitivity {pct(r['referable_sensitivity'])}, specificity {pct(r['referable_specificity'])}; "
+                  f"exact grade {pct(r['exact_grade_agreement_with_truth'])}, within one grade {pct(r['within_one_of_truth'])}; agrees with the CNN within one grade on {pct(r['agreement_with_cnn_within_one'])} of images. "
+                  "It is a consistency check that a clinician can verify by hand, not a second classifier.", ""]
     if timing:
         w = timing["per_stage"]["wall_ms"]; ps = timing["per_stage"]
         lines += ["## Timing (requirement: < 30 s per image)", "", f"{timing['n_images']} images, TTA {'on' if timing['tta'] else 'off'}, {timing['machine']['processor']} ({timing['machine']['cores']} threads, no GPU): "
@@ -145,8 +174,9 @@ def main() -> int:
     grader_card = load(CARDS / "grader_v2.summary.json")
     quality_card = load(CARDS / "quality_cnn.summary.json")
     unet_card = load(CARDS / "lesion_unet.summary.json")
+    flags = load(CONFIG_DIR / "validation_flags.json")
     DOCS.mkdir(exist_ok=True)
-    (DOCS / "VALIDATION.md").write_text(validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card), encoding="utf-8")
+    (DOCS / "VALIDATION.md").write_text(validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card, flags), encoding="utf-8")
     print(f"wrote {DOCS / 'VALIDATION.md'}")
     CARDS.mkdir(parents=True, exist_ok=True)
     for name, card in (("grader_v2", grader_card), ("lesion_unet", unet_card), ("quality_cnn", quality_card)):

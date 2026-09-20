@@ -30,3 +30,8 @@ mediscan-src/
 models/export/
 # Offline bundle output
 dist/
+
+# Dataset archives never belong in the repo
+*.zip
+*.zip.*
+*.7z

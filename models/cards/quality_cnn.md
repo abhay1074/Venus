@@ -1,0 +1,87 @@
+# Model card — quality_cnn
+
+| field | value |
+|---|---|
+| tag | quality_cnn |
+| architecture | EfficientNet-B0 at 256, 3-class softmax |
+| classes | ["good", "usable", "reject"] |
+| labels | EyeQ train labels on EyePACS images, split by patient 70/10/20 |
+| epochs | 12 |
+| train_n | 8824 |
+| val_n | 1242 |
+| test_n | 2477 |
+| class_weight | {"0": 0.498193315266486, "1": 2.2608250064053292, "2": 1.8167593164504838} |
+| ddr_ungradable_external_check | {"n": 1142, "reject_recall_argmax": 0.9991, "not_good_recall": 1.0} |
+| weights | /home/asvin_laptop/venus-cache/models/quality_cnn.weights.h5 |
+| finished_at | 2026-09-20T14:22:58.198798+00:00 |
+| total_minutes | 5.5 |
+
+## Held-out patients
+
+```json
+{
+ "accuracy": 0.9285,
+ "confusion": [
+  [
+   1589,
+   47,
+   3
+  ],
+  [
+   35,
+   315,
+   36
+  ],
+  [
+   2,
+   54,
+   396
+  ]
+ ],
+ "ungradable_detection_auc": 0.9918,
+ "good_vs_rest_auc": 0.994
+}
+```
+
+## Training history
+
+```json
+[
+ {
+  "epoch": 8,
+  "loss": 0.127,
+  "accuracy": 0.934,
+  "ungradable_detection_auc": 0.9935,
+  "good_vs_rest_auc": 0.9954
+ },
+ {
+  "epoch": 9,
+  "loss": 0.113,
+  "accuracy": 0.9388,
+  "ungradable_detection_auc": 0.9941,
+  "good_vs_rest_auc": 0.995
+ },
+ {
+  "epoch": 10,
+  "loss": 0.1017,
+  "accuracy": 0.9364,
+  "ungradable_detection_auc": 0.9934,
+  "good_vs_rest_auc": 0.9951
+ },
+ {
+  "epoch": 11,
+  "loss": 0.0925,
+  "accuracy": 0.9364,
+  "ungradable_detection_auc": 0.9937,
+  "good_vs_rest_auc": 0.995
+ },
+ {
+  "epoch": 12,
+  "loss": 0.089,
+  "accuracy": 0.9364,
+  "ungradable_detection_auc": 0.9937,
+  "good_vs_rest_auc": 0.9949
+ }
+]
+```
+(last 5 of 12 entries)

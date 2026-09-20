@@ -174,7 +174,7 @@ def main(argv=None) -> int:
         summary["manifests"][name] = {"n": int(len(frame)), "sha256": sha256_of_file(path),
                                       "datasets": frame["dataset"].value_counts().to_dict(),
                                       "grades": {int(k): int(v) for k, v in grades.items()},
-                                      "referable_fraction": round(float((frame["grade"] >= 2).mean()), 4) if len(frame) else None}
+                                      "referable_fraction": round(float(frame["grade"].between(2, 4).mean()), 4) if len(frame) else None}
         print(f"{name:24s} n={len(frame):6d}  {summary['manifests'][name]['datasets']}  grades {summary['manifests'][name]['grades']}")
     with open(MANIFEST_DIR / "manifests.json", "w", encoding="utf-8") as handle:
         json.dump(summary, handle, indent=2)

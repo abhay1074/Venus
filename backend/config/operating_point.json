@@ -529,5 +529,204 @@
     "PPV/NPV are recomputed at 18% Indian prevalence because the test sets' prevalence is a sampling artefact.",
     "A missed target is reported as the achieved number with its CI, not a re-tuned threshold.",
     "Five-grade metrics are reported for contrast; the referable decision (grade >= 2) is the claim."
-  ]
+  ],
+  "additional_external_tests": {
+    "external_test_messidor2": {
+      "name": "external_test_messidor2",
+      "description": "Messidor-2 (ADCIS), Krause et al. 2018 adjudicated ICDR grades; never trained on; a third acquisition source",
+      "n": 1744,
+      "n_referable": 457,
+      "auc": 0.9629,
+      "at_locked_threshold": {
+        "tp": 448,
+        "fn": 9,
+        "fp": 457,
+        "tn": 830,
+        "sensitivity": 0.9803,
+        "specificity": 0.6449,
+        "ppv_at_indian_prevalence": 0.3773,
+        "npv_at_indian_prevalence": 0.9933,
+        "referred_fraction": 0.5189
+      },
+      "at_85pc_threshold": {
+        "tp": 441,
+        "fn": 16,
+        "fp": 328,
+        "tn": 959,
+        "sensitivity": 0.965,
+        "specificity": 0.7451,
+        "ppv_at_indian_prevalence": 0.4539,
+        "npv_at_indian_prevalence": 0.9898,
+        "referred_fraction": 0.4409
+      },
+      "ci95_bootstrap_2000": {
+        "auc": [
+          0.9535,
+          0.9707
+        ],
+        "sensitivity": [
+          0.9664,
+          0.9915
+        ],
+        "specificity": [
+          0.6188,
+          0.6709
+        ],
+        "ppv_at_indian_prevalence": [
+          0.3604,
+          0.3954
+        ]
+      },
+      "ece": 0.0798,
+      "reliability_diagram": [
+        {
+          "bin": [
+            0.0,
+            0.1
+          ],
+          "n": 829,
+          "confidence": 0.0241,
+          "accuracy": 0.0097
+        },
+        {
+          "bin": [
+            0.1,
+            0.2
+          ],
+          "n": 167,
+          "confidence": 0.1468,
+          "accuracy": 0.0599
+        },
+        {
+          "bin": [
+            0.2,
+            0.3
+          ],
+          "n": 79,
+          "confidence": 0.2502,
+          "accuracy": 0.1139
+        },
+        {
+          "bin": [
+            0.3,
+            0.4
+          ],
+          "n": 73,
+          "confidence": 0.3491,
+          "accuracy": 0.1096
+        },
+        {
+          "bin": [
+            0.4,
+            0.5
+          ],
+          "n": 41,
+          "confidence": 0.4462,
+          "accuracy": 0.2195
+        },
+        {
+          "bin": [
+            0.5,
+            0.6
+          ],
+          "n": 48,
+          "confidence": 0.548,
+          "accuracy": 0.1875
+        },
+        {
+          "bin": [
+            0.6,
+            0.7
+          ],
+          "n": 35,
+          "confidence": 0.6493,
+          "accuracy": 0.3429
+        },
+        {
+          "bin": [
+            0.7,
+            0.8
+          ],
+          "n": 54,
+          "confidence": 0.7435,
+          "accuracy": 0.4074
+        },
+        {
+          "bin": [
+            0.8,
+            0.9
+          ],
+          "n": 58,
+          "confidence": 0.851,
+          "accuracy": 0.6897
+        },
+        {
+          "bin": [
+            0.9,
+            1.0
+          ],
+          "n": 360,
+          "confidence": 0.971,
+          "accuracy": 0.9167
+        }
+      ],
+      "sensitivity_grade2_only": 0.9741,
+      "referred_fraction_by_true_grade": {
+        "0": 0.2842,
+        "1": 0.6222,
+        "2": 0.9741,
+        "3": 1.0,
+        "4": 1.0
+      },
+      "prevalence_for_ppv": 0.18,
+      "roc_points_for_simulation": [
+        {
+          "sensitivity_target": 0.8,
+          "threshold": 0.812908,
+          "sensitivity": 0.8009,
+          "specificity": 0.9627
+        },
+        {
+          "sensitivity_target": 0.85,
+          "threshold": 0.717073,
+          "sensitivity": 0.8512,
+          "specificity": 0.9464
+        },
+        {
+          "sensitivity_target": 0.9,
+          "threshold": 0.524161,
+          "sensitivity": 0.9015,
+          "specificity": 0.9005
+        },
+        {
+          "sensitivity_target": 0.95,
+          "threshold": 0.26867,
+          "sensitivity": 0.9519,
+          "specificity": 0.8003
+        },
+        {
+          "sensitivity_target": 0.975,
+          "threshold": 0.147917,
+          "sensitivity": 0.9759,
+          "specificity": 0.7055
+        }
+      ],
+      "manifest_fingerprint": "a93ab0285bd9f0e6b8d646adfb7fc60c918f44a3871b258a635f1252f98b620b",
+      "n_patients": 874,
+      "scored_once": true,
+      "rescored_with_force": false,
+      "scored_at": "2026-09-20T17:02:09.978042+00:00",
+      "grade_metrics_for_contrast": {
+        "quadratic_weighted_kappa": 0.7139,
+        "exact_grade_accuracy": 0.6479,
+        "within_one_grade": 0.9163
+      },
+      "threshold_used": 0.105674,
+      "note": "threshold and calibration taken from the locked operating point; nothing chosen on this set",
+      "referred_fraction_by_adjudicated_dme": {
+        "0": 0.4733,
+        "1": 1.0
+      }
+    }
+  }
 }

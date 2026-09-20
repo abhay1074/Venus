@@ -69,6 +69,35 @@ def ddr() -> pd.DataFrame:
     return df[["image_id", "dataset", "path", "grade", "patient", "source_split"]]
 
 
+def messidor2() -> pd.DataFrame:
+    """Messidor-2 (ADCIS, 1,748 images) with the Krause et al. 2018 adjudicated
+    ICDR grades (messidor_data.csv). Images labelled ungradable (grade NaN) are
+    kept with grade 5. The ADCIS left/right pairing (messidor-2.csv) gives the
+    patient key. Never used for training: this is the adjudicated external test."""
+    root = EYE / "messidor2"
+    grades = pd.read_csv(root / "messidor_data.csv")
+    on_disk = {p.stem: p for p in (root / "IMAGES").iterdir()}
+    grades["stem"] = grades["image_id"].str.rsplit(".", n=1).str[0]
+    grades = grades[grades["stem"].isin(on_disk)].copy()
+    pairs = pd.read_csv(root / "messidor-2.csv", sep=";")
+    pairs.columns = [c.strip() for c in pairs.columns]
+    patient_of = {}
+    for i, row in enumerate(pairs.itertuples()):
+        for side in ("left", "right"):
+            patient_of[str(getattr(row, side)).strip().rsplit(".", 1)[0]] = f"messidor2/pair{i:04d}"
+    df = pd.DataFrame({
+        "image_id": "messidor2/" + grades["stem"],
+        "dataset": "messidor2",
+        "path": [str(on_disk[s]) for s in grades["stem"]],
+        "grade": grades["adjudicated_dr_grade"].fillna(5).astype(int).values,
+        "patient": [patient_of.get(s, f"messidor2/{s}") for s in grades["stem"]],
+        "source_split": "test",
+        "adjudicated_dme": grades["adjudicated_dme"].values,
+        "adjudicated_gradable": grades["adjudicated_gradable"].values,
+    })
+    return df.reset_index(drop=True)
+
+
 def ddr_lesions() -> pd.DataFrame:
     """DDR lesion-segmentation set: image + four lesion masks (EX, HE, MA, SE)."""
     root = EYE / "ddr" / "extracted" / "DDR-dataset" / "lesion_segmentation"

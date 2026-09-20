@@ -47,6 +47,22 @@ export default function ValidationPage() {
         <Metric label="Expected calibration error" value={t.ece.toFixed(3)} target={op.targets.ece} met={op.targets.ece_met} lowerIsBetter />
       </div>
 
+      {op.additional_external_tests && Object.entries(op.additional_external_tests).map(([name, ext]) => {
+        const e = ext.at_locked_threshold; const c = ext.ci95_bootstrap_2000;
+        const roc90 = ext.roc_points_for_simulation.find((r) => r.sensitivity_target === 0.9);
+        return (
+          <div key={name} className="card p-4">
+            <div className="label">Additional external test · {name.replace("external_test_", "")} · scored once at the locked threshold</div>
+            <p className="mt-1 text-xs text-slate-500">{ext.description} (n = {ext.n}, {ext.n_referable} referable{ext.n_patients ? `, ${ext.n_patients} patients` : ""})</p>
+            <div className="mt-2 grid grid-cols-2 gap-2 text-center text-sm md:grid-cols-5">
+              <Small k="AUC" v={`${ext.auc.toFixed(3)} [${c.auc[0]}, ${c.auc[1]}]`} /><Small k="Sens" v={`${e.sensitivity.toFixed(3)} [${c.sensitivity[0]}, ${c.sensitivity[1]}]`} />
+              <Small k="Spec" v={`${e.specificity.toFixed(3)} [${c.specificity[0]}, ${c.specificity[1]}]`} /><Small k="PPV @18%" v={e.ppv_at_indian_prevalence.toFixed(3)} /><Small k="ECE" v={ext.ece.toFixed(3)} />
+            </div>
+            {roc90 && <p className="mt-2 text-xs text-slate-600">On this set's own ROC, 90% sensitivity corresponds to specificity {roc90.specificity.toFixed(3)}: discrimination transfers across sources; the locked calibration over-refers here rather than missing cases — the measurement behind a site-specific calibration set before deployment.</p>}
+          </div>
+        );
+      })}
+
       {(sec || gm) && (
         <div className="grid gap-3 md:grid-cols-2">
           {sec && (

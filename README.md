@@ -32,18 +32,22 @@ in the order the risk demands.
 
 ## Measured, not claimed
 
-All numbers below are read from the JSON the code wrote when it measured (`backend/config/`,
-`models/cards/`); `docs/VALIDATION.md` is generated from the same files and has the CIs, the
-protocol and the caveats. See it for the current values — the table here is refreshed with it.
+Every number below is read from the JSON the code wrote when it measured; `docs/VALIDATION.md`
+is generated from the same files with the CIs, the protocol and the caveats.
 
-| what | how it was measured |
-|---|---|
-| Referable-DR AUC, sensitivity, specificity, PPV/NPV at 18 % prevalence, ECE | **DDR test split, 3,720 images**, a different acquisition source from every training image, frozen with a SHA-256 before training, scored **once** with the threshold locked on a 2,000-image patient-disjoint EyePACS calibration set |
-| Lesion segmentation AUPR / Dice per lesion type | DDR lesion-segmentation test split (225 images), thresholds chosen on the valid split |
-| Image-quality classifier: ungradable-detection AUC | EyeQ labels on EyePACS, held-out patients, plus DDR's ungradable class as an out-of-source check |
-| Human-review flag rate, attention-agreement for correct vs incorrect calls, rule-grader stand-alone accuracy | 600 stratified validation images through the served path |
-| End-to-end time | 50-image run on a laptop CPU (no GPU) |
-| District staffing (K doctors with AI vs K′ without, cost, missed cases) | 144 full-year discrete-event runs coupled to the numbers above |
+| metric (referable DR, ICDR ≥ 2) | value | where |
+|---|---|---|
+| AUC | **0.975** [0.970, 0.979] | **DDR test split, 3,720 images** — a different acquisition source from every training image, SHA-256-frozen before training, scored **once** with the threshold locked on a 2,000-image patient-disjoint EyePACS calibration set |
+| Sensitivity / specificity at the locked threshold | **0.947** [0.936, 0.957] / **0.889** [0.875, 0.902] | same — the problem statement asks > 0.90 / > 0.85 |
+| PPV / NPV at 18 % Indian prevalence · ECE | 0.651 / 0.987 · 0.042 | same |
+| Messidor-2 (adjudicated labels, third source), scored once at the same threshold | AUC **0.963**, sens **0.980**, spec 0.645 (its own ROC: 0.90 sens at 0.90 spec) | 1,744 images, 874 patients |
+| Held-out EyePACS patients (within-source) | AUC 0.954, sens 0.937, spec 0.754 | 2,758 images |
+| Lesion U-Net, pixel AUPR / Dice (DDR test, 225 images, once) | HE 0.45 / 0.47 · EX 0.48 / 0.49 · SE 0.26 / 0.31 · MA 0.08 / 0.17 | thresholds chosen on DDR valid |
+| Quality CNN, ungradable-detection AUC | **0.992** (held-out patients); 99.9 % of DDR's ungradable class caught | EyeQ labels |
+| Attention agreement, referable calls (median) | **0.54** when the CNN is right vs **0.27** when it is wrong | 487 validation images |
+| Human-review flag rate · retake rate | 25.1 % · 2.2 % | same |
+| End-to-end time, laptop CPU, all three networks | **median 4.2 s, p95 5.0 s** | 50 images |
+| District: ophthalmologists for ≥ 80 % programme sensitivity, p95 wait ≤ 7 days | **2 with AI vs 7 without**, ₹0.69 Cr vs ₹1.72 Cr / year | 144 full-year runs |
 
 ## Quick start (Windows, CPU)
 
@@ -106,10 +110,12 @@ cloud.md            the work diary; CLAUDE.md the notes for whoever continues
 - **Specificity is what it is.** The threshold is locked at 90 % sensitivity on the calibration
   set; whatever specificity the external test returns is reported with its CI and fed to the
   district simulation, which shows what it costs in doctor-hours. Nothing is re-tuned on the test.
-- **One external source.** The DDR test split is a different acquisition source from all training
-  data, but it is one source (Chinese hospitals). Messidor-2 (adjudicated labels) needs a
-  registration that had not been granted; the architecture's stated fallback is what is used.
-  Performance on Indian portable-camera images is unmeasured until such a set exists.
+- **Two external sources, neither Indian.** DDR (Chinese hospitals) and Messidor-2 (French,
+  adjudicated). On Messidor-2 the locked threshold over-refers (specificity 0.65 at sensitivity
+  0.98) although its own ROC reaches 0.90/0.90: discrimination transfers, calibration shifts. A
+  site-specific calibration set is a prerequisite for deployment, and this is the measurement
+  behind that statement. Performance on Indian portable-camera images is unmeasured until such a
+  set exists.
 - **Neovascularization is a classifier probability** (P(grade ≥ 4)), never a segmentation.
 - **Mild DR is not a claim.** The referable decision (grade ≥ 2) is what the threshold, the CIs
   and the simulation describe; five-grade metrics are shown for contrast.
