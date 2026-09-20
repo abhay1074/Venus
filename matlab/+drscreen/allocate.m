@@ -37,7 +37,7 @@ function [decisions, slots] = allocate(queue, slots, now, facilities)
         if deadline <= now
             deadline = now + max(window, days(1));
         end
-        allowed = drscreen.tierTable(item.tier).facilityTypes;
+        meta = drscreen.tierTable(item.tier); allowed = meta.facilityTypes;
         best = 0; bestKey = [];
         for s = 1:numel(slots)
             sl = slots(s);
@@ -70,7 +70,7 @@ function [decisions, slots] = allocate(queue, slots, now, facilities)
             for c = 1:size(candidates, 1)
                 s = candidates(c, 2); holder = slots(s).holder;
                 holderDeadline = holder.queuedAt + days(holder.deadlineDays);
-                holderTypes = drscreen.tierTable(holder.tier).facilityTypes;
+                holderMeta = drscreen.tierTable(holder.tier); holderTypes = holderMeta.facilityTypes;
                 spare = 0; spareT = [];
                 for t = 1:numel(slots)
                     st = slots(t);

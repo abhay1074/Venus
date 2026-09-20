@@ -22,7 +22,7 @@ function [label, score, reason, notes] = qualityLabel(f)
     clip = @(v) min(max(v, 0), 1);
     score = mean([clip(f.sharpness / 40), clip((f.illuminationUniformity - 0.2) / 0.6), ...
         clip(1 - f.saturatedFraction / 0.15), clip(1 - f.darkFraction / 0.6), clip((f.fovCircularity - 0.4) / 0.5)]);
-    score = round(score, 3);
+    score = round(score * 1000) / 1000;
     if ~isempty(rejects)
         label = 'reject'; reason = rejects{1};
     elseif ~isempty(notes)

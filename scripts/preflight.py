@@ -32,7 +32,9 @@ def main():
         return 1
     check("API status ok", h["status"] == "ok", h["status"])
     check("modality gate loaded", h["gate"]["loaded"], str(h["gate"]["error"] or ""))
-    check("CNN grader loaded", h["grader"]["loaded"], str(h["grader"]["error"] or ""))
+    check("CNN grader loaded", h["grader"]["loaded"], f"{h['grader'].get('tag', '')} {h['grader']['error'] or ''}".strip())
+    print(f"  info  quality CNN {'loaded' if h.get('quality_cnn', {}).get('loaded') else 'absent (handcrafted quality)'}; "
+          f"lesion U-Net {'loaded' if h.get('lesion_unet', {}).get('loaded') else 'absent (classical detectors)'}")
     check("operating point verified against calibration fingerprint", h["operating_point"]["ok"])
     check("district sweep cached", h["sweep"]["cached"], "running" if h["sweep"]["running"] else "")
 

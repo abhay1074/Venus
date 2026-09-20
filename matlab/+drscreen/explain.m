@@ -97,6 +97,6 @@ function a = attentionAgreement(heat, masks, fovMask, counted, referable)
     else
         note = 'attention overlaps lesion evidence';
     end
-    a = struct('score', round(score, 3), 'chanceLevel', round(chance, 3), 'lift', round(lift, 2), ...
+    a = struct('score', round(score * 1000) / 1000, 'chanceLevel', round(chance * 1000) / 1000, 'lift', round(lift * 100) / 100, ...
         'lesionPixels', lesionPixels, 'flag', low && applies, 'note', note);
 end

@@ -19,14 +19,15 @@ classdef GradeTest < matlab.unittest.TestCase
     methods (Test)
         function ruleFollowsIcdrTable(t)
             s = @GradeTest.stage1;
-            t.verifyEqual(drscreen.gradeRule(s(0, 0, 0, 0), 0).grade, 0);
-            t.verifyEqual(drscreen.gradeRule(s(5, 0, 0, 0), 0).grade, 1);
-            t.verifyEqual(drscreen.gradeRule(s(5, 3, 0, 0), 0).grade, 2);
-            t.verifyEqual(drscreen.gradeRule(s(0, 0, 4, 0), 0).grade, 2);
-            t.verifyEqual(drscreen.gradeRule(s(0, 90, 0, 0, [], [22 25 21 22]), 0).grade, 3);
-            t.verifyEqual(drscreen.gradeRule(s(0, 90, 0, 0, [], [22 25 21 5]), 0).grade, 2);
-            t.verifyEqual(drscreen.gradeRule(s(0, 0, 0, 0), 0.8).grade, 4);
-            t.verifyEqual(drscreen.gradeRule(s(0, 3, 0, 0, 0.06), 0).grade, 4);
+            g = @(stage1, nv) getfield(drscreen.gradeRule(stage1, nv), 'grade');
+            t.verifyEqual(g(s(0, 0, 0, 0), 0), 0);
+            t.verifyEqual(g(s(5, 0, 0, 0), 0), 1);
+            t.verifyEqual(g(s(5, 3, 0, 0), 0), 2);
+            t.verifyEqual(g(s(0, 0, 4, 0), 0), 2);
+            t.verifyEqual(g(s(0, 90, 0, 0, [], [22 25 21 22]), 0), 3);
+            t.verifyEqual(g(s(0, 90, 0, 0, [], [22 25 21 5]), 0), 2);
+            t.verifyEqual(g(s(0, 0, 0, 0), 0.8), 4);
+            t.verifyEqual(g(s(0, 3, 0, 0, 0.06), 0), 4);
         end
 
         function componentThresholdsIgnoreSingleSpecks(t)

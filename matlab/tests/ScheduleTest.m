@@ -22,25 +22,31 @@ classdef ScheduleTest < matlab.unittest.TestCase
         end
     end
 
+    methods (Static)
+        function code = tierOf(varargin)
+            out = drscreen.tier(varargin{:}); code = out.tier;
+        end
+    end
+
     methods (Test)
         function tiersFollowTheTable(t)
             r = @ScheduleTest.result;
-            t.verifyEqual(drscreen.tier([]).tier, 'P0');
-            t.verifyEqual(drscreen.tier(r(4, 0.9)).tier, 'P1');
-            t.verifyEqual(drscreen.tier(r(2, 0.2, false, 0.7)).tier, 'P1');
-            t.verifyEqual(drscreen.tier(r(3, 0.9), struct('symptoms', {{'floaters'}})).tier, 'P1');
-            t.verifyEqual(drscreen.tier(r(2, 0.8, true)).tier, 'P3');
-            t.verifyEqual(drscreen.tier(r(2, 0.8)).tier, 'P2');
-            t.verifyEqual(drscreen.tier(r(0, 0.05)).tier, 'P4');
+            t.verifyEqual(ScheduleTest.tierOf([]), 'P0');
+            t.verifyEqual(ScheduleTest.tierOf(r(4, 0.9)), 'P1');
+            t.verifyEqual(ScheduleTest.tierOf(r(2, 0.2, false, 0.7)), 'P1');
+            t.verifyEqual(ScheduleTest.tierOf(r(3, 0.9), struct('symptoms', {{'floaters'}})), 'P1');
+            t.verifyEqual(ScheduleTest.tierOf(r(2, 0.8, true)), 'P3');
+            t.verifyEqual(ScheduleTest.tierOf(r(2, 0.8)), 'P2');
+            t.verifyEqual(ScheduleTest.tierOf(r(0, 0.05)), 'P4');
         end
 
         function riskFactorsRaiseByOneNeverLower(t)
             r = @ScheduleTest.result;
-            t.verifyEqual(drscreen.tier(r(0, 0.05), struct('pregnant', true)).tier, 'P2');
-            t.verifyEqual(drscreen.tier(r(2, 0.8), struct('symptoms', {{'blurred_vision'}})).tier, 'P1');
+            t.verifyEqual(ScheduleTest.tierOf(r(0, 0.05), struct('pregnant', true)), 'P2');
+            t.verifyEqual(ScheduleTest.tierOf(r(2, 0.8), struct('symptoms', {{'blurred_vision'}})), 'P1');
             routine = drscreen.tier(r(0, 0.05), struct('hba1c', 9.5));
             t.verifyEqual(routine.tier, 'P4'); t.verifyEqual(routine.deadlineText, '6-month recall');
-            t.verifyEqual(drscreen.tier(r(4, 0.99), struct('hba1c', 5)).tier, 'P1');
+            t.verifyEqual(ScheduleTest.tierOf(r(4, 0.99), struct('hba1c', 5)), 'P1');
         end
 
         function allocatorAgesLowerTiers(t)

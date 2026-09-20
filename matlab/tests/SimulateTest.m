@@ -9,9 +9,9 @@ classdef SimulateTest < matlab.unittest.TestCase
 
     methods (Test)
         function aiReducesDoctorLoadAndMissesComeFromConfusionMatrix(t)
-            p = districtParams('sampleFraction', 0.1, 'aiEnabled', true, 'sensitivity', 0.9, 'specificity', 0.6, 'flagRate', 0.1);
+            p = districtParams('sampleFraction', 0.1, 'ophthalmologists', 8, 'aiEnabled', true, 'sensitivity', 0.9, 'specificity', 0.6, 'flagRate', 0.1);
             ai = simulateDistrict(p);
-            base = simulateDistrict(districtParams('sampleFraction', 0.1, 'aiEnabled', false));
+            base = simulateDistrict(districtParams('sampleFraction', 0.1, 'ophthalmologists', 8, 'aiEnabled', false));
             t.verifyLessThan(ai.doctorHours, base.doctorHours);
             t.verifyEqual(base.referableMissedByAi, 0);
             expected = ai.referableCases * (1 - 0.9) * (1 - 0.1);

@@ -39,6 +39,8 @@ def warm_up() -> dict:
     started = time.perf_counter()
     gate = stage0_gate.load_gate()
     grader = stage2_grade.load_grader()
+    stage0_gate.load_quality()
+    stage1_segment.load_unet()
     point = operating_point()
     if gate is not None and grader is not None:
         # One dummy pass through each network and through the compiled Grad-CAM
@@ -51,6 +53,7 @@ def warm_up() -> dict:
         grader.predict(blank[None, ...], verbose=0)
         stage3_explain.gradcam(blank, [1])
     return {"gate": stage0_gate.gate_status(), "grader": stage2_grade.grader_status(),
+            "quality_cnn": stage0_gate.quality_status(), "lesion_unet": stage1_segment.unet_status(),
             "operating_point": {"threshold": point["thresholds"]["referable"],
                                 "fingerprint": point["calibration_fingerprint"]},
             "warm_up_ms": int((time.perf_counter() - started) * 1000)}

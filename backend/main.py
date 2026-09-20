@@ -35,7 +35,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 
-from backend.venus import __version__, pipeline, stage0_gate, stage2_grade, stage4_simulate, stage5_schedule
+from backend.venus import __version__, pipeline, stage0_gate, stage1_segment, stage2_grade, stage4_simulate, stage5_schedule
 from backend.venus.config import (ALLOWED_IMAGE_TYPES, MAX_UPLOAD_MB, MODEL_VERSION, REPORT_DIR, SAMPLES_DIR,
                                   OperatingPointError, operating_point)
 
@@ -90,6 +90,8 @@ async def health() -> dict:
         "model_version": MODEL_VERSION,
         "gate": stage0_gate.gate_status(),
         "grader": stage2_grade.grader_status(),
+        "quality_cnn": stage0_gate.quality_status(),
+        "lesion_unet": stage1_segment.unet_status(),
         "operating_point": op,
         "warm_up": _startup,
         "measured": _measured_rates(),
