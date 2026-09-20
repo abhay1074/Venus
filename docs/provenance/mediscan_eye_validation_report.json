@@ -1,0 +1,113 @@
+{
+  "accepted": true,
+  "accepted_on": "2026-09-03T16:06:19.303898+00:00",
+  "accepted_for": "referable diabetic retinopathy (ICDR grade >= 2) ranking only",
+  "claim": "Ranks fundus photographs by likelihood of referable diabetic retinopathy (ICDR grade >= 2) so a human reviewer sees higher-risk images sooner. A triage and prioritisation aid. Every image in the queue is still reviewed by a person; the model changes the order, not the outcome.",
+  "what_this_does_not_claim": [
+    "NOT a refer / no-refer decision. At 90% sensitivity the model flags 70% of all images and its positive predictive value at EyePACS's real 19.6% prevalence is 0.353 -- roughly two referrals in three would be unnecessary. Lowering sensitivity to 80% only reaches 0.506. No threshold makes this a decision rule.",
+    "NOT mild-DR detection. Grade 1 versus grade 0 is a different task, measured separately at AUC 0.660 [0.617, 0.703] within-source and 0.5850 cross-source. Roadmap steps 5 and 6 established that neither more data nor backbone adaptation moves it. It is not usable and is not covered here.",
+    "NOT five-grade DR severity grading. On this same evaluation set the model scores exact-grade accuracy 0.267 and quadratic weighted kappa 0.460. It cannot assign a grade.",
+    "NOT glaucoma, cataract, AMD, hypertension, myopia or any other ocular condition. Those outputs exist in the network but are not validated: their apparently strong external figures are within-source (every surviving external image of those classes comes from ODIR, which is in training).",
+    "NOT a diagnosis, and NOT a calibrated probability. The score ranks; it does not estimate risk. Brier 0.268, 46.9% of scores below 0.01, and every threshold reaching 80-95% sensitivity lies between 0.000 and 0.005 -- a default 0.5 cut would refer almost nothing.",
+    "NOT validated on any population other than EyePACS. One external source, US-based, single-grader ICDR labels, no adjudicated subset."
+  ],
+  "evaluation_scope": "Frozen EyePACS external manifest, n=1,500, never trained on, a different acquisition source from APTOS and ODIR which are both in training. Manifest pinned at backend/data/processed/eye/eyepacs_external_manifest.csv and verified by fingerprint on every scoring run.",
+  "test_rows": 1500,
+  "dataset_fingerprint": "8eea288bae4d43428c8ef84c90598b927ad4e4a0f133b944279656174dd76310",
+  "metrics": {
+    "referable_dr_ranking_auc": 0.8870870370370371,
+    "referable_dr_ranking_auc_ci95": [
+      0.8698070370370371,
+      0.9034779166666667
+    ],
+    "ppv_at_90pc_sensitivity_real_prevalence": 0.3533466792572566,
+    "referred_fraction_at_90pc_sensitivity": 0.702,
+    "why_ppv_is_here": "Because the AUC alone reads as a screening result and this number is what shows it is not one. Two referrals in three would be unnecessary at a clinically ordinary sensitivity.",
+    "triage_top20pc_captures_share_of_referable": 0.7123287671232876,
+    "triage_top20pc_enrichment": 3.566424565597132,
+    "why_enrichment_is_here": "Because it is the capability that is actually supported. Sorted by score at real prevalence, the top fifth of the queue holds 71.2% of referable disease -- a reviewer working top-down finds most of what matters in a fifth of the time, and discharges nobody.",
+    "brier_score": 0.267658963116215,
+    "fraction_of_scores_below_0_01": 0.4686666666666667,
+    "target_metric": "referable-DR ranking AUC > 0.85, cross-source",
+    "target_met": true,
+    "not_targets_recorded_for_contrast": {
+      "quadratic_weighted_kappa": 0.4603,
+      "exact_grade_accuracy": 0.2673,
+      "grade_0_vs_1_auc_within_source": 0.66,
+      "grade_0_vs_1_auc_cross_source": 0.585
+    }
+  },
+  "operating_point": {
+    "selected": false,
+    "why_not": "Every candidate threshold in the capability report was read off the same frozen set the model is scored on; choosing one there and quoting its sensitivity would be selection on the test data. A deployment threshold must be fixed on a separate selection set. Until then the module ships a ranking and no verdict."
+  },
+  "limitations": [
+    "No operating point is selected. Every threshold above was read off this same set; choosing one here and quoting its sensitivity would be selection on the test data. A deployment threshold must be fixed on a separate selection set before any promotion.",
+    "PPV on this set is inflated. It is 60% referable by construction against 19.6% in full EyePACS, so the per-threshold PPV at natural prevalence is the honest figure and is reported beside it.",
+    "One external source. EyePACS is US-based; the module has no measured performance on any other unseen population.",
+    "Single-image, single-field. No stereo, no fundus pairs, no clinical context, and no assessment of image-quality gating in deployment.",
+    "Nondeterminism: inference on this GPU drifts run to run at roughly 1e-5 AUC (roadmap step 1). Immaterial here, but it means figures quoted to four decimals from a single run are over-precise.",
+    "Grade labels are EyePACS's own single-grader ICDR labels, which are known to carry grader noise; no adjudicated subset was available.",
+    "THE SCORE IS NOT CALIBRATED. It ranks well but is not a probability: Brier 0.268, 46.9% of scores below 0.01, and the thresholds reaching 80-95% sensitivity all sit between 0.000 and 0.005. A default 0.5 cut would refer almost nothing. The raw number must never be displayed as a percentage risk, and calibration on a separate set is a prerequisite for any deployment, not a refinement.",
+    "THE INPUT GATE CANNOT VERIFY THE IMAGE IS A FUNDUS PHOTOGRAPH. It checks resolution, brightness and blur, but a dermoscopy image or a face photograph passes and receives a referable-DR ranking score. Two candidate heuristics were measured and both failed: near-black surround fraction (fundus DDR reaches 0.000, identical to dermoscopy) and red/green ratio (fundus median 1.42-1.94 against dermoscopy 1.46 -- fully overlapping). No threshold separates them without rejecting genuine fundus images, so none was invented. The caller is responsible for sending fundus photographs, and the served response says so."
+  ],
+  "served_input_gate": {
+    "what_it_is": "An input-modality safety gate, NOT a diagnostic model. It decides only whether an uploaded image is a fundus photograph, and makes no clinical claim.",
+    "why_it_is_part_of_the_served_path": "Without it the referable-DR model scored dermoscopy at median 0.9828 against genuine referable fundus at 0.0145, and 100% of dermoscopy images landed in the top 20% of a ranked review queue (faces 55%). A misrouted skin photo outranked nearly every real referable case and displaced genuine disease from the priority band this module is accepted to serve.",
+    "order_of_operations": "validate_input_quality -> modality gate -> referable-DR model. A rejected input raises before preprocessing and never invokes the DR model.",
+    "model": "EfficientNet-B0, 224x224, 5-way (fundus, dermoscopy, face, jaundice_sclera, other); serving decision is binary on P(fundus)",
+    "threshold": 0.987005,
+    "threshold_provenance": "Pre-registered: selected on a selection split under a 0.5% false-rejection target, locked, then the held-out set scored exactly once. Not re-tuned afterwards.",
+    "held_out_metrics": {
+      "fundus_false_rejection_rate": 0.0067,
+      "fundus_rejected": "4 of 600",
+      "fundus_frr_wilson_ci95": [
+        0.0026,
+        0.017
+      ],
+      "dermoscopy_false_acceptance": 0.0017,
+      "face_false_acceptance": 0.0,
+      "jaundice_sclera_false_acceptance": 0.0,
+      "other_false_acceptance": 0.0,
+      "fundus_one_vs_rest_roc_auc": 1.0
+    },
+    "honest_caveat": "The 0.67% point estimate is under the 1% ceiling, but its Wilson interval [0.26%, 1.70%] still CONTAINS 1%. 600 fundus images cannot resolve 0.67% from 1.00%. What the rerun changed is which side of the line the estimate falls on, not the precision of the measurement. Roughly 1 in 150 genuine fundus images will be turned away and the user asked to retry.",
+    "known_limitations": [
+      "jaundice_sclera and other are cluster-disjoint, not source-disjoint; neither has a second independent source on disk.",
+      "other is synthetic and says nothing about real-world junk uploads.",
+      "One acquisition source per class on the held-out side, so nothing measures an unseen camera or dermatoscope.",
+      "It gates modality, not image quality. The resolution, brightness and blur checks still do that job, and run first.",
+      "If its weights cannot load, the module refuses rather than passing inputs through unscreened."
+    ],
+    "combined_served_latency_ms": {
+      "median": 127.2,
+      "p95": 147.7
+    },
+    "evidence": [
+      "logs/eye/modality_gate_rerun/report.json",
+      "logs/eye/modality_gate/report.json",
+      "logs/eye/modality_gate_integration_check.json",
+      "logs/eye/modality_dataset_audit.json"
+    ]
+  },
+  "served_output_constrained": {
+    "note": "eye_model.predict was narrowed in the same change that set this flag. It previously emitted a dr_grade_N label and all eight disease probabilities; promoting it unchanged would have shipped a five-grade grader and an eight-condition classifier on a referable-DR-only validation.",
+    "input_screening": "a modality gate runs before the DR model; non-fundus images are refused with an input-quality message and never scored",
+    "now_emits": [
+      "a single referable-DR priority score, labelled as a ranking",
+      "risk_score: null -- the score is uncalibrated and the UI renders that field as a percentage risk bar",
+      "warnings carrying the scope limits above",
+      "modality_fundus_probability and modality_gate_threshold in handcrafted_features, so a response shows the gate ran"
+    ],
+    "no_longer_emits": [
+      "dr_grade_N severity label",
+      "glaucoma / cataract / amd / hypertension / myopia / other / normal probabilities"
+    ]
+  },
+  "supersedes": "logs/eye/validation_report_pre_referable_scope.json",
+  "provenance": [
+    "logs/eye/referable_dr_capability_report.json",
+    "logs/eye/eyepacs_external_report.json",
+    "logs/eye/eyepacs_external_predictions.csv"
+  ]
+}

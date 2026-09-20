@@ -1,0 +1,154 @@
+{
+  "what_this_is": "Final pre-registered threshold rerun for the eye input-modality safety gate. Not a diagnostic model: it decides only whether an image is a fundus photograph.",
+  "generated": "2026-09-02T11:14:48.570417+00:00",
+  "run": "rerun (run 2 of 2, final)",
+  "run1_artifacts_preserved_at": "/mnt/c/Users/anilm/Downloads/MediScan-main/MediScan-main/logs/eye/modality_gate/report.json",
+  "retrained": false,
+  "weights": "/mnt/c/Users/anilm/Downloads/MediScan-main/MediScan-main/backend/weights/eye_modality_gate.weights.h5",
+  "preflight_verification": {
+    "manifest_fingerprint": "62f5801ea72d8c48277c57f060cd625918967adcb1fc6ca61777b2a9fa04db25",
+    "manifest_fingerprint_matches_run1": true,
+    "run1_split_counts": {
+      "train": {
+        "fundus": 2499,
+        "dermoscopy": 2500,
+        "face": 2500,
+        "jaundice_sclera": 416,
+        "other": 636
+      },
+      "threshold_selection": {
+        "fundus": 600,
+        "dermoscopy": 600,
+        "face": 600,
+        "jaundice_sclera": 111,
+        "other": 132
+      },
+      "held_out": {
+        "fundus": 600,
+        "dermoscopy": 600,
+        "face": 600,
+        "jaundice_sclera": 111,
+        "other": 132
+      },
+      "note": "the audited val half was split again by class and source; the threshold is chosen on one part and the other is scored once"
+    },
+    "rerun_split_counts": {
+      "threshold_selection": {
+        "fundus": 600,
+        "dermoscopy": 600,
+        "face": 600,
+        "jaundice_sclera": 111,
+        "other": 132
+      },
+      "held_out": {
+        "fundus": 600,
+        "dermoscopy": 600,
+        "face": 600,
+        "jaundice_sclera": 111,
+        "other": 132
+      }
+    },
+    "split_counts_match_run1": true,
+    "cache_lengths_match": true,
+    "blank_frame_share": {
+      "select": 0.0,
+      "holdout": 0.0
+    },
+    "caches_not_blank": true,
+    "pixel_spot_check": {
+      "sampled": 50,
+      "mismatches": 0
+    },
+    "caches_match_manifest_images": true,
+    "all_passed": true
+  },
+  "changed_from_run1": "selection-split target FRR 1.00% -> 0.50%. Nothing else: same weights, same manifest, same splits, same production ceiling of 1% held-out.",
+  "threshold_selection": {
+    "target_selection_frr": 0.005,
+    "selected_threshold": 0.987005,
+    "selection_split_fundus_frr": 0.005,
+    "locked_before_holdout": true,
+    "holdout_scored_once": true
+  },
+  "held_out": {
+    "fundus_count": 600,
+    "fundus_rejected": 4,
+    "fundus_false_rejection_rate": 0.006666666666666667,
+    "false_acceptance": {
+      "dermoscopy": 0.0016666666666666668,
+      "face": 0.0,
+      "jaundice_sclera": 0.0,
+      "other": 0.0
+    },
+    "confusion_matrix": [
+      [
+        600,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        8,
+        592,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        600,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        111,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        132
+      ]
+    ],
+    "confusion_matrix_rows_are_true_labels": [
+      "fundus",
+      "dermoscopy",
+      "face",
+      "jaundice_sclera",
+      "other"
+    ],
+    "fundus_one_vs_rest_roc_auc": 0.99997920997921,
+    "counts": {
+      "fundus": 600,
+      "dermoscopy": 600,
+      "face": 600,
+      "jaundice_sclera": 111,
+      "other": 132
+    }
+  },
+  "latency_ms": {
+    "median": 55.38414049999574,
+    "p95": 60.51847624999169,
+    "n": 60
+  },
+  "criteria": {
+    "production_fundus_frr_ceiling": 0.01,
+    "ceiling_relaxed": false,
+    "dermoscopy_face_fa_ceiling": 0.1
+  },
+  "decision": "PASS",
+  "integration_status": "NOT INTEGRATED under either outcome; reported for review.",
+  "known_limitations": [
+    "jaundice_sclera and other are cluster-disjoint, not source-disjoint; neither has a second independent source on disk.",
+    "other is synthetic and says nothing about real-world junk uploads.",
+    "One acquisition source per class on the held-out side.",
+    "Gates modality, not image quality; the existing resolution, brightness and blur checks still do that."
+  ]
+}

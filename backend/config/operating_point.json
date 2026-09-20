@@ -1,0 +1,336 @@
+{
+  "model_version": "venus-dr-1.0.0",
+  "written_at": "2026-09-19T17:37:32.958106+00:00",
+  "calibration_fingerprint": "d29385ea352b8a789d1401c47041dbc8f4124cc5043af09ee7bbb13804ca88d3",
+  "calibration_manifest": "calibration_split.csv",
+  "frozen_source": {
+    "file": "eyepacs_frozen_predictions.csv",
+    "description": "EyePACS external set, 1,500 images stratified 300 per grade, never trained on, cross-source",
+    "n_calibration": 755,
+    "n_test": 745,
+    "n_patients_calibration": 689,
+    "split": "by patient id, seed 42"
+  },
+  "calibration": {
+    "method": "Platt scaling on logit(raw referable score)",
+    "a": 0.36920167529490977,
+    "b": 2.258303880881939,
+    "ece_raw": 0.3048,
+    "ece_calibrated": 0.0551,
+    "reliability_diagram": [
+      {
+        "bin": [
+          0.0,
+          0.1
+        ],
+        "n": 51,
+        "confidence": 0.063,
+        "accuracy": 0.0588
+      },
+      {
+        "bin": [
+          0.1,
+          0.2
+        ],
+        "n": 98,
+        "confidence": 0.1496,
+        "accuracy": 0.1837
+      },
+      {
+        "bin": [
+          0.2,
+          0.3
+        ],
+        "n": 53,
+        "confidence": 0.2545,
+        "accuracy": 0.3585
+      },
+      {
+        "bin": [
+          0.3,
+          0.4
+        ],
+        "n": 45,
+        "confidence": 0.3495,
+        "accuracy": 0.4222
+      },
+      {
+        "bin": [
+          0.4,
+          0.5
+        ],
+        "n": 43,
+        "confidence": 0.4412,
+        "accuracy": 0.4419
+      },
+      {
+        "bin": [
+          0.5,
+          0.6
+        ],
+        "n": 37,
+        "confidence": 0.5499,
+        "accuracy": 0.3243
+      },
+      {
+        "bin": [
+          0.6,
+          0.7
+        ],
+        "n": 39,
+        "confidence": 0.6475,
+        "accuracy": 0.3846
+      },
+      {
+        "bin": [
+          0.7,
+          0.8
+        ],
+        "n": 53,
+        "confidence": 0.7548,
+        "accuracy": 0.717
+      },
+      {
+        "bin": [
+          0.8,
+          0.9
+        ],
+        "n": 85,
+        "confidence": 0.8551,
+        "accuracy": 0.8941
+      },
+      {
+        "bin": [
+          0.9,
+          1.0
+        ],
+        "n": 251,
+        "confidence": 0.9508,
+        "accuracy": 0.9721
+      }
+    ]
+  },
+  "thresholds": {
+    "referable": 0.334075,
+    "referable_85pc_alternative": 0.464859,
+    "chosen_on": "calibration half, at 90% sensitivity, then locked",
+    "abstain_band": 0.05,
+    "calibration_half_at_90": {
+      "tp": 417,
+      "fn": 46,
+      "fp": 124,
+      "tn": 168,
+      "sensitivity": 0.9006,
+      "specificity": 0.5753,
+      "ppv_at_indian_prevalence": 0.3177,
+      "npv_at_indian_prevalence": 0.9635,
+      "referred_fraction": 0.7166
+    },
+    "calibration_half_at_85": {
+      "tp": 394,
+      "fn": 69,
+      "fp": 82,
+      "tn": 210,
+      "sensitivity": 0.851,
+      "specificity": 0.7192,
+      "ppv_at_indian_prevalence": 0.3995,
+      "npv_at_indian_prevalence": 0.9565,
+      "referred_fraction": 0.6305
+    }
+  },
+  "external_test": {
+    "scored_once": true,
+    "rescored_with_force": false,
+    "auc": 0.8827,
+    "at_locked_threshold": {
+      "tp": 398,
+      "fn": 39,
+      "fp": 121,
+      "tn": 187,
+      "sensitivity": 0.9108,
+      "specificity": 0.6071,
+      "ppv_at_indian_prevalence": 0.3373,
+      "npv_at_indian_prevalence": 0.9687,
+      "referred_fraction": 0.6966
+    },
+    "at_85pc_threshold": {
+      "tp": 375,
+      "fn": 62,
+      "fp": 79,
+      "tn": 229,
+      "sensitivity": 0.8581,
+      "specificity": 0.7435,
+      "ppv_at_indian_prevalence": 0.4234,
+      "npv_at_indian_prevalence": 0.9598,
+      "referred_fraction": 0.6094
+    },
+    "ci95_bootstrap_2000": {
+      "auc": [
+        0.8569,
+        0.9045
+      ],
+      "sensitivity": [
+        0.8816,
+        0.9348
+      ],
+      "specificity": [
+        0.5544,
+        0.6575
+      ],
+      "ppv_at_indian_prevalence": [
+        0.3086,
+        0.3689
+      ]
+    },
+    "ece": 0.041,
+    "reliability_diagram": [
+      {
+        "bin": [
+          0.0,
+          0.1
+        ],
+        "n": 48,
+        "confidence": 0.0663,
+        "accuracy": 0.125
+      },
+      {
+        "bin": [
+          0.1,
+          0.2
+        ],
+        "n": 83,
+        "confidence": 0.1475,
+        "accuracy": 0.1807
+      },
+      {
+        "bin": [
+          0.2,
+          0.3
+        ],
+        "n": 74,
+        "confidence": 0.2502,
+        "accuracy": 0.1622
+      },
+      {
+        "bin": [
+          0.3,
+          0.4
+        ],
+        "n": 57,
+        "confidence": 0.3454,
+        "accuracy": 0.3684
+      },
+      {
+        "bin": [
+          0.4,
+          0.5
+        ],
+        "n": 48,
+        "confidence": 0.4488,
+        "accuracy": 0.3542
+      },
+      {
+        "bin": [
+          0.5,
+          0.6
+        ],
+        "n": 39,
+        "confidence": 0.5428,
+        "accuracy": 0.6154
+      },
+      {
+        "bin": [
+          0.6,
+          0.7
+        ],
+        "n": 40,
+        "confidence": 0.6543,
+        "accuracy": 0.575
+      },
+      {
+        "bin": [
+          0.7,
+          0.8
+        ],
+        "n": 50,
+        "confidence": 0.7497,
+        "accuracy": 0.68
+      },
+      {
+        "bin": [
+          0.8,
+          0.9
+        ],
+        "n": 76,
+        "confidence": 0.8534,
+        "accuracy": 0.8816
+      },
+      {
+        "bin": [
+          0.9,
+          1.0
+        ],
+        "n": 230,
+        "confidence": 0.9523,
+        "accuracy": 0.9478
+      }
+    ],
+    "sensitivity_grade2_only": 0.7817,
+    "referred_fraction_by_true_grade": {
+      "0": 0.3904,
+      "1": 0.3951,
+      "2": 0.7817,
+      "3": 0.9521,
+      "4": 0.9933
+    },
+    "prevalence_for_ppv": 0.18,
+    "roc_points_for_simulation": [
+      {
+        "sensitivity_target": 0.8,
+        "threshold": 0.560547,
+        "sensitivity": 0.8009,
+        "specificity": 0.8052
+      },
+      {
+        "sensitivity_target": 0.85,
+        "threshold": 0.473008,
+        "sensitivity": 0.8513,
+        "specificity": 0.7468
+      },
+      {
+        "sensitivity_target": 0.9,
+        "threshold": 0.357914,
+        "sensitivity": 0.9016,
+        "specificity": 0.6494
+      },
+      {
+        "sensitivity_target": 0.95,
+        "threshold": 0.204763,
+        "sensitivity": 0.9519,
+        "specificity": 0.3799
+      },
+      {
+        "sensitivity_target": 0.975,
+        "threshold": 0.137267,
+        "sensitivity": 0.9771,
+        "specificity": 0.237
+      }
+    ]
+  },
+  "targets": {
+    "sensitivity": 0.9,
+    "specificity": 0.85,
+    "auc": 0.95,
+    "ece": 0.05,
+    "sensitivity_met": true,
+    "specificity_met": false,
+    "auc_met": false,
+    "ece_met": true
+  },
+  "notes": [
+    "The raw grader score ranks well but is not a probability (Brier 0.268 on the full frozen set); Platt scaling is what makes P(referable) reportable.",
+    "The frozen set is 60% referable by construction; PPV/NPV are recomputed at 18% Indian prevalence.",
+    "EyePACS labels are single-grader ICDR grades; an adjudicated set (Messidor-2) is the planned replacement.",
+    "A missed target is reported as the achieved number with its CI, not a re-tuned threshold."
+  ]
+}

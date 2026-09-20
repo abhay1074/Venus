@@ -1,0 +1,225 @@
+{
+  "status": "FINAL \u2014 capability report, not a deployment gate",
+  "gate_file_written": false,
+  "note": "This file is deliberately not logs/eye/validation_report.json. The eye module remains validation_failed. Promotion is a human decision under roadmap step 6.",
+  "claim": {
+    "task": "Referable diabetic retinopathy: ICDR grade >= 2 versus grade < 2, as a binary referral signal on a single fundus photograph.",
+    "what_this_does_not_cover": [
+      "Mild DR. Grade 1 versus grade 0 is a separate task and is NOT supported by this report. Measured separately in roadmap step 2 at AUC 0.660 [0.617, 0.703] with a dedicated head -- real signal, but not screening-usable, and nothing here changes that.",
+      "DR severity grading. Exact-grade accuracy on this same set is 0.267 and quadratic weighted kappa 0.460; the module cannot assign a grade.",
+      "Any non-DR condition. Glaucoma, cataract, AMD and the rest are outside this claim, and their apparently strong numbers elsewhere are within-source, not external.",
+      "Diagnosis. This is a triage signal that decides who is seen sooner, not what they have."
+    ]
+  },
+  "evaluation_population": {
+    "source": "EyePACS (tanlikesmath/diabetic-retinopathy-resized)",
+    "manifest": "backend/data/processed/eye/eyepacs_external_manifest.csv",
+    "n": 1500,
+    "never_trained_on": true,
+    "cross_source": "different acquisition source from APTOS and ODIR, both of which are in training",
+    "grade_distribution": {
+      "0": 300,
+      "1": 300,
+      "2": 300,
+      "3": 300,
+      "4": 300
+    },
+    "referable_prevalence_in_this_set": 0.6,
+    "referable_prevalence_in_full_eyepacs": 0.1956670272732449,
+    "sampling": "stratified 300 per grade, so referable disease is over-represented threefold relative to the source population"
+  },
+  "metrics": {
+    "calibration_warning": "ranks well, not calibrated: see limitations. Discrimination (AUC) and calibration are independent, and only the first is established here.",
+    "score_percentiles": {
+      "p1": 3.239905969e-07,
+      "p25": 0.000156429955,
+      "p50": 0.0198607895,
+      "p75": 0.7052542625,
+      "p99": 0.996913649
+    },
+    "fraction_below_0_01": 0.4686666666666667,
+    "referable_auc": 0.8870870370370371,
+    "referable_auc_ci95_bootstrap": [
+      0.8698070370370371,
+      0.9034779166666667
+    ],
+    "brier_score": 0.267658963116215,
+    "operating_points_candidate_only": [
+      {
+        "sensitivity_target": 0.8,
+        "threshold": 0.0054238657,
+        "sensitivity": 0.8,
+        "specificity": 0.81,
+        "referred_fraction": 0.556,
+        "confusion_on_this_set": {
+          "tn": 486,
+          "fp": 114,
+          "fn": 180,
+          "tp": 720
+        },
+        "ppv_on_this_set_60pc_prevalence": 0.8633093525179857,
+        "ppv_at_eyepacs_prevalence_19_6pc": 0.5059968876737341,
+        "npv_at_eyepacs_prevalence_19_6pc": 0.943337731604858
+      },
+      {
+        "sensitivity_target": 0.85,
+        "threshold": 0.0015040712,
+        "sensitivity": 0.8544444444444445,
+        "specificity": 0.7316666666666667,
+        "referred_fraction": 0.62,
+        "confusion_on_this_set": {
+          "tn": 439,
+          "fp": 161,
+          "fn": 131,
+          "tp": 769
+        },
+        "ppv_on_this_set_60pc_prevalence": 0.8268817204301075,
+        "ppv_at_eyepacs_prevalence_19_6pc": 0.436500368978274,
+        "npv_at_eyepacs_prevalence_19_6pc": 0.9538392881381194
+      },
+      {
+        "sensitivity_target": 0.9,
+        "threshold": 0.00035513192,
+        "sensitivity": 0.9022222222222223,
+        "specificity": 0.5983333333333334,
+        "referred_fraction": 0.702,
+        "confusion_on_this_set": {
+          "tn": 359,
+          "fp": 241,
+          "fn": 88,
+          "tp": 812
+        },
+        "ppv_on_this_set_60pc_prevalence": 0.7711301044634379,
+        "ppv_at_eyepacs_prevalence_19_6pc": 0.3533466792572566,
+        "npv_at_eyepacs_prevalence_19_6pc": 0.9617661335156702
+      },
+      {
+        "sensitivity_target": 0.95,
+        "threshold": 6.214229e-05,
+        "sensitivity": 0.9511111111111111,
+        "specificity": 0.41500000000000004,
+        "referred_fraction": 0.8046666666666666,
+        "confusion_on_this_set": {
+          "tn": 249,
+          "fp": 351,
+          "fn": 44,
+          "tp": 856
+        },
+        "ppv_on_this_set_60pc_prevalence": 0.7091963545981773,
+        "ppv_at_eyepacs_prevalence_19_6pc": 0.2834159561442143,
+        "npv_at_eyepacs_prevalence_19_6pc": 0.9721405272223645
+      }
+    ]
+  },
+  "limitations": [
+    "No operating point is selected. Every threshold above was read off this same set; choosing one here and quoting its sensitivity would be selection on the test data. A deployment threshold must be fixed on a separate selection set before any promotion.",
+    "PPV on this set is inflated. It is 60% referable by construction against 19.6% in full EyePACS, so the per-threshold PPV at natural prevalence is the honest figure and is reported beside it.",
+    "One external source. EyePACS is US-based; the module has no measured performance on any other unseen population.",
+    "Single-image, single-field. No stereo, no fundus pairs, no clinical context, and no assessment of image-quality gating in deployment.",
+    "Nondeterminism: inference on this GPU drifts run to run at roughly 1e-5 AUC (roadmap step 1). Immaterial here, but it means figures quoted to four decimals from a single run are over-precise.",
+    "Grade labels are EyePACS's own single-grader ICDR labels, which are known to carry grader noise; no adjudicated subset was available.",
+    "THE SCORE IS NOT CALIBRATED. It ranks well but is not a probability: Brier 0.268, 46.9% of scores below 0.01, and the thresholds reaching 80-95% sensitivity all sit between 0.000 and 0.005. A default 0.5 cut would refer almost nothing. The raw number must never be displayed as a percentage risk, and calibration on a separate set is a prerequisite for any deployment, not a refinement."
+  ],
+  "deployment_claim_if_promoted": "May be offered ONLY as: a worklist ordering aid that ranks fundus photographs by likelihood of referable DR (ICDR >= 2) so a human reviewer sees higher-risk images sooner. Every image in the queue is still reviewed by a person; the model changes the order, not the outcome. It issues no refer/no-refer verdict, discharges nobody, and its score is not a probability. Validated on one external source (EyePACS, n=1,500) against single-grader labels; not validated on any other population.",
+  "framing_decision": {
+    "decided": "triage and prioritisation aid",
+    "rejected": "refer / no-refer screening decision",
+    "decided_by": "roadmap step 4 review",
+    "rationale": "The same AUC supports one claim and not the other. AUC measures ranking; it says nothing about where a threshold belongs or what a positive means at a given prevalence. As a decision rule this model fails: at 90% sensitivity it flags 70% of all images and its PPV at the real 19.6% prevalence is 0.353, so two referrals in three would be unnecessary, and lowering sensitivity to 80% only reaches 0.506. As a ranking it works: the top 20% of the queue holds 71.2% of referable disease. The tool orders a reviewer's worklist; it does not decide anyone's care.",
+    "what_this_forbids": [
+      "Reporting a per-image 'refer' or 'no refer' verdict to a patient or a non-specialist.",
+      "Discharging, clearing, or de-prioritising a patient on a low score. The claim is about what to look at first, not what can be skipped.",
+      "Quoting 0.887 as screening accuracy. It is ranking quality on one external source.",
+      "Displaying the raw score as a probability or percentage risk \u2014 it is uncalibrated (Brier 0.268, 46.9% of scores below 0.01)."
+    ]
+  },
+  "triage_performance": {
+    "primary": "queue enrichment at deployment prevalence",
+    "at_natural_prevalence_19_6pc": {
+      "n": 746,
+      "referable": 146,
+      "queue": [
+        {
+          "review_top_fraction": 0.05,
+          "images_reviewed": 37,
+          "referable_found": 33,
+          "share_of_all_referable_found": 0.22602739726027396,
+          "enrichment_vs_random": 4.557201036653091
+        },
+        {
+          "review_top_fraction": 0.1,
+          "images_reviewed": 74,
+          "referable_found": 63,
+          "share_of_all_referable_found": 0.4315068493150685,
+          "enrichment_vs_random": 4.350055534987042
+        },
+        {
+          "review_top_fraction": 0.2,
+          "images_reviewed": 149,
+          "referable_found": 104,
+          "share_of_all_referable_found": 0.7123287671232876,
+          "enrichment_vs_random": 3.566424565597132
+        },
+        {
+          "review_top_fraction": 0.3,
+          "images_reviewed": 223,
+          "referable_found": 120,
+          "share_of_all_referable_found": 0.821917808219178,
+          "enrichment_vs_random": 2.7495546409484612
+        },
+        {
+          "review_top_fraction": 0.5,
+          "images_reviewed": 373,
+          "referable_found": 131,
+          "share_of_all_referable_found": 0.8972602739726028,
+          "enrichment_vs_random": 1.7945205479452055
+        }
+      ],
+      "note": "positives subsampled from the frozen set to match EyePACS's real referable prevalence; ranking is unchanged, only the mix"
+    },
+    "on_frozen_set_as_sampled": {
+      "n": 1500,
+      "referable": 900,
+      "prevalence": 0.6,
+      "queue": [
+        {
+          "review_top_fraction": 0.05,
+          "images_reviewed": 75,
+          "referable_found": 75,
+          "share_of_all_referable_found": 0.08333333333333333,
+          "enrichment_vs_random": 1.6666666666666667
+        },
+        {
+          "review_top_fraction": 0.1,
+          "images_reviewed": 150,
+          "referable_found": 150,
+          "share_of_all_referable_found": 0.16666666666666666,
+          "enrichment_vs_random": 1.6666666666666667
+        },
+        {
+          "review_top_fraction": 0.2,
+          "images_reviewed": 300,
+          "referable_found": 295,
+          "share_of_all_referable_found": 0.3277777777777778,
+          "enrichment_vs_random": 1.6388888888888888
+        },
+        {
+          "review_top_fraction": 0.3,
+          "images_reviewed": 450,
+          "referable_found": 435,
+          "share_of_all_referable_found": 0.48333333333333334,
+          "enrichment_vs_random": 1.6111111111111112
+        },
+        {
+          "review_top_fraction": 0.5,
+          "images_reviewed": 750,
+          "referable_found": 679,
+          "share_of_all_referable_found": 0.7544444444444445,
+          "enrichment_vs_random": 1.508888888888889
+        }
+      ],
+      "note": "reported for completeness and to show the artefact: at 60% referable, enrichment is bounded near 1.6x because a majority class cannot be concentrated. This understates deployed value as much as the same set's PPV overstates it."
+    }
+  },
+  "superseded_file": "C:\\Users\\anilm\\Downloads\\MediScan-main\\MediScan-main\\logs\\eye\\referable_dr_validation_DRAFT.json"
+}
