@@ -42,6 +42,16 @@ import numpy as np
 from backend.venus.config import CONFIG_DIR, operating_point
 
 SWEEP_CACHE = CONFIG_DIR / "sweep_cache.json"
+VALIDATION_FLAGS = CONFIG_DIR / "validation_flags.json"
+
+
+def measured_flag_rates() -> dict | None:
+    """Flag and retake rates measured on validation images by backend.eval.flag_rate."""
+    if not VALIDATION_FLAGS.exists():
+        return None
+    v = json.load(open(VALIDATION_FLAGS, encoding="utf-8"))
+    return {"flag_rate": v["flag_rate"], "retake_rate": v["retake_rate"], "n": v["n_sampled"],
+            "grader": v.get("grader"), "written_at": v.get("written_at"), "source": "validation manifest sample"}
 
 
 @dataclass
@@ -81,6 +91,12 @@ def params_from(overrides: dict | None = None, point: dict | None = None, measur
     at = point["external_test"]["at_locked_threshold"]
     p.sensitivity = float(at["sensitivity"])
     p.specificity = float(at["specificity"])
+    # Flag and retake rates measured on validation images, when available;
+    # explicit measured_* arguments (e.g. from stored screenings) override.
+    measured = measured_flag_rates()
+    if measured is not None:
+        p.flag_rate = float(measured["flag_rate"])
+        p.retake_probability = float(measured["retake_rate"])
     if measured_flag_rate is not None:
         p.flag_rate = float(measured_flag_rate)
     if measured_retake_rate is not None:

@@ -74,12 +74,14 @@ export default function DistrictPage({ health }) {
             <div className="label">Coupled from Stage 2</div>
             <div className="mt-1">sensitivity <b>{(coupled?.sensitivity ?? health.measured?.sensitivity ?? 0.911).toFixed(3)}</b> · specificity <b>{(coupled?.specificity ?? 0.607).toFixed(3)}</b></div>
             <div>
-              flag rate <b>{coupled ? coupled.flag_rate.toFixed(3) : health.measured?.used_by_simulation ? health.measured.flag_rate.toFixed(3) : "0.120 (default)"}</b> · retake{" "}
-              <b>{coupled ? coupled.retake_probability.toFixed(3) : health.measured?.used_by_simulation ? health.measured.retake_rate.toFixed(3) : "0.050 (default)"}</b>
+              flag rate <b>{coupled ? coupled.flag_rate.toFixed(3) : health.measured?.used_by_simulation ? health.measured.flag_rate.toFixed(3) : health.measured?.validation_sample ? health.measured.validation_sample.flag_rate.toFixed(3) : "0.120 (default)"}</b> · retake{" "}
+              <b>{coupled ? coupled.retake_probability.toFixed(3) : health.measured?.used_by_simulation ? health.measured.retake_rate.toFixed(3) : health.measured?.validation_sample ? health.measured.validation_sample.retake_rate.toFixed(3) : "0.050 (default)"}</b>
             </div>
             <div className="mt-1 text-[11px] text-slate-500">
               {health.measured?.used_by_simulation
                 ? `measured on ${health.measured.n_gradable} stored screenings`
+                : health.measured?.validation_sample
+                ? `measured on ${health.measured.validation_sample.n} validation images (${health.measured.validation_sample.grader})`
                 : `defaults until ${health.measured?.minimum_n ?? 10} screenings are stored (${health.measured?.n_gradable ?? 0} so far)`}
             </div>
           </div>

@@ -13,4 +13,8 @@ run backend.eval.score_grader --weights "$CACHE/models/grader_v2.weights.h5" --t
 run backend.eval.score_grader --weights "$CACHE/models/grader_v2.weights.h5" --tag grader_v2 --tta --manifests calibration external_test_ddr heldout_eyepacs_frozen
 run backend.training.train_lesion_unet --epochs 60
 run backend.training.train_quality --epochs 12
+# Flag rate / attention-agreement analysis on validation images needs the
+# checkpoints in backend/weights (the served path), so pull them first.
+bash "$ROOT/scripts/pull-models.sh" | tee -a "$LOG"
+run backend.eval.flag_rate --n 600
 echo "=== $(date '+%F %T')  ALL DONE" | tee -a "$LOG"

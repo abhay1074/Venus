@@ -74,6 +74,7 @@ def _measured_rates() -> dict:
     m = stage5_schedule.flag_rate()
     m["used_by_simulation"] = m["n_gradable"] >= MIN_SCREENINGS_FOR_MEASURED_RATES
     m["minimum_n"] = MIN_SCREENINGS_FOR_MEASURED_RATES
+    m["validation_sample"] = stage4_simulate.measured_flag_rates()
     return m
 
 
