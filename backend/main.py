@@ -33,10 +33,11 @@ from typing import Optional
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from backend.venus import __version__, pipeline, stage0_gate, stage1_segment, stage2_grade, stage4_simulate, stage5_schedule
-from backend.venus.config import (ALLOWED_IMAGE_TYPES, MAX_UPLOAD_MB, MODEL_VERSION, REPORT_DIR, SAMPLES_DIR,
+from backend.venus.config import (ALLOWED_IMAGE_TYPES, MAX_UPLOAD_MB, MODEL_VERSION, PROJECT_ROOT, REPORT_DIR, SAMPLES_DIR,
                                   OperatingPointError, operating_point)
 
 app = FastAPI(title="Venus AI", version=__version__,
@@ -319,3 +320,12 @@ async def reset_demo() -> dict:
                 path.unlink()
                 removed += 1
     return {"reset": True, "reports_removed": removed}
+
+
+# Offline deployment: when the front end has been built (frontend/dist), the
+# API serves it at / so a PHC laptop runs one process and needs no Node, no
+# browser plug-ins and no network. The Vite dev server is still the way to
+# develop; this mount is only used when dist/ exists.
+_DIST = PROJECT_ROOT / "frontend" / "dist"
+if _DIST.exists():
+    app.mount("/", StaticFiles(directory=str(_DIST), html=True), name="frontend")
