@@ -1,6 +1,6 @@
 # Validation report — Venus AI, model `venus-dr-2.0.0` (grader `grader_v2`)
 
-Generated 2026-09-20 17:09 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
+Generated 2026-09-20 17:39 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
 
 ## Data and splits
 
@@ -83,7 +83,9 @@ EfficientNet-B0 at 256, 3-class softmax, EyeQ train labels on EyePACS images, sp
 
 ## Timing (requirement: < 30 s per image)
 
-50 images, TTA off, AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD (16 threads, no GPU): **median 4.2 s, p95 5.0 s**, max 5.6 s → requirement met at p95. Per stage (median): S0 189 ms, S1 734 ms, S2 194 ms, S3 2774 ms (Grad-CAM 123 ms), report 301 ms.
+50 images, TTA off, AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD (16 threads, no GPU): **median 1.7 s, p95 1.7 s**, max 3.0 s → requirement met at p95. Per stage (median): S0 167 ms, S1 691 ms, S2 178 ms, S3 324 ms (Grad-CAM 118 ms), report 295 ms.
+
+On the RTX 5060 (WSL): median 3.4 s, p95 4.1 s — inference is not the cost on either machine; Stage 1 landmarks and the overlay encoding are. (Measured before the PNG-encoding change that took the CPU median from 4.2 s to 1.7 s.)
 
 ## District simulation (Stage 4, coupled to the numbers above)
 

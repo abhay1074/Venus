@@ -1,0 +1,604 @@
+{
+  "model_version": "venus-dr-2.0.0",
+  "written_at": "2026-09-20T17:35:26.282124+00:00",
+  "machine": {
+    "processor": "x86_64",
+    "cores": 16,
+    "platform": "Linux-6.18.33.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "python": "3.11.16"
+  },
+  "n_images": 50,
+  "tta": false,
+  "warm_up_ms": 46287,
+  "per_stage": {
+    "stage0": {
+      "median_ms": 139,
+      "p95_ms": 167,
+      "max_ms": 7660
+    },
+    "stage1": {
+      "median_ms": 496,
+      "p95_ms": 596,
+      "max_ms": 55655
+    },
+    "stage2": {
+      "median_ms": 67,
+      "p95_ms": 84,
+      "max_ms": 370
+    },
+    "stage3": {
+      "median_ms": 2462,
+      "p95_ms": 3132,
+      "max_ms": 3155
+    },
+    "gradcam": {
+      "median_ms": 22,
+      "p95_ms": 58,
+      "max_ms": 60
+    },
+    "report": {
+      "median_ms": 201,
+      "p95_ms": 237,
+      "max_ms": 248
+    },
+    "wall_ms": {
+      "median_ms": 3385,
+      "p95_ms": 4086,
+      "max_ms": 65405
+    }
+  },
+  "requirement_ms": 30000,
+  "requirement_met_p95": true,
+  "rows": [
+    {
+      "image": "normal_right_eye.jpg",
+      "wall_ms": 65405,
+      "stage0": 7660,
+      "stage1": 55655,
+      "stage2": 79,
+      "stage3": 1832,
+      "gradcam": 25,
+      "report": 165,
+      "total": 65240
+    },
+    {
+      "image": "dr_exudates.png",
+      "wall_ms": 3806,
+      "stage0": 133,
+      "stage1": 478,
+      "stage2": 370,
+      "stage3": 2584,
+      "gradcam": 59,
+      "report": 229,
+      "total": 3577
+    },
+    {
+      "image": "pdr_proliferative_nei.jpg",
+      "wall_ms": 3488,
+      "stage0": 133,
+      "stage1": 548,
+      "stage2": 69,
+      "stage3": 2512,
+      "gradcam": 54,
+      "report": 222,
+      "total": 3266
+    },
+    {
+      "image": "npdr_hemorrhages_nei.jpg",
+      "wall_ms": 3133,
+      "stage0": 132,
+      "stage1": 412,
+      "stage2": 56,
+      "stage3": 2358,
+      "gradcam": 22,
+      "report": 172,
+      "total": 2961
+    },
+    {
+      "image": "usable_dark_vignetted.jpg",
+      "wall_ms": 4082,
+      "stage0": 155,
+      "stage1": 595,
+      "stage2": 83,
+      "stage3": 3081,
+      "gradcam": 22,
+      "report": 163,
+      "total": 3919
+    },
+    {
+      "image": "demo_fundus.jpeg",
+      "wall_ms": 2833,
+      "stage0": 133,
+      "stage1": 497,
+      "stage2": 75,
+      "stage3": 1889,
+      "gradcam": 21,
+      "report": 236,
+      "total": 2597
+    },
+    {
+      "image": "normal_right_eye.jpg",
+      "wall_ms": 2616,
+      "stage0": 137,
+      "stage1": 413,
+      "stage2": 63,
+      "stage3": 1827,
+      "gradcam": 23,
+      "report": 167,
+      "total": 2449
+    },
+    {
+      "image": "dr_exudates.png",
+      "wall_ms": 3581,
+      "stage0": 144,
+      "stage1": 520,
+      "stage2": 59,
+      "stage3": 2611,
+      "gradcam": 22,
+      "report": 233,
+      "total": 3347
+    },
+    {
+      "image": "pdr_proliferative_nei.jpg",
+      "wall_ms": 3423,
+      "stage0": 139,
+      "stage1": 496,
+      "stage2": 62,
+      "stage3": 2489,
+      "gradcam": 21,
+      "report": 234,
+      "total": 3189
+    },
+    {
+      "image": "npdr_hemorrhages_nei.jpg",
+      "wall_ms": 3359,
+      "stage0": 141,
+      "stage1": 527,
+      "stage2": 75,
+      "stage3": 2424,
+      "gradcam": 57,
+      "report": 189,
+      "total": 3170
+    },
+    {
+      "image": "usable_dark_vignetted.jpg",
+      "wall_ms": 4049,
+      "stage0": 154,
+      "stage1": 553,
+      "stage2": 69,
+      "stage3": 3104,
+      "gradcam": 22,
+      "report": 163,
+      "total": 3886
+    },
+    {
+      "image": "demo_fundus.jpeg",
+      "wall_ms": 2751,
+      "stage0": 129,
+      "stage1": 481,
+      "stage2": 60,
+      "stage3": 1854,
+      "gradcam": 20,
+      "report": 223,
+      "total": 2528
+    },
+    {
+      "image": "normal_right_eye.jpg",
+      "wall_ms": 2663,
+      "stage0": 139,
+      "stage1": 490,
+      "stage2": 71,
+      "stage3": 1793,
+      "gradcam": 20,
+      "report": 164,
+      "total": 2499
+    },
+    {
+      "image": "dr_exudates.png",
+      "wall_ms": 3451,
+      "stage0": 130,
+      "stage1": 503,
+      "stage2": 57,
+      "stage3": 2523,
+      "gradcam": 21,
+      "report": 227,
+      "total": 3224
+    },
+    {
+      "image": "pdr_proliferative_nei.jpg",
+      "wall_ms": 3467,
+      "stage0": 130,
+      "stage1": 463,
+      "stage2": 81,
+      "stage3": 2564,
+      "gradcam": 57,
+      "report": 226,
+      "total": 3241
+    },
+    {
+      "image": "npdr_hemorrhages_nei.jpg",
+      "wall_ms": 3317,
+      "stage0": 149,
+      "stage1": 520,
+      "stage2": 56,
+      "stage3": 2403,
+      "gradcam": 20,
+      "report": 186,
+      "total": 3131
+    },
+    {
+      "image": "usable_dark_vignetted.jpg",
+      "wall_ms": 4162,
+      "stage0": 164,
+      "stage1": 598,
+      "stage2": 69,
+      "stage3": 3155,
+      "gradcam": 21,
+      "report": 172,
+      "total": 3990
+    },
+    {
+      "image": "demo_fundus.jpeg",
+      "wall_ms": 2918,
+      "stage0": 140,
+      "stage1": 501,
+      "stage2": 77,
+      "stage3": 1949,
+      "gradcam": 60,
+      "report": 248,
+      "total": 2670
+    },
+    {
+      "image": "normal_right_eye.jpg",
+      "wall_ms": 2683,
+      "stage0": 165,
+      "stage1": 438,
+      "stage2": 59,
+      "stage3": 1848,
+      "gradcam": 22,
+      "report": 166,
+      "total": 2517
+    },
+    {
+      "image": "dr_exudates.png",
+      "wall_ms": 3477,
+      "stage0": 136,
+      "stage1": 469,
+      "stage2": 59,
+      "stage3": 2569,
+      "gradcam": 21,
+      "report": 232,
+      "total": 3245
+    },
+    {
+      "image": "pdr_proliferative_nei.jpg",
+      "wall_ms": 3370,
+      "stage0": 132,
+      "stage1": 487,
+      "stage2": 75,
+      "stage3": 2460,
+      "gradcam": 46,
+      "report": 213,
+      "total": 3157
+    },
+    {
+      "image": "npdr_hemorrhages_nei.jpg",
+      "wall_ms": 3154,
+      "stage0": 128,
+      "stage1": 429,
+      "stage2": 56,
+      "stage3": 2359,
+      "gradcam": 22,
+      "report": 180,
+      "total": 2974
+    },
+    {
+      "image": "usable_dark_vignetted.jpg",
+      "wall_ms": 4090,
+      "stage0": 165,
+      "stage1": 515,
+      "stage2": 84,
+      "stage3": 3147,
+      "gradcam": 48,
+      "report": 172,
+      "total": 3918
+    },
+    {
+      "image": "demo_fundus.jpeg",
+      "wall_ms": 2825,
+      "stage0": 130,
+      "stage1": 469,
+      "stage2": 76,
+      "stage3": 1929,
+      "gradcam": 49,
+      "report": 218,
+      "total": 2607
+    },
+    {
+      "image": "normal_right_eye.jpg",
+      "wall_ms": 2645,
+      "stage0": 137,
+      "stage1": 428,
+      "stage2": 58,
+      "stage3": 1854,
+      "gradcam": 22,
+      "report": 160,
+      "total": 2485
+    },
+    {
+      "image": "dr_exudates.png",
+      "wall_ms": 3611,
+      "stage0": 142,
+      "stage1": 556,
+      "stage2": 72,
+      "stage3": 2592,
+      "gradcam": 21,
+      "report": 233,
+      "total": 3377
+    },
+    {
+      "image": "pdr_proliferative_nei.jpg",
+      "wall_ms": 3491,
+      "stage0": 139,
+      "stage1": 490,
+      "stage2": 61,
+      "stage3": 2570,
+      "gradcam": 21,
+      "report": 228,
+      "total": 3263
+    },
+    {
+      "image": "npdr_hemorrhages_nei.jpg",
+      "wall_ms": 3324,
+      "stage0": 140,
+      "stage1": 518,
+      "stage2": 75,
+      "stage3": 2412,
+      "gradcam": 25,
+      "report": 175,
+      "total": 3149
+    },
+    {
+      "image": "usable_dark_vignetted.jpg",
+      "wall_ms": 3942,
+      "stage0": 147,
+      "stage1": 475,
+      "stage2": 61,
+      "stage3": 3091,
+      "gradcam": 21,
+      "report": 163,
+      "total": 3779
+    },
+    {
+      "image": "demo_fundus.jpeg",
+      "wall_ms": 2852,
+      "stage0": 128,
+      "stage1": 569,
+      "stage2": 58,
+      "stage3": 1873,
+      "gradcam": 21,
+      "report": 222,
+      "total": 2630
+    },
+    {
+      "image": "normal_right_eye.jpg",
+      "wall_ms": 2555,
+      "stage0": 132,
+      "stage1": 405,
+      "stage2": 54,
+      "stage3": 1795,
+      "gradcam": 23,
+      "report": 163,
+      "total": 2392
+    },
+    {
+      "image": "dr_exudates.png",
+      "wall_ms": 3440,
+      "stage0": 138,
+      "stage1": 469,
+      "stage2": 67,
+      "stage3": 2517,
+      "gradcam": 20,
+      "report": 236,
+      "total": 3204
+    },
+    {
+      "image": "pdr_proliferative_nei.jpg",
+      "wall_ms": 3393,
+      "stage0": 138,
+      "stage1": 475,
+      "stage2": 64,
+      "stage3": 2490,
+      "gradcam": 24,
+      "report": 224,
+      "total": 3169
+    },
+    {
+      "image": "npdr_hemorrhages_nei.jpg",
+      "wall_ms": 3378,
+      "stage0": 143,
+      "stage1": 545,
+      "stage2": 59,
+      "stage3": 2441,
+      "gradcam": 22,
+      "report": 187,
+      "total": 3191
+    },
+    {
+      "image": "usable_dark_vignetted.jpg",
+      "wall_ms": 4049,
+      "stage0": 175,
+      "stage1": 497,
+      "stage2": 67,
+      "stage3": 3142,
+      "gradcam": 21,
+      "report": 163,
+      "total": 3886
+    },
+    {
+      "image": "demo_fundus.jpeg",
+      "wall_ms": 2888,
+      "stage0": 139,
+      "stage1": 500,
+      "stage2": 86,
+      "stage3": 1943,
+      "gradcam": 57,
+      "report": 217,
+      "total": 2671
+    },
+    {
+      "image": "normal_right_eye.jpg",
+      "wall_ms": 2756,
+      "stage0": 154,
+      "stage1": 506,
+      "stage2": 72,
+      "stage3": 1862,
+      "gradcam": 20,
+      "report": 155,
+      "total": 2601
+    },
+    {
+      "image": "dr_exudates.png",
+      "wall_ms": 3545,
+      "stage0": 143,
+      "stage1": 573,
+      "stage2": 67,
+      "stage3": 2506,
+      "gradcam": 21,
+      "report": 244,
+      "total": 3301
+    },
+    {
+      "image": "pdr_proliferative_nei.jpg",
+      "wall_ms": 3499,
+      "stage0": 161,
+      "stage1": 494,
+      "stage2": 84,
+      "stage3": 2529,
+      "gradcam": 59,
+      "report": 229,
+      "total": 3270
+    },
+    {
+      "image": "npdr_hemorrhages_nei.jpg",
+      "wall_ms": 3303,
+      "stage0": 129,
+      "stage1": 466,
+      "stage2": 84,
+      "stage3": 2430,
+      "gradcam": 42,
+      "report": 190,
+      "total": 3113
+    },
+    {
+      "image": "usable_dark_vignetted.jpg",
+      "wall_ms": 4037,
+      "stage0": 169,
+      "stage1": 499,
+      "stage2": 79,
+      "stage3": 3121,
+      "gradcam": 58,
+      "report": 163,
+      "total": 3873
+    },
+    {
+      "image": "demo_fundus.jpeg",
+      "wall_ms": 2902,
+      "stage0": 139,
+      "stage1": 510,
+      "stage2": 82,
+      "stage3": 1943,
+      "gradcam": 48,
+      "report": 224,
+      "total": 2678
+    },
+    {
+      "image": "normal_right_eye.jpg",
+      "wall_ms": 2671,
+      "stage0": 144,
+      "stage1": 422,
+      "stage2": 65,
+      "stage3": 1870,
+      "gradcam": 25,
+      "report": 165,
+      "total": 2506
+    },
+    {
+      "image": "dr_exudates.png",
+      "wall_ms": 3489,
+      "stage0": 148,
+      "stage1": 466,
+      "stage2": 64,
+      "stage3": 2559,
+      "gradcam": 21,
+      "report": 239,
+      "total": 3250
+    },
+    {
+      "image": "pdr_proliferative_nei.jpg",
+      "wall_ms": 3526,
+      "stage0": 160,
+      "stage1": 581,
+      "stage2": 59,
+      "stage3": 2502,
+      "gradcam": 22,
+      "report": 221,
+      "total": 3305
+    },
+    {
+      "image": "npdr_hemorrhages_nei.jpg",
+      "wall_ms": 3374,
+      "stage0": 139,
+      "stage1": 505,
+      "stage2": 82,
+      "stage3": 2464,
+      "gradcam": 57,
+      "report": 181,
+      "total": 3193
+    },
+    {
+      "image": "usable_dark_vignetted.jpg",
+      "wall_ms": 3871,
+      "stage0": 152,
+      "stage1": 411,
+      "stage2": 56,
+      "stage3": 3084,
+      "gradcam": 21,
+      "report": 163,
+      "total": 3708
+    },
+    {
+      "image": "demo_fundus.jpeg",
+      "wall_ms": 2904,
+      "stage0": 145,
+      "stage1": 614,
+      "stage2": 64,
+      "stage3": 1855,
+      "gradcam": 22,
+      "report": 223,
+      "total": 2681
+    },
+    {
+      "image": "normal_right_eye.jpg",
+      "wall_ms": 2569,
+      "stage0": 144,
+      "stage1": 402,
+      "stage2": 64,
+      "stage3": 1801,
+      "gradcam": 21,
+      "report": 153,
+      "total": 2416
+    },
+    {
+      "image": "dr_exudates.png",
+      "wall_ms": 3403,
+      "stage0": 138,
+      "stage1": 466,
+      "stage2": 71,
+      "stage3": 2482,
+      "gradcam": 23,
+      "report": 233,
+      "total": 3170
+    }
+  ]
+}

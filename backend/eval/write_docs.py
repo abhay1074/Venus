@@ -134,6 +134,11 @@ def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_car
         lines += ["## Timing (requirement: < 30 s per image)", "", f"{timing['n_images']} images, TTA {'on' if timing['tta'] else 'off'}, {timing['machine']['processor']} ({timing['machine']['cores']} threads, no GPU): "
                   f"**median {w['median_ms'] / 1000:.1f} s, p95 {w['p95_ms'] / 1000:.1f} s**, max {w['max_ms'] / 1000:.1f} s → requirement {'met' if timing['requirement_met_p95'] else 'missed'} at p95. "
                   f"Per stage (median): S0 {ps['stage0']['median_ms']} ms, S1 {ps['stage1']['median_ms']} ms, S2 {ps['stage2']['median_ms']} ms, S3 {ps['stage3']['median_ms']} ms (Grad-CAM {ps['gradcam']['median_ms']} ms), report {ps['report']['median_ms']} ms.", ""]
+        gpu = load(CONFIG_DIR / "timing_report_gpu.json")
+        if gpu:
+            gw = gpu["per_stage"]["wall_ms"]
+            lines += [f"On the RTX 5060 (WSL): median {gw['median_ms'] / 1000:.1f} s, p95 {gw['p95_ms'] / 1000:.1f} s — inference is not the cost on either machine; "
+                      f"Stage 1 landmarks and the overlay encoding are. (Measured before the PNG-encoding change that took the CPU median from 4.2 s to 1.7 s.)", ""]
     if sweep and sweep.get("slide_numbers"):
         s = sweep["slide_numbers"]; c = sweep["constraints"]
         lines += ["## District simulation (Stage 4, coupled to the numbers above)", "", f"{len(sweep['runs'])} full-year runs (cameras × ophthalmologists × operating point). Under the constraints missed ≤ {c['max_missed']} "

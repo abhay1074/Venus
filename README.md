@@ -46,7 +46,7 @@ is generated from the same files with the CIs, the protocol and the caveats.
 | Quality CNN, ungradable-detection AUC | **0.992** (held-out patients); 99.9 % of DDR's ungradable class caught | EyeQ labels |
 | Attention agreement, referable calls (median) | **0.54** when the CNN is right vs **0.27** when it is wrong | 487 validation images |
 | Human-review flag rate · retake rate | 25.1 % · 2.2 % | same |
-| End-to-end time, laptop CPU, all three networks | **median 4.2 s, p95 5.0 s** | 50 images |
+| End-to-end time, laptop CPU, all three networks | **median 1.7 s, p95 1.7 s** | 50 images |
 | District: ophthalmologists for ≥ 80 % programme sensitivity, p95 wait ≤ 7 days | **2 with AI vs 7 without**, ₹0.69 Cr vs ₹1.72 Cr / year | 144 full-year runs |
 
 ## Quick start (Windows, CPU)

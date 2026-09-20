@@ -20,9 +20,12 @@ def decode_image(payload: bytes) -> np.ndarray:
 
 
 def to_png_base64(image_bgr: np.ndarray) -> str:
+    """Lossless PNG at a fast compression level: optimize=True cost ~250 ms per
+    512x512 panel (six panels per result, most of Stage 3's time) for a 13%
+    smaller file. Overlays must stay lossless so lesion outlines are exact."""
     rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
     buffer = BytesIO()
-    Image.fromarray(rgb).save(buffer, format="PNG", optimize=True)
+    Image.fromarray(rgb).save(buffer, format="PNG", optimize=False, compress_level=3)
     return base64.b64encode(buffer.getvalue()).decode("ascii")
 
 
