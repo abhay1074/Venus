@@ -150,7 +150,7 @@ export default function ResultView({ result, loading, onBook }) {
             </div>
           </div>
           <div>
-            <div className="label">Rule grader · ICDR criteria</div>
+            <div className="label">Rule grader · ICDR criteria <span className="normal-case text-slate-400">· lesions by {result.stage1.method === "unet" ? "U-Net (DDR-trained)" : "classical detectors"}</span></div>
             <ul className="mt-1 space-y-1 text-xs text-slate-700">
               {rule.trace.map((t) => <li key={t}>• {t}</li>)}
             </ul>
@@ -186,7 +186,7 @@ export default function ResultView({ result, loading, onBook }) {
           <button className="btn-primary" onClick={() => onBook(result.session_id)}><CalendarPlus size={16} /> Book appointment</button>
         </div>
       </div>
-      <div className="border-t border-venus-line px-5 py-3 text-xs text-slate-500">{result.recommendation}</div>
+      <div className="border-t border-venus-line px-5 py-3 text-xs text-slate-500">{result.recommendation} <span className="text-slate-400">· grader {result.stage2.cnn.grader || "v1"} · model {result.model_version}</span></div>
     </div>
   );
 }
@@ -237,6 +237,9 @@ function Stage0Panel({ s0, compact }) {
           </span>
         )}
       </div>
+      {q?.cnn_probabilities && (
+        <div className="mt-1 text-[11px] text-slate-500">quality CNN: good {(q.cnn_probabilities.good * 100).toFixed(0)}% · usable {(q.cnn_probabilities.usable * 100).toFixed(0)}% · reject {(q.cnn_probabilities.reject * 100).toFixed(0)}%</div>
+      )}
       {f && (
         <div className="mt-2 grid grid-cols-3 gap-1 text-[11px] text-slate-600">
           <div>sharpness <b>{f.sharpness.toFixed(0)}</b></div>

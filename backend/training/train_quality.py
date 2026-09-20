@@ -112,8 +112,8 @@ def main(argv=None) -> int:
         df = df.groupby("split", group_keys=False).head(args.limit)
     train_df, val_df, test_df = (df[df["split"] == s] for s in ("train", "val", "test"))
     print(f"train {len(train_df)} val {len(val_df)} test {len(test_df)}  class counts {train_df['quality'].value_counts().sort_index().to_dict()}", flush=True)
-    counts = train_df["quality"].value_counts().sort_index().values.astype(float)
-    class_weight = {i: float(counts.sum() / (3 * counts[i])) for i in range(3)}
+    counts = train_df["quality"].value_counts().reindex([0, 1, 2], fill_value=0).values.astype(float)
+    class_weight = {i: float(counts.sum() / (3 * max(counts[i], 1.0))) for i in range(3)}
 
     model = build_model()
     steps = len(train_df) // args.batch
