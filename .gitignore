@@ -25,3 +25,8 @@ mediscan-src/
 # Local
 .env
 *.log
+
+# Exported networks for MATLAB (regenerate with backend.eval.export_models)
+models/export/
+# Offline bundle output
+dist/
