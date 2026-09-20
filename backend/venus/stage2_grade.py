@@ -29,7 +29,8 @@ import time
 import cv2
 import numpy as np
 
-from backend.venus.config import GRADER_SIZE, GRADER_WEIGHTS, ICDR_LABELS, operating_point
+from backend.venus import nets
+from backend.venus.config import GRADER_SIZE, GRADER_TAG, GRADER_WEIGHTS, ICDR_LABELS, operating_point
 from backend.venus.imaging import clahe
 
 _model = None
@@ -51,26 +52,11 @@ EVIDENCE_FLOOR = {"MA": (2, 0.0), "HE": (1, 0.00025), "EX": (3, 0.00020), "SE": 
 # ----------------------------------------------------------------- model --
 
 def build_grader():
-    from tensorflow import keras
-    from tensorflow.keras import layers
-
-    inputs = keras.Input(shape=(GRADER_SIZE, GRADER_SIZE, 3), name="fundus_image")
-    backbone = keras.applications.EfficientNetB4(include_top=False, weights=None, input_tensor=inputs)
-    features = layers.GlobalAveragePooling2D(name="fundus_gap")(backbone.output)
-
-    dr = layers.Dense(256, activation="relu", name="dr_dense")(features)
-    dr = layers.Dropout(0.5, name="dr_dropout")(dr)
-    dr_out = layers.Dense(4, activation="sigmoid", dtype="float32", name="dr_ordinal_thresholds")(dr)
-
-    # The checkpoint also carries a multi-label disease head. It is built so the
-    # weights load, and its output is never read: nothing it computes has been
-    # validated and the report must not carry numbers nobody can vouch for.
-    disease = layers.Dense(256, activation="relu", name="disease_dense")(features)
-    disease = layers.Dropout(0.5, name="disease_dropout")(disease)
-    disease_out = layers.Dense(8, activation="sigmoid", dtype="float32", name="disease_multilabel")(disease)
-
-    return keras.Model(inputs, {"dr_ordinal_thresholds": dr_out, "disease_multilabel": disease_out},
-                       name="venus_dr_grader")
+    """v2: EfficientNet-B3 at 512 on the Stage 0 working image, ordinal head.
+    v1: EfficientNet-B4 at 380 on its own preprocessing (legacy checkpoint)."""
+    if GRADER_TAG == "grader_v2":
+        return nets.grader_v2("B3")
+    return nets.grader_v1()
 
 
 def load_grader():
@@ -94,19 +80,27 @@ def load_grader():
 
 
 def grader_status() -> dict:
-    return {"loaded": _model is not None, "error": _load_error,
-            "backbone": "EfficientNet-B4, ordinal head, 380x380", "weights": GRADER_WEIGHTS.name}
+    backbone = ("EfficientNet-B3, ordinal head, 512x512 (Stage 0 frame)" if GRADER_TAG == "grader_v2"
+                else "EfficientNet-B4, ordinal head, 380x380 (legacy preprocessing)")
+    return {"loaded": _model is not None, "error": _load_error, "tag": GRADER_TAG,
+            "backbone": backbone, "weights": GRADER_WEIGHTS.name}
 
 
 # ---------------------------------------------------------- preprocessing --
 
-def grader_input(image_bgr: np.ndarray) -> np.ndarray:
-    """The exact preprocessing the grader was trained and validated with.
+def grader_input(image_bgr: np.ndarray, stage0_image: np.ndarray | None = None) -> np.ndarray:
+    """The exact preprocessing the served grader was trained and validated with.
 
-    Fundus bounding-box crop -> Ben Graham illumination correction (sigma 10)
-    -> CLAHE on green -> 380x380 RGB, float32 in 0-255 (EfficientNet rescales
-    internally; normalising here would hand the backbone a near-zero constant).
+    v2 was trained on the Stage 0 working frame (512x512, FOV-normalised, no
+    enhancement), so that frame is the input, as RGB float32 in 0-255.
+    v1: fundus bounding-box crop -> Ben Graham illumination correction
+    (sigma 10) -> CLAHE on green -> 380x380 RGB float32 in 0-255. EfficientNet
+    rescales internally; normalising here would hand it a near-zero constant.
     """
+    if GRADER_TAG == "grader_v2":
+        if stage0_image is None:
+            raise ValueError("grader v2 needs the Stage 0 working image")
+        return cv2.cvtColor(stage0_image, cv2.COLOR_BGR2RGB).astype(np.float32)
     gray = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2GRAY)
     _, thresh = cv2.threshold(gray, 10, 255, cv2.THRESH_BINARY)
     contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -138,14 +132,14 @@ def calibrate(raw: float, point: dict) -> float:
     return float(1.0 / (1.0 + np.exp(-(a * logit(raw) + b))))
 
 
-def cnn_grade(image_bgr: np.ndarray, tta: bool = False) -> dict:
+def cnn_grade(image_bgr: np.ndarray, tta: bool = False, stage0_image: np.ndarray | None = None) -> dict:
     model = load_grader()
     if model is None:
         raise RuntimeError(f"CNN grader unavailable: {_load_error}")
-    x = grader_input(image_bgr)
+    x = grader_input(image_bgr, stage0_image)
     batch = _tta_views(x) if tta else x[None, ...]
     out = model.predict(batch, verbose=0)
-    ordinal = np.asarray(out["dr_ordinal_thresholds"]).mean(axis=0)
+    ordinal = np.asarray(out["dr_ordinal_thresholds"] if isinstance(out, dict) else out).mean(axis=0)
     grade = int((ordinal >= 0.5).sum())
     point = operating_point()
     raw_referable = float(ordinal[1])
@@ -164,7 +158,11 @@ def cnn_grade(image_bgr: np.ndarray, tta: bool = False) -> dict:
         "referable_probability": round(p_referable, 4),
         "nv_probability": round(float(ordinal[3]), 4),
         "tta": tta,
+        "grader": GRADER_TAG,
         "input": x,
+        # Where the grader input lives relative to the 512 working frame: v2 is
+        # the frame itself; v1 is a bounding-box crop of the raw image.
+        "input_frame": "working" if GRADER_TAG == "grader_v2" else "raw_bbox",
     }
 
 
@@ -265,9 +263,9 @@ def fuse(cnn: dict, rule: dict) -> dict:
 
 # -------------------------------------------------------------------- run --
 
-def run(image_bgr: np.ndarray, stage1: dict, tta: bool = False) -> dict:
+def run(image_bgr: np.ndarray, stage1: dict, tta: bool = False, stage0_image: np.ndarray | None = None) -> dict:
     started = time.perf_counter()
-    cnn = cnn_grade(image_bgr, tta=tta)
+    cnn = cnn_grade(image_bgr, tta=tta, stage0_image=stage0_image)
     cnn_ms = int((time.perf_counter() - started) * 1000)
     rule = rule_grade(stage1, cnn["nv_probability"])
     fusion = fuse(cnn, rule)
@@ -276,6 +274,7 @@ def run(image_bgr: np.ndarray, stage1: dict, tta: bool = False) -> dict:
         "rule": rule,
         "fusion": fusion,
         "grader_input": cnn["input"],
+        "input_frame": cnn["input_frame"],
         "elapsed_ms": int((time.perf_counter() - started) * 1000),
         "cnn_ms": cnn_ms,
     }

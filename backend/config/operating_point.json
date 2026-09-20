@@ -1,18 +1,20 @@
 {
   "model_version": "venus-dr-1.0.0",
-  "written_at": "2026-09-19T17:37:32.958106+00:00",
-  "calibration_fingerprint": "d29385ea352b8a789d1401c47041dbc8f4124cc5043af09ee7bbb13804ca88d3",
+  "grader_tag": "legacy_v1",
+  "written_at": "2026-09-20T11:10:00.277146+00:00",
+  "calibration_fingerprint": "68e60b36c651d6e24f343226aaddcf45c9e7fb2bef9317b40c6a0f54c0e5f613",
   "calibration_manifest": "calibration_split.csv",
-  "frozen_source": {
-    "file": "eyepacs_frozen_predictions.csv",
-    "description": "EyePACS external set, 1,500 images stratified 300 per grade, never trained on, cross-source",
+  "external_test_manifest": null,
+  "external_test_fingerprint": null,
+  "source": {
+    "description": "v1 grader (EfficientNet-B4/380) raw scores on the frozen EyePACS manifest, 1,500 images stratified 300 per grade; split by patient",
+    "external": "EyePACS test half (within the same frozen set; cross-source relative to the v1 training data)",
     "n_calibration": 755,
-    "n_test": 745,
-    "n_patients_calibration": 689,
-    "split": "by patient id, seed 42"
+    "n_external": 745,
+    "n_patients_calibration": 689
   },
   "calibration": {
-    "method": "Platt scaling on logit(raw referable score)",
+    "method": "Platt scaling on logit(raw P(grade >= 2))",
     "a": 0.36920167529490977,
     "b": 2.258303880881939,
     "ece_raw": 0.3048,
@@ -113,9 +115,9 @@
   "thresholds": {
     "referable": 0.334075,
     "referable_85pc_alternative": 0.464859,
-    "chosen_on": "calibration half, at 90% sensitivity, then locked",
+    "chosen_on": "calibration manifest, at 90% sensitivity, then locked",
     "abstain_band": 0.05,
-    "calibration_half_at_90": {
+    "calibration_at_90": {
       "tp": 417,
       "fn": 46,
       "fp": 124,
@@ -126,7 +128,7 @@
       "npv_at_indian_prevalence": 0.9635,
       "referred_fraction": 0.7166
     },
-    "calibration_half_at_85": {
+    "calibration_at_85": {
       "tp": 394,
       "fn": 69,
       "fp": 82,
@@ -139,8 +141,10 @@
     }
   },
   "external_test": {
-    "scored_once": true,
-    "rescored_with_force": false,
+    "name": "external_test",
+    "description": "EyePACS test half (within the same frozen set; cross-source relative to the v1 training data)",
+    "n": 745,
+    "n_referable": 437,
     "auc": 0.8827,
     "at_locked_threshold": {
       "tp": 398,
@@ -315,8 +319,12 @@
         "sensitivity": 0.9771,
         "specificity": 0.237
       }
-    ]
+    ],
+    "scored_once": false,
+    "rescored_with_force": true,
+    "grade_metrics_for_contrast": null
   },
+  "secondary_heldout": null,
   "targets": {
     "sensitivity": 0.9,
     "specificity": 0.85,
@@ -328,9 +336,9 @@
     "ece_met": true
   },
   "notes": [
-    "The raw grader score ranks well but is not a probability (Brier 0.268 on the full frozen set); Platt scaling is what makes P(referable) reportable.",
-    "The frozen set is 60% referable by construction; PPV/NPV are recomputed at 18% Indian prevalence.",
-    "EyePACS labels are single-grader ICDR grades; an adjudicated set (Messidor-2) is the planned replacement.",
-    "A missed target is reported as the achieved number with its CI, not a re-tuned threshold."
+    "The raw grader output ranks; Platt scaling on the held-out calibration set is what makes P(referable) reportable as a probability.",
+    "PPV/NPV are recomputed at 18% Indian prevalence because the test sets' prevalence is a sampling artefact.",
+    "A missed target is reported as the achieved number with its CI, not a re-tuned threshold.",
+    "Five-grade metrics are reported for contrast; the referable decision (grade >= 2) is the claim."
   ]
 }

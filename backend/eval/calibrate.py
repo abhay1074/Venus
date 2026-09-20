@@ -1,26 +1,26 @@
 """Fit the calibration, lock the operating point, score the external test once.
 
-Implements section 6.4 of the architecture with the data this build has: the
-grader's raw referable scores on the frozen EyePACS external manifest
-(1,500 images, 300 per ICDR grade, never trained on, a different acquisition
-source from the training sets).
+Implements section 6.4 / 11 of the architecture:
 
-    1. Split the manifest by patient into a calibration half and a test half.
-       The split is written to data/manifests/calibration_split.csv and its
-       SHA-256 is the fingerprint that config/operating_point.json carries.
-    2. Fit Platt scaling (a, b) on the calibration half so the served number
-       is a probability, not a ranking score. Report ECE before and after.
-    3. Choose the referable threshold on the calibration half at the point
-       that gives 90% sensitivity. Lock it. Also record the 85% point because
-       a district officer may prefer it; both are chosen here, at the same time.
-    4. Score the test half exactly once with those numbers. Bootstrap 2,000
-       resamples for 95% CIs. Write everything to config/operating_point.json.
+    1. Read the grader's predictions on the CALIBRATION manifest (held out by
+       patient before training) and fit Platt scaling (a, b) so the served
+       number is a probability. Report ECE before and after.
+    2. Choose the referable threshold on the calibration predictions at 90 %
+       sensitivity. Lock it. Record the 85 % alternative at the same time.
+    3. Score the frozen EXTERNAL test exactly once with those numbers:
+       sensitivity, specificity, PPV/NPV at 18 % Indian prevalence, AUC, ECE,
+       per-grade referral rates, 2,000-resample bootstrap CIs, and the ROC
+       points the district simulation sweeps along.
+    4. Score the secondary held-out set (EyePACS patients frozen from the
+       earlier grader, within-source) the same way, labelled as such.
+    5. Write config/operating_point.json with the calibration manifest's
+       SHA-256; serving refuses to start if the manifest on disk differs.
 
-The test half is scored once per model version: config/external_test.lock
-records the version, and a second run with the same version refuses unless
---force is passed (and then says so in the output file).
+The external test is scored once per model version (config/external_test.lock);
+a second run refuses without --force, and a forced run says so in the output.
 
-Run:  python -m backend.eval.calibrate
+    python -m backend.eval.calibrate --tag grader_v2 --model-version venus-dr-2.0.0
+    python -m backend.eval.calibrate --legacy          # the v1 grader's frozen EyePACS CSV
 """
 
 from __future__ import annotations
@@ -28,17 +28,19 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import sys
 from datetime import datetime, timezone
+from pathlib import Path
 
 import numpy as np
+import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 
-from backend.venus.config import (CALIBRATION_MANIFEST, CONFIG_DIR, MANIFEST_DIR, MODEL_VERSION,
-                                  OPERATING_POINT_PATH, sha256_of_file)
+from backend.venus.config import CONFIG_DIR, MANIFEST_DIR, MODEL_VERSION, OPERATING_POINT_PATH, sha256_of_file
 
-FROZEN = MANIFEST_DIR / "eyepacs_frozen_predictions.csv"
+CACHE_DIR = Path(os.getenv("VENUS_CACHE_DIR", str(Path.home() / "venus-cache")))
 LOCK = CONFIG_DIR / "external_test.lock"
 SEED = 42
 INDIAN_PREVALENCE = 0.18
@@ -46,16 +48,18 @@ ABSTAIN_BAND = 0.05
 EPS = 1e-7
 
 
-def logit(p: np.ndarray) -> np.ndarray:
-    p = np.clip(p, EPS, 1 - EPS)
+# ------------------------------------------------------------ helpers --
+
+def logit(p):
+    p = np.clip(np.asarray(p, float), EPS, 1 - EPS)
     return np.log(p / (1 - p))
 
 
-def sigmoid(x: np.ndarray) -> np.ndarray:
+def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
 
-def expected_calibration_error(prob: np.ndarray, y: np.ndarray, bins: int = 10):
+def expected_calibration_error(prob, y, bins=10):
     edges = np.linspace(0, 1, bins + 1)
     ece, diagram = 0.0, []
     for lo, hi in zip(edges[:-1], edges[1:]):
@@ -65,15 +69,12 @@ def expected_calibration_error(prob: np.ndarray, y: np.ndarray, bins: int = 10):
             continue
         conf, acc = float(prob[sel].mean()), float(y[sel].mean())
         ece += sel.mean() * abs(conf - acc)
-        diagram.append({"bin": [round(lo, 2), round(hi, 2)], "n": int(sel.sum()),
-                        "confidence": round(conf, 4), "accuracy": round(acc, 4)})
+        diagram.append({"bin": [round(lo, 2), round(hi, 2)], "n": int(sel.sum()), "confidence": round(conf, 4), "accuracy": round(acc, 4)})
     return float(ece), diagram
 
 
-def threshold_for_sensitivity(prob: np.ndarray, y: np.ndarray, target: float) -> float:
-    """Largest threshold at which sensitivity is still >= target."""
+def threshold_for_sensitivity(prob, y, target):
     positives = np.sort(prob[y == 1])
-    # Sensitivity >= target means at least ceil(target * n) positives at or above t.
     k = int(np.ceil(target * len(positives)))
     return float(positives[len(positives) - k])
 
@@ -86,8 +87,7 @@ def confusion(prob, y, t):
     ppv = (sens * INDIAN_PREVALENCE) / max(sens * INDIAN_PREVALENCE + (1 - spec) * (1 - INDIAN_PREVALENCE), EPS)
     npv = (spec * (1 - INDIAN_PREVALENCE)) / max(spec * (1 - INDIAN_PREVALENCE) + (1 - sens) * INDIAN_PREVALENCE, EPS)
     return {"tp": tp, "fn": fn, "fp": fp, "tn": tn, "sensitivity": sens, "specificity": spec,
-            "ppv_at_indian_prevalence": ppv, "npv_at_indian_prevalence": npv,
-            "referred_fraction": float(pred.mean())}
+            "ppv_at_indian_prevalence": ppv, "npv_at_indian_prevalence": npv, "referred_fraction": float(pred.mean())}
 
 
 def bootstrap(prob, y, t, n=2000, seed=SEED):
@@ -102,12 +102,10 @@ def bootstrap(prob, y, t, n=2000, seed=SEED):
         stats["auc"].append(roc_auc_score(y[s], prob[s]))
         for k in ("sensitivity", "specificity", "ppv_at_indian_prevalence"):
             stats[k].append(c[k])
-    return {k: [round(float(np.percentile(v, 2.5)), 4), round(float(np.percentile(v, 97.5)), 4)]
-            for k, v in stats.items()}
+    return {k: [round(float(np.percentile(v, 2.5)), 4), round(float(np.percentile(v, 97.5)), 4)] for k, v in stats.items()}
 
 
 def roc_points(prob, y):
-    """Sensitivity/specificity pairs the district simulation sweeps along."""
     points = []
     for target in (0.80, 0.85, 0.90, 0.95, 0.975):
         t = threshold_for_sensitivity(prob, y, target)
@@ -117,137 +115,166 @@ def roc_points(prob, y):
     return points
 
 
+def _round(d):
+    return {k: (round(v, 4) if isinstance(v, float) else v) for k, v in d.items()}
+
+
+def score_set(name, prob, grade, t90, t85, description):
+    y = (grade >= 2).astype(int)
+    at90, at85 = confusion(prob, y, t90), confusion(prob, y, t85)
+    ece, diagram = expected_calibration_error(prob, y)
+    pred_grade = None
+    per_grade = {int(g): round(float((prob[grade == g] >= t90).mean()), 4) for g in range(5) if (grade == g).any()}
+    return {
+        "name": name, "description": description, "n": int(len(y)), "n_referable": int(y.sum()),
+        "auc": round(float(roc_auc_score(y, prob)), 4),
+        "at_locked_threshold": _round(at90), "at_85pc_threshold": _round(at85),
+        "ci95_bootstrap_2000": bootstrap(prob, y, t90), "ece": round(ece, 4), "reliability_diagram": diagram,
+        "sensitivity_grade2_only": round(float((prob[grade == 2] >= t90).mean()), 4) if (grade == 2).any() else None,
+        "referred_fraction_by_true_grade": per_grade,
+        "prevalence_for_ppv": INDIAN_PREVALENCE,
+        "roc_points_for_simulation": roc_points(prob, y),
+    }
+
+
+def grade_metrics(df: pd.DataFrame) -> dict | None:
+    """Five-grade decode quality, reported for contrast (not a claim)."""
+    if not {"p_ge1", "p_ge3", "p_ge4"} <= set(df.columns):
+        return None
+    from sklearn.metrics import cohen_kappa_score
+    probs = df[["p_ge1", "p_ge2", "p_ge3", "p_ge4"]].values
+    pred = (probs >= 0.5).sum(axis=1)
+    return {"quadratic_weighted_kappa": round(float(cohen_kappa_score(df["grade"], pred, weights="quadratic")), 4),
+            "exact_grade_accuracy": round(float((pred == df["grade"]).mean()), 4),
+            "within_one_grade": round(float((np.abs(pred - df["grade"]) <= 1).mean()), 4)}
+
+
+# --------------------------------------------------------------- data --
+
+def load_v2(tag: str):
+    pred_dir = CACHE_DIR / "predictions"
+    cal = pd.read_csv(pred_dir / f"{tag}_calibration.csv")
+    ext = pd.read_csv(pred_dir / f"{tag}_external_test_ddr.csv")
+    held_path = pred_dir / f"{tag}_heldout_eyepacs_frozen.csv"
+    held = pd.read_csv(held_path) if held_path.exists() else None
+    for frame in (cal, ext, held):
+        if frame is not None:
+            frame["referable_raw"] = frame["p_ge2"]
+    return cal, ext, held, "calibration.csv", "external_test_ddr.csv"
+
+
+def load_legacy():
+    """The v1 grader's raw referable scores on the frozen EyePACS manifest,
+    split by patient into calibration and test halves (written to
+    calibration_split.csv, which is the fingerprinted manifest)."""
+    rows = list(csv.DictReader(open(MANIFEST_DIR / "eyepacs_frozen_predictions.csv", encoding="utf-8")))
+    df = pd.DataFrame({"image_id": [r["image"] for r in rows],
+                       "patient": [r["image"].split("_")[0] for r in rows],
+                       "grade": [int(r["true_grade"]) for r in rows],
+                       "referable_raw": [float(r["referable_score"]) for r in rows]})
+    rng = np.random.default_rng(SEED)
+    patients = np.unique(df["patient"].values); rng.shuffle(patients)
+    cal_patients = set(patients[: len(patients) // 2])
+    df["split"] = np.where(df["patient"].isin(cal_patients), "calibration", "test")
+    out = MANIFEST_DIR / "calibration_split.csv"
+    df.sort_values("image_id")[["image_id", "patient", "grade", "referable_raw", "split"]].to_csv(out, index=False)
+    return df[df["split"] == "calibration"].copy(), df[df["split"] == "test"].copy(), None, "calibration_split.csv", None
+
+
+# --------------------------------------------------------------- main --
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--force", action="store_true", help="re-score the test half for a version already scored")
+    parser.add_argument("--tag", default="grader_v2")
+    parser.add_argument("--legacy", action="store_true", help="use the v1 grader's frozen EyePACS CSV")
+    parser.add_argument("--model-version", default=MODEL_VERSION)
+    parser.add_argument("--force", action="store_true", help="re-score the external test for a version already scored")
     args = parser.parse_args(argv)
 
-    rows = list(csv.DictReader(open(FROZEN, encoding="utf-8")))
-    images = np.array([r["image"] for r in rows])
-    patients = np.array([r["image"].split("_")[0] for r in rows])
-    grade = np.array([int(r["true_grade"]) for r in rows])
-    raw = np.array([float(r["referable_score"]) for r in rows])
-    y = (grade >= 2).astype(int)
+    if args.legacy:
+        cal, ext, held, cal_manifest, ext_manifest = load_legacy()
+        source = {"description": "v1 grader (EfficientNet-B4/380) raw scores on the frozen EyePACS manifest, 1,500 images stratified 300 per grade; split by patient",
+                  "external": "EyePACS test half (within the same frozen set; cross-source relative to the v1 training data)"}
+    else:
+        cal, ext, held, cal_manifest, ext_manifest = load_v2(args.tag)
+        source = {"description": f"{args.tag} predictions on the patient-disjoint calibration manifest (EyePACS, held out before training)",
+                  "external": "DDR test split: a different acquisition source from every training image, ungradables removed, never trained on"}
+    fingerprint = sha256_of_file(MANIFEST_DIR / cal_manifest)
+    ext_fingerprint = sha256_of_file(MANIFEST_DIR / ext_manifest) if ext_manifest else None
 
-    # Patient-disjoint split, seeded.
-    rng = np.random.default_rng(SEED)
-    unique = np.unique(patients)
-    rng.shuffle(unique)
-    cal_patients = set(unique[: len(unique) // 2])
-    split = np.array(["calibration" if p in cal_patients else "test" for p in patients])
-
-    MANIFEST_DIR.mkdir(parents=True, exist_ok=True)
-    with open(CALIBRATION_MANIFEST, "w", newline="", encoding="utf-8") as handle:
-        writer = csv.writer(handle)
-        writer.writerow(["image", "patient", "true_grade", "referable_raw", "split"])
-        for i in np.argsort(images):
-            writer.writerow([images[i], patients[i], grade[i], f"{raw[i]:.9g}", split[i]])
-    fingerprint = sha256_of_file(CALIBRATION_MANIFEST)
-
-    cal, test = split == "calibration", split == "test"
-    assert not (set(patients[cal]) & set(patients[test])), "split is not patient-disjoint"
-
-    # Platt scaling on the calibration half.
-    x_cal = logit(raw[cal]).reshape(-1, 1)
-    platt = LogisticRegression(C=1e6, solver="lbfgs", max_iter=1000).fit(x_cal, y[cal])
+    y_cal = (cal["grade"].values >= 2).astype(int)
+    platt = LogisticRegression(C=1e6, solver="lbfgs", max_iter=1000).fit(logit(cal["referable_raw"]).reshape(-1, 1), y_cal)
     a, b = float(platt.coef_[0][0]), float(platt.intercept_[0])
-    calibrated = sigmoid(a * logit(raw) + b)
+    cal_prob = sigmoid(a * logit(cal["referable_raw"]) + b)
+    ece_raw, _ = expected_calibration_error(cal["referable_raw"].values, y_cal)
+    ece_cal, diagram_cal = expected_calibration_error(cal_prob, y_cal)
+    t90 = threshold_for_sensitivity(cal_prob, y_cal, 0.90)
+    t85 = threshold_for_sensitivity(cal_prob, y_cal, 0.85)
 
-    ece_raw_cal, _ = expected_calibration_error(raw[cal], y[cal])
-    ece_cal, diagram_cal = expected_calibration_error(calibrated[cal], y[cal])
-
-    t90 = threshold_for_sensitivity(calibrated[cal], y[cal], 0.90)
-    t85 = threshold_for_sensitivity(calibrated[cal], y[cal], 0.85)
-    cal_at_90 = confusion(calibrated[cal], y[cal], t90)
-    cal_at_85 = confusion(calibrated[cal], y[cal], t85)
-
-    # Lock check: the test half is scored once per model version.
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     previously = json.load(open(LOCK)) if LOCK.exists() else {}
-    if previously.get("model_version") == MODEL_VERSION and not args.force:
-        print(f"refusing: test half already scored for {MODEL_VERSION} on {previously.get('scored_at')}. "
+    already = previously.get("model_version") == args.model_version
+    if already and not args.force:
+        print(f"refusing: external test already scored for {args.model_version} on {previously.get('scored_at')}. "
               "Pass --force to re-score (the output file will say so).", file=sys.stderr)
         return 2
 
-    test_prob, test_y = calibrated[test], y[test]
-    test_auc = float(roc_auc_score(test_y, test_prob))
-    test_at_90 = confusion(test_prob, test_y, t90)
-    test_at_85 = confusion(test_prob, test_y, t85)
-    ci = bootstrap(test_prob, test_y, t90)
-    ece_test, diagram_test = expected_calibration_error(test_prob, test_y)
-    # Grade-2 sensitivity alone: the hardest referable class.
-    g2 = test & (grade == 2)
-    sens_g2 = float((calibrated[g2] >= t90).mean()) if g2.any() else None
-    per_grade = {int(g): round(float((calibrated[test & (grade == g)] >= t90).mean()), 4)
-                 for g in range(5) if (test & (grade == g)).any()}
+    ext_prob = sigmoid(a * logit(ext["referable_raw"]) + b)
+    external = score_set("external_test", ext_prob, ext["grade"].values.astype(int), t90, t85, source["external"])
+    external["scored_once"] = not already
+    external["rescored_with_force"] = bool(already and args.force)
+    external["grade_metrics_for_contrast"] = grade_metrics(ext)
+    secondary = None
+    if held is not None and len(held):
+        held_prob = sigmoid(a * logit(held["referable_raw"]) + b)
+        secondary = score_set("heldout_eyepacs_frozen", held_prob, held["grade"].values.astype(int), t90, t85,
+                              "EyePACS patients frozen from the earlier grader: held-out patients, same source as part of training (within-source)")
+        secondary["grade_metrics_for_contrast"] = grade_metrics(held)
 
+    at = external["at_locked_threshold"]
     point = {
-        "model_version": MODEL_VERSION,
+        "model_version": args.model_version,
+        "grader_tag": "legacy_v1" if args.legacy else args.tag,
         "written_at": datetime.now(timezone.utc).isoformat(),
         "calibration_fingerprint": fingerprint,
-        "calibration_manifest": CALIBRATION_MANIFEST.name,
-        "frozen_source": {
-            "file": FROZEN.name,
-            "description": "EyePACS external set, 1,500 images stratified 300 per grade, never trained on, cross-source",
-            "n_calibration": int(cal.sum()),
-            "n_test": int(test.sum()),
-            "n_patients_calibration": len(cal_patients),
-            "split": "by patient id, seed 42",
-        },
-        "calibration": {
-            "method": "Platt scaling on logit(raw referable score)",
-            "a": a, "b": b,
-            "ece_raw": round(ece_raw_cal, 4),
-            "ece_calibrated": round(ece_cal, 4),
-            "reliability_diagram": diagram_cal,
-        },
-        "thresholds": {
-            "referable": round(t90, 6),
-            "referable_85pc_alternative": round(t85, 6),
-            "chosen_on": "calibration half, at 90% sensitivity, then locked",
-            "abstain_band": ABSTAIN_BAND,
-            "calibration_half_at_90": {k: round(v, 4) if isinstance(v, float) else v for k, v in cal_at_90.items()},
-            "calibration_half_at_85": {k: round(v, 4) if isinstance(v, float) else v for k, v in cal_at_85.items()},
-        },
-        "external_test": {
-            "scored_once": not (previously.get("model_version") == MODEL_VERSION),
-            "rescored_with_force": bool(previously.get("model_version") == MODEL_VERSION and args.force),
-            "auc": round(test_auc, 4),
-            "at_locked_threshold": {k: round(v, 4) if isinstance(v, float) else v for k, v in test_at_90.items()},
-            "at_85pc_threshold": {k: round(v, 4) if isinstance(v, float) else v for k, v in test_at_85.items()},
-            "ci95_bootstrap_2000": ci,
-            "ece": round(ece_test, 4),
-            "reliability_diagram": diagram_test,
-            "sensitivity_grade2_only": round(sens_g2, 4) if sens_g2 is not None else None,
-            "referred_fraction_by_true_grade": per_grade,
-            "prevalence_for_ppv": INDIAN_PREVALENCE,
-            "roc_points_for_simulation": roc_points(test_prob, test_y),
-        },
-        "targets": {
-            "sensitivity": 0.90, "specificity": 0.85, "auc": 0.95, "ece": 0.05,
-            "sensitivity_met": test_at_90["sensitivity"] >= 0.90,
-            "specificity_met": test_at_90["specificity"] >= 0.85,
-            "auc_met": test_auc >= 0.95,
-            "ece_met": ece_test <= 0.05,
-        },
+        "calibration_manifest": cal_manifest,
+        "external_test_manifest": ext_manifest,
+        "external_test_fingerprint": ext_fingerprint,
+        "source": {**source, "n_calibration": int(len(cal)), "n_external": int(len(ext)),
+                   "n_patients_calibration": int(cal["patient"].nunique())},
+        "calibration": {"method": "Platt scaling on logit(raw P(grade >= 2))", "a": a, "b": b,
+                        "ece_raw": round(ece_raw, 4), "ece_calibrated": round(ece_cal, 4), "reliability_diagram": diagram_cal},
+        "thresholds": {"referable": round(t90, 6), "referable_85pc_alternative": round(t85, 6),
+                       "chosen_on": "calibration manifest, at 90% sensitivity, then locked", "abstain_band": ABSTAIN_BAND,
+                       "calibration_at_90": _round(confusion(cal_prob, y_cal, t90)),
+                       "calibration_at_85": _round(confusion(cal_prob, y_cal, t85))},
+        "external_test": external,
+        "secondary_heldout": secondary,
+        "targets": {"sensitivity": 0.90, "specificity": 0.85, "auc": 0.95, "ece": 0.05,
+                    "sensitivity_met": at["sensitivity"] >= 0.90, "specificity_met": at["specificity"] >= 0.85,
+                    "auc_met": external["auc"] >= 0.95, "ece_met": external["ece"] <= 0.05},
         "notes": [
-            "The raw grader score ranks well but is not a probability (Brier 0.268 on the full frozen set); Platt scaling is what makes P(referable) reportable.",
-            "The frozen set is 60% referable by construction; PPV/NPV are recomputed at 18% Indian prevalence.",
-            "EyePACS labels are single-grader ICDR grades; an adjudicated set (Messidor-2) is the planned replacement.",
+            "The raw grader output ranks; Platt scaling on the held-out calibration set is what makes P(referable) reportable as a probability.",
+            "PPV/NPV are recomputed at 18% Indian prevalence because the test sets' prevalence is a sampling artefact.",
             "A missed target is reported as the achieved number with its CI, not a re-tuned threshold.",
+            "Five-grade metrics are reported for contrast; the referable decision (grade >= 2) is the claim.",
         ],
     }
     with open(OPERATING_POINT_PATH, "w", encoding="utf-8") as handle:
         json.dump(point, handle, indent=2)
     with open(LOCK, "w", encoding="utf-8") as handle:
-        json.dump({"model_version": MODEL_VERSION, "scored_at": point["written_at"],
-                   "calibration_fingerprint": fingerprint}, handle, indent=2)
+        json.dump({"model_version": args.model_version, "scored_at": point["written_at"], "calibration_fingerprint": fingerprint,
+                   "external_test_fingerprint": ext_fingerprint}, handle, indent=2)
 
-    print(f"calibration n={cal.sum()}  test n={test.sum()}  fingerprint {fingerprint[:16]}...")
-    print(f"Platt a={a:.4f} b={b:.4f}   ECE raw {ece_raw_cal:.3f} -> calibrated {ece_cal:.3f}")
-    print(f"threshold@90 sens = {t90:.4f}  (cal spec {cal_at_90['specificity']:.3f})")
-    print(f"TEST  AUC {test_auc:.3f} {ci['auc']}  sens {test_at_90['sensitivity']:.3f} {ci['sensitivity']}  "
-          f"spec {test_at_90['specificity']:.3f} {ci['specificity']}  PPV@18% {test_at_90['ppv_at_indian_prevalence']:.3f}")
+    print(f"calibration n={len(cal)}  external n={len(ext)}  fingerprint {fingerprint[:16]}...")
+    print(f"Platt a={a:.4f} b={b:.4f}   ECE raw {ece_raw:.3f} -> calibrated {ece_cal:.3f}")
+    print(f"threshold@90 = {t90:.4f}  (calibration spec {point['thresholds']['calibration_at_90']['specificity']:.3f})")
+    ci = external["ci95_bootstrap_2000"]
+    print(f"EXTERNAL  AUC {external['auc']:.3f} {ci['auc']}  sens {at['sensitivity']:.3f} {ci['sensitivity']}  "
+          f"spec {at['specificity']:.3f} {ci['specificity']}  PPV@18% {at['ppv_at_indian_prevalence']:.3f}  ECE {external['ece']:.3f}")
+    if secondary:
+        s = secondary["at_locked_threshold"]
+        print(f"HELD-OUT  AUC {secondary['auc']:.3f}  sens {s['sensitivity']:.3f}  spec {s['specificity']:.3f}")
     print(f"wrote {OPERATING_POINT_PATH}")
     return 0
 

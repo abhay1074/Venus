@@ -24,9 +24,20 @@ REPORT_DIR = Path(os.getenv("VENUS_REPORT_DIR", str(BACKEND_ROOT / "reports")))
 DB_PATH = Path(os.getenv("VENUS_DB_PATH", str(BACKEND_ROOT / "data" / "venus.sqlite")))
 SAMPLES_DIR = PROJECT_ROOT / "samples"
 
-MODEL_VERSION = "venus-dr-1.0.0"
-GRADER_WEIGHTS = WEIGHTS_DIR / "eye_best.weights.h5"
+# Checkpoints. The grader served is v2 (EfficientNet-B3 at 512, trained here)
+# when its weights are present, else the v1 EfficientNet-B4/380 checkpoint.
+# The quality CNN and the lesion U-Net are optional: without them Stage 0 uses
+# handcrafted features only and Stage 1 the classical detectors, and each
+# result says which it was.
+GRADER_V2_WEIGHTS = WEIGHTS_DIR / "grader_v2.weights.h5"
+GRADER_V1_WEIGHTS = WEIGHTS_DIR / "eye_best.weights.h5"
 GATE_WEIGHTS = WEIGHTS_DIR / "eye_modality_gate.weights.h5"
+QUALITY_WEIGHTS = WEIGHTS_DIR / "quality_cnn.weights.h5"
+UNET_WEIGHTS = WEIGHTS_DIR / "lesion_unet.weights.h5"
+LESION_THRESHOLDS_PATH = CONFIG_DIR / "lesion_thresholds.json"
+GRADER_TAG = "grader_v2" if GRADER_V2_WEIGHTS.exists() else "legacy_v1"
+GRADER_WEIGHTS = GRADER_V2_WEIGHTS if GRADER_TAG == "grader_v2" else GRADER_V1_WEIGHTS
+MODEL_VERSION = "venus-dr-2.0.0" if GRADER_TAG == "grader_v2" else "venus-dr-1.0.0"
 OPERATING_POINT_PATH = CONFIG_DIR / "operating_point.json"
 CALIBRATION_MANIFEST = MANIFEST_DIR / "calibration_split.csv"
 
@@ -75,9 +86,15 @@ def operating_point() -> dict:
     with open(OPERATING_POINT_PATH, "r", encoding="utf-8") as handle:
         point = json.load(handle)
     if os.getenv("VENUS_SKIP_FINGERPRINT_CHECK", "false").lower() != "true":
-        if not CALIBRATION_MANIFEST.exists():
-            raise OperatingPointError(f"calibration manifest missing: {CALIBRATION_MANIFEST}")
-        actual = sha256_of_file(CALIBRATION_MANIFEST)
+        manifest = MANIFEST_DIR / point.get("calibration_manifest", CALIBRATION_MANIFEST.name)
+        if not manifest.exists():
+            raise OperatingPointError(f"calibration manifest missing: {manifest}")
+        actual = sha256_of_file(manifest)
+        if point.get("grader_tag", "legacy_v1") != GRADER_TAG:
+            raise OperatingPointError(
+                f"operating_point.json was locked for grader '{point.get('grader_tag')}' but the served grader is "
+                f"'{GRADER_TAG}'; a threshold from another model is meaningless here. Re-run backend.eval.calibrate."
+            )
         if actual != point.get("calibration_fingerprint"):
             raise OperatingPointError(
                 "calibration manifest fingerprint does not match operating_point.json "

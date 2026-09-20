@@ -1,0 +1,12 @@
+services:
+  api:
+    build: { context: ., dockerfile: backend/Dockerfile }
+    ports: ["8000:8000"]
+    volumes:
+      - ./backend/weights:/app/backend/weights
+      - ./backend/reports:/app/backend/reports
+      - ./backend/data:/app/backend/data
+  web:
+    build: { context: ./frontend, args: { VITE_API_URL: "http://127.0.0.1:8000" } }
+    ports: ["5173:80"]
+    depends_on: [api]

@@ -189,9 +189,10 @@ class TestStage2Grade:
     def test_operating_point_fingerprint_is_verified(self, tmp_path, monkeypatch):
         from backend.venus import config
         config.operating_point.cache_clear()
-        bad = tmp_path / "calibration_split.csv"
+        point = json.loads(config.OPERATING_POINT_PATH.read_text(encoding="utf-8"))
+        bad = tmp_path / point["calibration_manifest"]
         bad.write_text("tampered", encoding="utf-8")
-        monkeypatch.setattr(config, "CALIBRATION_MANIFEST", bad)
+        monkeypatch.setattr(config, "MANIFEST_DIR", tmp_path)
         with pytest.raises(config.OperatingPointError):
             config.operating_point()
         config.operating_point.cache_clear()

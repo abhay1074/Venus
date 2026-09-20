@@ -26,6 +26,16 @@ from skimage.filters import frangi
 
 from backend.venus.imaging import clahe, disk
 
+import json
+import threading
+
+from backend.venus.config import LESION_THRESHOLDS_PATH, UNET_WEIGHTS
+
+_unet = None
+_unet_thresholds: dict | None = None
+_unet_lock = threading.Lock()
+_unet_error: str | None = None
+
 LESION_TYPES = ["MA", "HE", "EX", "SE"]
 LESION_NAMES = {
     "MA": "microaneurysms",
@@ -284,6 +294,58 @@ def bright_lesions(image: np.ndarray, mask: np.ndarray, od_mask: np.ndarray,
     return ex_mask, ex, se_mask, se
 
 
+# ----------------------------------------------------------------- U-Net --
+
+def load_unet():
+    """Load the lesion U-Net once, if its weights and thresholds are present."""
+    global _unet, _unet_thresholds, _unet_error
+    if _unet is not None:
+        return _unet
+    with _unet_lock:
+        if _unet is not None:
+            return _unet
+        if not (UNET_WEIGHTS.exists() and LESION_THRESHOLDS_PATH.exists()):
+            _unet_error = "lesion U-Net weights or thresholds not present; classical detectors in use"
+            return None
+        try:
+            from backend.venus import nets
+            model = nets.lesion_unet()
+            model.load_weights(UNET_WEIGHTS)
+            with open(LESION_THRESHOLDS_PATH, "r", encoding="utf-8") as handle:
+                _unet_thresholds = json.load(handle)["thresholds"]
+            _unet = model
+        except Exception as exc:  # pragma: no cover
+            _unet_error = f"{type(exc).__name__}: {exc}"
+            return None
+    return _unet
+
+
+def unet_status() -> dict:
+    return {"loaded": _unet is not None, "error": _unet_error, "thresholds": _unet_thresholds}
+
+
+def unet_lesions(image: np.ndarray, mask: np.ndarray, od_mask: np.ndarray):
+    """Per-lesion probability maps from the U-Net, thresholded at the values
+    chosen on the DDR valid split, with the same rim/disc post-processing the
+    classical path applies. Returns {key: (mask, components)}."""
+    model = load_unet()
+    rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
+    probs = model.predict(rgb[None, ...], verbose=0)[0]
+    inner = cv2.erode(mask, disk(6))
+    od_wide = cv2.dilate(od_mask, disk(6))
+    out = {}
+    for c, key in enumerate(LESION_TYPES):
+        binary = ((probs[:, :, c] >= float(_unet_thresholds[key])) & (inner > 0)).astype(np.uint8) * 255
+        if key in ("EX", "SE"):
+            binary[od_wide > 0] = 0          # the disc rim is the classic exudate false positive
+        labels, comps = _components(binary, MIN_AREA[key])
+        keep = np.zeros_like(mask)
+        for comp in comps:
+            keep[labels == comp["label"]] = 255
+        out[key] = (keep, comps)
+    return out
+
+
 # ------------------------------------------------------------- quadrants --
 
 def quadrant_counts(components: list, fovea_centre: list, size: int) -> list:
@@ -311,8 +373,14 @@ def run(image: np.ndarray, mask: np.ndarray) -> dict:
     od = optic_disc(image, mask)
     fov = fovea(image, mask, od)
     ves = vessels(image, mask)
-    ma_mask, ma, he_mask, he = red_lesions(image, mask, ves["mask"], od["mask"])
-    ex_mask, ex, se_mask, se = bright_lesions(image, mask, od["mask"], ves["mask"])
+    if load_unet() is not None:
+        method = "unet"
+        found = unet_lesions(image, mask, od["mask"])
+        ma_mask, ma = found["MA"]; he_mask, he = found["HE"]; ex_mask, ex = found["EX"]; se_mask, se = found["SE"]
+    else:
+        method = "classical"
+        ma_mask, ma, he_mask, he = red_lesions(image, mask, ves["mask"], od["mask"])
+        ex_mask, ex, se_mask, se = bright_lesions(image, mask, od["mask"], ves["mask"])
 
     def summary(comps, lesion_mask):
         return {
@@ -329,7 +397,7 @@ def run(image: np.ndarray, mask: np.ndarray) -> dict:
     }
     quadrants = quadrant_counts(he, fov["centre"], mask.shape[0])
     return {
-        "method": "classical",
+        "method": method,
         "optic_disc": {"centre": od["centre"], "radius": od["radius"], "method": od["method"]},
         "fovea": fov,
         "vessels": {"fraction": ves["fraction"], "method": ves["method"]},

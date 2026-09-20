@@ -1,0 +1,99 @@
+{
+  "written_at": "2026-09-20T11:36:04.645157+00:00",
+  "seed": 42,
+  "dedup_hamming": 10,
+  "duplicates_dropped": 290,
+  "cross_dataset_duplicates": 0,
+  "manifests": {
+    "train": {
+      "n": 39147,
+      "sha256": "8e73a8b35fcc8b9e77b53dc739906b534c8f17527739ad7689a6b9bd31578009",
+      "datasets": {
+        "eyepacs": 27939,
+        "ddr": 7967,
+        "aptos": 3241
+      },
+      "grades": {
+        "0": 27222,
+        "1": 2453,
+        "2": 7735,
+        "3": 673,
+        "4": 1064
+      },
+      "referable_fraction": 0.242
+    },
+    "val": {
+      "n": 3403,
+      "sha256": "0a0ec13d79e57f6a02b4ecd483c5a74308301c513791fbff8ed26421a0ff8c47",
+      "datasets": {
+        "eyepacs": 2428,
+        "ddr": 693,
+        "aptos": 282
+      },
+      "grades": {
+        "0": 2392,
+        "1": 199,
+        "2": 674,
+        "3": 48,
+        "4": 90
+      },
+      "referable_fraction": 0.2386
+    },
+    "calibration": {
+      "n": 2000,
+      "sha256": "6d9863c704ba4e71d6a522bba135d57640b25724a3c474a15a6635a31c896000",
+      "datasets": {
+        "eyepacs": 2000
+      },
+      "grades": {
+        "0": 1546,
+        "1": 118,
+        "2": 293,
+        "3": 24,
+        "4": 19
+      },
+      "referable_fraction": 0.168
+    },
+    "external_test_ddr": {
+      "n": 3720,
+      "sha256": "e1833d2342e7e67acb74ccc7000f2efe4ad4243a0f699e1d790851ae875475c5",
+      "datasets": {
+        "ddr": 3720
+      },
+      "grades": {
+        "0": 1843,
+        "1": 189,
+        "2": 1342,
+        "3": 71,
+        "4": 275
+      },
+      "referable_fraction": 0.4538
+    },
+    "heldout_eyepacs_frozen": {
+      "n": 2758,
+      "sha256": "f8d1beadc9b1d875e2561a75f89c40081785a1103d67db8f12a5fb69466c59fd",
+      "datasets": {
+        "eyepacs": 2758
+      },
+      "grades": {
+        "0": 745,
+        "1": 454,
+        "2": 648,
+        "3": 468,
+        "4": 443
+      },
+      "referable_fraction": 0.5653
+    },
+    "ungradable": {
+      "n": 1142,
+      "sha256": "545c58108319c77ed05a6f8255b2ab679c4da0cb888d5fc99b0aa3d3bb8f7429",
+      "datasets": {
+        "ddr": 1142
+      },
+      "grades": {
+        "5": 1142
+      },
+      "referable_fraction": 1.0
+    }
+  }
+}

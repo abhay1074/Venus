@@ -22,7 +22,7 @@ import time
 import cv2
 import numpy as np
 
-from backend.venus.config import GATE_WEIGHTS, WORK_SIZE
+from backend.venus.config import GATE_WEIGHTS, QUALITY_WEIGHTS, WORK_SIZE
 from backend.venus.imaging import clahe
 
 # Locked 2026-09-02 on a selection split under a 0.5% false-rejection target,
@@ -49,6 +49,10 @@ QUALITY_LIMITS = {
 _gate_model = None
 _gate_lock = threading.Lock()
 _gate_error: str | None = None
+_quality_model = None
+_quality_error: str | None = None
+QUALITY_SIZE = 256
+QUALITY_CLASSES = ["good", "usable", "reject"]
 
 
 # ---------------------------------------------------------------- modality --
@@ -126,6 +130,42 @@ def modality_check(image_bgr: np.ndarray) -> dict:
     }
 
 
+def load_quality():
+    """The EyeQ-trained quality CNN, if present. Optional: without it the
+    label comes from the handcrafted features alone, and the result says so."""
+    global _quality_model, _quality_error
+    if _quality_model is not None:
+        return _quality_model
+    with _gate_lock:
+        if _quality_model is not None:
+            return _quality_model
+        if not QUALITY_WEIGHTS.exists():
+            _quality_error = "quality CNN weights not present; handcrafted features only"
+            return None
+        try:
+            from backend.venus import nets
+            model = nets.quality_cnn()
+            model.load_weights(QUALITY_WEIGHTS)
+            _quality_model = model
+        except Exception as exc:  # pragma: no cover
+            _quality_error = f"{type(exc).__name__}: {exc}"
+            return None
+    return _quality_model
+
+
+def quality_status() -> dict:
+    return {"loaded": _quality_model is not None, "error": _quality_error}
+
+
+def quality_cnn_probabilities(image512: np.ndarray) -> dict | None:
+    model = load_quality()
+    if model is None:
+        return None
+    resized = cv2.cvtColor(cv2.resize(image512, (QUALITY_SIZE, QUALITY_SIZE), interpolation=cv2.INTER_AREA), cv2.COLOR_BGR2RGB)
+    probs = model.predict(resized[None, ...].astype(np.float32), verbose=0)[0]
+    return {c: round(float(p), 4) for c, p in zip(QUALITY_CLASSES, probs)}
+
+
 # --------------------------------------------------------------------- FOV --
 
 def fov_mask(image_bgr: np.ndarray) -> np.ndarray:
@@ -184,11 +224,27 @@ def normalise_fov(image_bgr: np.ndarray, size: int = WORK_SIZE):
     out_mask = cv2.resize(canvas_mask, (size, size), interpolation=cv2.INTER_NEAREST)
     geometry = {
         "bbox": [int(x), int(y), int(bw), int(bh)],
+        "pad": [int(oy), int(ox), int(side)],
         "coverage": round(coverage, 4),
         "circularity": round(min(circularity, 1.0), 4),
         "source_size": [int(w), int(h)],
+        "size": int(size),
     }
     return image, out_mask, geometry
+
+
+def warp_like(array: np.ndarray, geometry: dict, nearest: bool = True) -> np.ndarray:
+    """Apply the crop/pad/resize that normalise_fov applied, to another array
+    of the same source size (a lesion mask, for instance)."""
+    x, y, bw, bh = geometry["bbox"]
+    oy, ox, side = geometry["pad"]
+    size = geometry["size"]
+    crop = array[y:y + bh, x:x + bw]
+    shape = (side, side) + array.shape[2:]
+    canvas = np.zeros(shape, array.dtype)
+    canvas[oy:oy + bh, ox:ox + bw] = crop
+    interp = cv2.INTER_NEAREST if nearest else cv2.INTER_AREA
+    return cv2.resize(canvas, (size, size), interpolation=interp)
 
 
 # ----------------------------------------------------------------- quality --
@@ -344,6 +400,17 @@ def run(image_bgr: np.ndarray) -> dict:
     image, mask, geometry = normalise_fov(image_bgr)
     features = quality_features(image, mask, geometry)
     label, score, reason, notes = quality_label(features)
+    cnn = quality_cnn_probabilities(image)
+    if cnn is not None:
+        # The learned label decides; the handcrafted hard limits can only
+        # override it to reject (with the operator-facing reason).
+        learned = max(cnn, key=cnn.get)
+        if label != "reject":
+            label = learned
+            reason = None
+            if learned == "reject":
+                reason = "Image quality too low to grade (learned quality classifier) — retake"
+            score = round(float(cnn["good"] + 0.5 * cnn["usable"]), 3)
     enhanced = label == "usable"
     working = enhance(image, mask) if enhanced else image.copy()
     working[mask == 0] = 0
@@ -355,7 +422,9 @@ def run(image_bgr: np.ndarray) -> dict:
         "enhanced": enhanced,
         "notes": notes,
         "retake_reason": reason,
-        "model": "handcrafted features against fixed limits (learned quality CNN not in this build)",
+        "cnn_probabilities": cnn,
+        "model": ("EyeQ-trained quality CNN, overridden to reject by handcrafted hard limits" if cnn is not None
+                  else "handcrafted features against fixed limits (quality CNN weights not present)"),
     }
     return {
         "accepted": label != "reject",

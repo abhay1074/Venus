@@ -1,4 +1,4 @@
-image,patient,true_grade,referable_raw,split
+image_id,patient,grade,referable_raw,split
 10007_left,10007,0,7.185178e-06,calibration
 10009_left,10009,0,2.3499268e-05,calibration
 10047_right,10047,4,0.40423667,calibration

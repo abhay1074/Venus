@@ -68,8 +68,8 @@ def _cam_function():
     if _cam_model is not None:
         return _cam_model
     model = load_grader()
-    cam_model = keras.Model(model.inputs,
-                            [model.get_layer(CAM_LAYER).output, model.output["dr_ordinal_thresholds"]])
+    head = model.output["dr_ordinal_thresholds"] if isinstance(model.output, dict) else model.output
+    cam_model = keras.Model(model.inputs, [model.get_layer(CAM_LAYER).output, head])
 
     @tf.function(reduce_retracing=True)
     @tf.autograph.experimental.do_not_convert
@@ -193,11 +193,13 @@ def run(stage0: dict, stage1: dict, stage2: dict) -> dict:
     cams = gradcam(stage2["grader_input"], targets)
     cam_ms = int((time.perf_counter() - started) * 1000)
 
-    # Grad-CAM was computed on the 380 grader input, which is a bounding-box
-    # crop of the raw image; the working frame is a padded square of the FOV.
-    # Both are axis-aligned crops of the same circle, so mapping the CAM onto
-    # the FOV bounding box in the working frame aligns them.
+    # v2 sees the working frame itself, so its CAM resizes straight onto it.
+    # v1 saw a bounding-box crop of the raw image; the working frame is a padded
+    # square of the FOV, and both are axis-aligned crops of the same circle, so
+    # mapping the CAM onto the FOV bounding box in the working frame aligns them.
     def to_working(cam):
+        if stage2.get("input_frame", "raw_bbox") == "working":
+            return heatmap_to_frame(cam, mask)
         coords = cv2.findNonZero(mask)
         x, y, w, h = cv2.boundingRect(coords)
         frame = np.zeros(mask.shape, np.float32)

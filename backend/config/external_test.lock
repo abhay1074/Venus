@@ -1,5 +1,6 @@
 {
   "model_version": "venus-dr-1.0.0",
-  "scored_at": "2026-09-19T17:37:32.958106+00:00",
-  "calibration_fingerprint": "d29385ea352b8a789d1401c47041dbc8f4124cc5043af09ee7bbb13804ca88d3"
+  "scored_at": "2026-09-20T11:10:00.277146+00:00",
+  "calibration_fingerprint": "68e60b36c651d6e24f343226aaddcf45c9e7fb2bef9317b40c6a0f54c0e5f613",
+  "external_test_fingerprint": null
 }

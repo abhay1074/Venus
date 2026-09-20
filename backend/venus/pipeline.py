@@ -45,7 +45,8 @@ def warm_up() -> dict:
         # function: TensorFlow traces graphs on first use, and that trace
         # (10-15 s on a laptop CPU) must not land on the first patient.
         import numpy as np
-        blank = np.zeros((stage2_grade.GRADER_SIZE, stage2_grade.GRADER_SIZE, 3), np.float32)
+        side = int(grader.input_shape[1])
+        blank = np.zeros((side, side, 3), np.float32)
         stage0_gate.modality_check(np.zeros((256, 256, 3), np.uint8))
         grader.predict(blank[None, ...], verbose=0)
         stage3_explain.gradcam(blank, [1])
@@ -83,7 +84,7 @@ def screen_image(payload: bytes, intake: dict | None = None, tta: bool = False,
         return result
 
     s1 = stage1_segment.run(s0["image"], s0["mask"])
-    s2 = stage2_grade.run(image, s1, tta=tta)
+    s2 = stage2_grade.run(image, s1, tta=tta, stage0_image=s0["original"])
     s3 = stage3_explain.run(s0, s1, s2)
 
     # Attention agreement is the third review signal; it joins the fusion flags
