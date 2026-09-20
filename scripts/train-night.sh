@@ -16,7 +16,7 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CACHE="${VENUS_CACHE_DIR:-$HOME/venus-cache}"
 LOG="$CACHE/train-night.log"
-run() { echo "=== $(date '+%F %T')  $*" | tee -a "$LOG"; bash "$ROOT/scripts/wsl-gpu.sh" "$@" 2>&1 | grep -av "oneDNN\|^I0000\|^W0000\|^E0000\|absl::InitializeLog" | tee -a "$LOG"; }
+run() { echo "=== $(date '+%F %T')  $*" | tee -a "$LOG"; bash "$ROOT/scripts/wsl-gpu.sh" "$@" 2>&1 | grep --line-buffered -av "oneDNN\|^I0000\|^W0000\|^E0000\|absl::InitializeLog" | tee -a "$LOG"; }
 run backend.data.cache_stage0 --only lesions --size 1024
 run backend.training.train_lesion_unet --size 1024 --patch 512 --repeats 4 --epochs 80 --batch 4 --tag lesion_unet_v2_1024
 run backend.training.train_grader --epochs 15 --seed 7 --tag grader_v2_s7
