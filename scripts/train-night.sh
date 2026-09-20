@@ -22,4 +22,7 @@ run backend.training.train_lesion_unet --size 1024 --patch 512 --repeats 4 --epo
 run backend.training.train_grader --epochs 15 --seed 7 --tag grader_v2_s7
 run backend.eval.score_grader --weights "$CACHE/models/grader_v2_s7.weights.h5" --tag grader_v2_s7 --manifests calibration val
 run backend.eval.score_grader --weights "$CACHE/models/grader_v2_s7.weights.h5" --tag grader_v2_s7 --tta --manifests calibration
+run backend.eval.compare_graders --tags grader_v2 grader_v2_s7 --manifest calibration
+run backend.eval.compare_graders --tags grader_v2 grader_v2_s7 --manifest calibration --tta
+run backend.eval.compare_graders --tags grader_v2 grader_v2_s7 --manifest val
 echo "=== $(date '+%F %T')  NIGHT DONE" | tee -a "$LOG"
