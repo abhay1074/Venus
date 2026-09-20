@@ -1,0 +1,10 @@
+# Shell scripts run under WSL; a CRLF "set -euo pipefail" aborts bash.
+*.sh text eol=lf
+# PowerShell is Windows-side.
+*.ps1 text eol=crlf
+* text=auto
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.h5 binary
+*.pdf binary
