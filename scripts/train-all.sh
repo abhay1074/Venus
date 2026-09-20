@@ -16,5 +16,9 @@ run backend.training.train_quality --epochs 12
 # Flag rate / attention-agreement analysis on validation images needs the
 # checkpoints in backend/weights (the served path), so pull them first.
 bash "$ROOT/scripts/pull-models.sh" | tee -a "$LOG"
+# Lock the v2 operating point (calibration set only; external test scored once).
+run backend.eval.calibrate --tag grader_v2 --model-version venus-dr-2.0.0
 run backend.eval.flag_rate --n 600
+run backend.eval.export_models
+run backend.eval.write_docs
 echo "=== $(date '+%F %T')  ALL DONE" | tee -a "$LOG"
