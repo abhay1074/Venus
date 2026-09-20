@@ -59,7 +59,7 @@ def main(argv=None) -> int:
         rec = {"image_id": row.image_id, "grade": int(row.grade), "accepted": s0["accepted"],
                "quality": s0["quality"]["label"] if s0["quality"] else "reject"}
         if s0["accepted"]:
-            s1 = stage1_segment.run(s0["image"], s0["mask"], original=s0["original"])
+            s1 = stage1_segment.run(s0["image"], s0["mask"], original=s0["original"], raw=image)
             s2 = stage2_grade.run(image, s1, stage0_image=s0["original"])
             s3 = stage3_explain.run(s0, s1, s2)
             f = s2["fusion"]

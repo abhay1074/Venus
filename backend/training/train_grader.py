@@ -136,12 +136,13 @@ def main(argv=None) -> int:
     parser.add_argument("--limit", type=int, default=None, help="images per split, for a smoke run")
     parser.add_argument("--tag", default="grader_v2")
     parser.add_argument("--no-xla", action="store_true")
+    parser.add_argument("--seed", type=int, default=42, help="a second seed gives an ensemble member")
     args = parser.parse_args(argv)
 
     for g in tf.config.list_physical_devices("GPU"):
         tf.config.experimental.set_memory_growth(g, True)
     keras.mixed_precision.set_global_policy("mixed_float16")
-    keras.utils.set_random_seed(42)
+    keras.utils.set_random_seed(args.seed)
 
     train_df = pd.read_csv(MANIFEST_DIR / "train.csv")
     val_df = pd.read_csv(MANIFEST_DIR / "val.csv")
@@ -186,7 +187,7 @@ def main(argv=None) -> int:
             json.dump(history, handle, indent=2)
 
     summary = {
-        "tag": args.tag, "backbone": f"EfficientNet-{args.backbone}", "input": SIZE, "head": "ordinal, 4 cumulative sigmoids",
+        "tag": args.tag, "backbone": f"EfficientNet-{args.backbone}", "input": SIZE, "seed": args.seed, "head": "ordinal, 4 cumulative sigmoids",
         "epochs": args.epochs, "batch": args.batch, "lr": args.lr, "schedule": "AdamW, cosine decay", "precision": "mixed_float16, float32 head",
         "xla": not args.no_xla, "augmentation": "dihedral, zoom 0.9-1.0, brightness/contrast/saturation ±20%",
         "loss": "weighted BCE on cumulative targets, threshold weights [1,2,1,1], pos_weight " + str([round(float(w), 2) for w in pos_weight]),

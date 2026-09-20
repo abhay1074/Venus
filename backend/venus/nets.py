@@ -81,10 +81,11 @@ def _conv_block(x, filters, name):
     return keras.layers.Activation("relu", name=f"{name}_a2")(x)
 
 
-def lesion_unet(base: int = 32, levels: int = 4):
+def lesion_unet(base: int = 32, levels: int = 4, size: int | None = None):
     from tensorflow import keras
 
-    inputs = keras.Input(shape=(UNET_SIZE, UNET_SIZE, 3), name="fundus_512")
+    size = size or UNET_SIZE
+    inputs = keras.Input(shape=(size, size, 3), name=f"fundus_{size}")
     x = keras.layers.Rescaling(1.0 / 255.0, name="rescale")(inputs)
     skips = []
     for level in range(levels):

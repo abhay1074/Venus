@@ -36,6 +36,7 @@ _colour_reference: dict | None = None
 
 _unet = None
 _unet_thresholds: dict | None = None
+_unet_frame_size = 512
 _unet_lock = threading.Lock()
 _unet_error: str | None = None
 
@@ -301,7 +302,7 @@ def bright_lesions(image: np.ndarray, mask: np.ndarray, od_mask: np.ndarray,
 
 def load_unet():
     """Load the lesion U-Net once, if its weights and thresholds are present."""
-    global _unet, _unet_thresholds, _unet_error
+    global _unet, _unet_thresholds, _unet_error, _unet_frame_size
     if _unet is not None:
         return _unet
     with _unet_lock:
@@ -312,10 +313,13 @@ def load_unet():
             return None
         try:
             from backend.venus import nets
-            model = nets.lesion_unet()
-            model.load_weights(UNET_WEIGHTS)
             with open(LESION_THRESHOLDS_PATH, "r", encoding="utf-8") as handle:
-                _unet_thresholds = json.load(handle)["thresholds"]
+                thresholds = json.load(handle)
+            # The frame size the network was trained on travels with its thresholds.
+            _unet_frame_size = int(thresholds.get("frame_size", 512))
+            model = nets.lesion_unet(size=_unet_frame_size)
+            model.load_weights(UNET_WEIGHTS)
+            _unet_thresholds = thresholds["thresholds"]
             _unet = model
         except Exception as exc:  # pragma: no cover
             _unet_error = f"{type(exc).__name__}: {exc}"
@@ -324,7 +328,8 @@ def load_unet():
 
 
 def unet_status() -> dict:
-    return {"loaded": _unet is not None, "error": _unet_error, "thresholds": _unet_thresholds}
+    return {"loaded": _unet is not None, "error": _unet_error, "thresholds": _unet_thresholds,
+            "frame_size": _unet_frame_size if _unet is not None else None}
 
 
 def colour_normalise(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
@@ -353,14 +358,33 @@ def colour_normalise(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
     return out
 
 
-def unet_lesions(image: np.ndarray, mask: np.ndarray, od_mask: np.ndarray):
+def unet_lesions(image: np.ndarray, mask: np.ndarray, od_mask: np.ndarray, raw: np.ndarray | None = None):
     """Per-lesion probability maps from the U-Net on the colour-normalised
     frame, thresholded at the values chosen on the DDR valid split, with the
     same rim/disc post-processing the classical path applies.
+
+    A network trained on larger frames (microaneurysms are 1-3 px at 512)
+    gets the same FOV normalisation of the raw upload at its own size and its
+    probabilities are averaged back down to the 512 working frame, so every
+    overlay and count stays in working coordinates.
     Returns {key: (mask, components)}."""
     model = load_unet()
-    rgb = cv2.cvtColor(colour_normalise(image, mask), cv2.COLOR_BGR2RGB).astype(np.float32)
-    probs = model.predict(rgb[None, ...], verbose=0)[0]
+    size = image.shape[0]
+    if _unet_frame_size != size and raw is not None:
+        from backend.venus.stage0_gate import normalise_fov
+        hi_image, hi_mask, _ = normalise_fov(raw, _unet_frame_size)
+        rgb = cv2.cvtColor(colour_normalise(hi_image, hi_mask), cv2.COLOR_BGR2RGB).astype(np.float32)
+        probs = model.predict(rgb[None, ...], verbose=0)[0]
+        probs = cv2.resize(probs, (size, size), interpolation=cv2.INTER_AREA)
+    else:
+        if _unet_frame_size != size:
+            image = cv2.resize(image, (_unet_frame_size, _unet_frame_size), interpolation=cv2.INTER_CUBIC)
+            mask = cv2.resize(mask, (_unet_frame_size, _unet_frame_size), interpolation=cv2.INTER_NEAREST)
+        rgb = cv2.cvtColor(colour_normalise(image, mask), cv2.COLOR_BGR2RGB).astype(np.float32)
+        probs = model.predict(rgb[None, ...], verbose=0)[0]
+        if probs.shape[0] != size:
+            probs = cv2.resize(probs, (size, size), interpolation=cv2.INTER_AREA)
+            mask = cv2.resize(mask, (size, size), interpolation=cv2.INTER_NEAREST)
     inner = cv2.erode(mask, disk(6))
     od_wide = cv2.dilate(od_mask, disk(6))
     out = {}
@@ -397,7 +421,7 @@ def quadrant_counts(components: list, fovea_centre: list, size: int) -> list:
 
 # ------------------------------------------------------------------- run --
 
-def run(image: np.ndarray, mask: np.ndarray, original: np.ndarray | None = None) -> dict:
+def run(image: np.ndarray, mask: np.ndarray, original: np.ndarray | None = None, raw: np.ndarray | None = None) -> dict:
     """`image` is the Stage 0 working frame (enhanced when usable) for the
     landmark and classical detectors; `original` is the un-enhanced frame the
     U-Net sees (it was trained on raw frames). Defaults to `image`."""
@@ -409,7 +433,7 @@ def run(image: np.ndarray, mask: np.ndarray, original: np.ndarray | None = None)
     ves = vessels(image, mask)
     if load_unet() is not None:
         method = "unet"
-        found = unet_lesions(original, mask, od["mask"])
+        found = unet_lesions(original, mask, od["mask"], raw=raw)
         ma_mask, ma = found["MA"]; he_mask, he = found["HE"]; ex_mask, ex = found["EX"]; se_mask, se = found["SE"]
     else:
         method = "classical"

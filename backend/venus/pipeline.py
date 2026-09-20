@@ -86,7 +86,7 @@ def screen_image(payload: bytes, intake: dict | None = None, tta: bool = False,
             stage5_schedule.save_screening(result)
         return result
 
-    s1 = stage1_segment.run(s0["image"], s0["mask"], original=s0["original"])
+    s1 = stage1_segment.run(s0["image"], s0["mask"], original=s0["original"], raw=image)
     s2 = stage2_grade.run(image, s1, tta=tta, stage0_image=s0["original"])
     s3 = stage3_explain.run(s0, s1, s2)
 

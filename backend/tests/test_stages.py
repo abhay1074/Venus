@@ -233,7 +233,7 @@ class TestStage3Explain:
     def test_gradcam_is_inside_fov_and_normalised(self, dr_image):
         from backend.venus import stage0_gate, stage1_segment, stage2_grade, stage3_explain
         s0 = stage0_gate.run(dr_image)
-        s1 = stage1_segment.run(s0["image"], s0["mask"], original=s0["original"])
+        s1 = stage1_segment.run(s0["image"], s0["mask"], original=s0["original"], raw=dr_image)
         s2 = stage2_grade.run(dr_image, s1, stage0_image=s0["original"])
         s3 = stage3_explain.run(s0, s1, s2)
         heat = s3["heat_referable"]

@@ -79,8 +79,10 @@ def _process_grading(row: dict) -> dict | None:
 
 def _process_lesion(row: dict) -> dict | None:
     stem = Path(row["path"]).stem
-    out_img = CACHE_DIR / "lesions_512" / f"{stem}.jpg"
-    out_mask = CACHE_DIR / "lesions_512" / f"{stem}_mask.png"
+    size = int(row.get("size", SIZE))
+    folder = CACHE_DIR / f"lesions_{size}"
+    out_img = folder / f"{stem}.jpg"
+    out_mask = folder / f"{stem}_mask.png"
     try:
         if out_img.exists() and out_mask.exists() and not row.get("force"):
             return {"image_id": row["image_id"], "source_split": row["source_split"],
@@ -88,7 +90,7 @@ def _process_lesion(row: dict) -> dict | None:
         raw = cv2.imread(row["path"], cv2.IMREAD_COLOR)
         if raw is None:
             return {"image_id": row["image_id"], "error": "unreadable"}
-        image, _, geometry = normalise_fov(raw, SIZE)
+        image, _, geometry = normalise_fov(raw, size)
         combined = np.zeros(raw.shape[:2], np.uint8)
         counts = {}
         for key, bit in LESION_BITS.items():
@@ -141,6 +143,7 @@ def main(argv=None) -> int:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--only", choices=["grading", "lesions"], default=None)
     parser.add_argument("--force", action="store_true")
+    parser.add_argument("--size", type=int, default=SIZE, help="lesion cache frame size (the grading cache is always 512)")
     args = parser.parse_args(argv)
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     print(f"cache dir {CACHE_DIR}  data root {sources.DATA_ROOT}  workers {args.workers}")
@@ -158,12 +161,14 @@ def main(argv=None) -> int:
     if args.only in (None, "lesions"):
         df = sources.ddr_lesions()
         if args.limit:
-            df = df.head(args.limit)
+            df = df.groupby("source_split", group_keys=False).head(args.limit)
         rows = df.to_dict("records")
         for r in rows:
             r["force"] = args.force
-        print(f"lesion images: {len(rows)}")
-        run(rows, _process_lesion, CACHE_DIR / "lesion_index.csv", args.workers)
+            r["size"] = args.size
+        print(f"lesion images: {len(rows)} at {args.size} px")
+        suffix = "" if args.size == SIZE else f"_{args.size}"
+        run(rows, _process_lesion, CACHE_DIR / f"lesion_index{suffix}.csv", args.workers)
     return 0
 
 
