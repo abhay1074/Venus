@@ -1,0 +1,48 @@
+# Venus AI — notes for anyone (or any agent) continuing this work
+
+Read `cloud.md` first: it is the running diary, one line per step, newest at the bottom.
+Append to it as you work — that is how the next person picks up where you left off.
+
+## What this is
+
+SIH 2026 problem statement SIH26038 (MathWorks): explainable diabetic-retinopathy screening
+for district programmes. Five stages, one result struct, one locked and fingerprinted
+operating point. `README.md` is the overview; `docs/ARCHITECTURE.md` maps the code to the
+architecture document section by section; `docs/VALIDATION.md` is generated, never edited.
+
+## Layout
+
+- `backend/venus/` the pipeline (stage0_gate … stage5_schedule, pipeline, nets, report, config)
+- `backend/main.py` FastAPI; `frontend/` React (Vite + Tailwind + Recharts), five screens
+- `backend/data/` dataset readers, Stage 0 cache job, hashing, manifest builder
+- `backend/training/` grader v2, lesion U-Net, quality CNN; `backend/eval/` calibrate (locks the
+  operating point, scores the external test once), score_grader, timing, export_models, write_docs
+- `matlab/` the MATLAB implementation (+drscreen, simulink, app, tests) — mirrors the Python
+- `scripts/` setup/serve (Windows), wsl-gpu.sh (GPU launcher), train-all.sh, pull-models.sh, preflight.py
+
+## Machines and paths (this laptop)
+
+- Windows venv `.venv` (tensorflow-cpu 2.21) serves the API: `scripts\serve.ps1`.
+- WSL Ubuntu has the GPU (RTX 5060) and `~/mediscan-env` (TF 2.21). Run anything on the GPU with
+  `wsl bash scripts/wsl-gpu.sh <module> [args]`; caches, models and predictions live in
+  `~/venus-cache` (Linux filesystem, on purpose). Raw datasets:
+  `C:\Users\anilm\Downloads\MediScan-main\MediScan-main\backend\data\raw\eye` (`VENUS_DATA_ROOT`).
+- Trained checkpoints are gitignored. `wsl bash scripts/pull-models.sh` copies them from
+  `~/venus-cache/models` into `backend/weights` (v1 checkpoints came from the old MediScan repo).
+
+## Rules that are not negotiable
+
+- The external test is scored once per model version (`config/external_test.lock`); the
+  threshold is chosen on the calibration set only. Never tune on the test manifests.
+- `config/operating_point.json` carries the calibration manifest's SHA-256 and the grader tag;
+  the server refuses to start if either does not match. Re-run `backend.eval.calibrate` after
+  any model change, then `backend.eval.timing`, then `backend.eval.write_docs`.
+- A missed target is reported with its CI, not re-tuned. Numbers in docs come from JSON.
+- Tests: `python -m pytest backend/tests -q` (29; weight-dependent ones skip without weights).
+- Commit messages end with the Co-Authored-By line used in the history; push to
+  github.com/abhay1074/Venus `main`.
+
+## Deadline
+
+SIH submission 30 September 2026; planned upload 28 September. PPT exists (user's side);
+its numbers must be refreshed from `docs/VALIDATION.md` before submission.
