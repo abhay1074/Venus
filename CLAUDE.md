@@ -18,7 +18,8 @@ architecture document section by section; `docs/VALIDATION.md` is generated, nev
 - `backend/training/` grader v2, lesion U-Net, quality CNN; `backend/eval/` calibrate (locks the
   operating point, scores the external test once), score_grader, timing, export_models, write_docs
 - `matlab/` the MATLAB implementation (+drscreen, simulink, app, tests) — mirrors the Python
-- `scripts/` setup/serve (Windows), wsl-gpu.sh (GPU launcher), train-all.sh, pull-models.sh, preflight.py
+- `scripts/` setup/serve (Windows), wsl-gpu.sh (GPU launcher), train-all.sh (day-1 chain), train-night.sh +
+  launch-night.ps1 (day-2 experiments: 1024 px patch U-Net, grader seed 7), pull-models.sh, preflight.py
 
 ## Machines and paths (this laptop)
 
@@ -38,6 +39,11 @@ architecture document section by section; `docs/VALIDATION.md` is generated, nev
   the server refuses to start if either does not match. Re-run `backend.eval.calibrate` after
   any model change, then `backend.eval.timing`, then `backend.eval.write_docs`.
 - A missed target is reported with its CI, not re-tuned. Numbers in docs come from JSON.
+- Experiments train under their own `--tag`; only the default tags write served config
+  (`config/lesion_thresholds.json` comes from tag `lesion_unet`). Promote by copying weights +
+  thresholds deliberately, then re-run flag_rate → review_policy → write_docs.
+- Human-review rules live in `config/review_policy.json` (chosen on validation by
+  `backend.eval.review_policy`); stage2/stage3/stage4 read it through `config.review_policy()`.
 - Tests: `python -m pytest backend/tests -q` (29; weight-dependent ones skip without weights).
 - Commit messages end with the Co-Authored-By line used in the history; push to
   github.com/abhay1074/Venus `main`.
