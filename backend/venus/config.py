@@ -35,6 +35,7 @@ GATE_WEIGHTS = WEIGHTS_DIR / "eye_modality_gate.weights.h5"
 QUALITY_WEIGHTS = WEIGHTS_DIR / "quality_cnn.weights.h5"
 UNET_WEIGHTS = WEIGHTS_DIR / "lesion_unet.weights.h5"
 LESION_THRESHOLDS_PATH = CONFIG_DIR / "lesion_thresholds.json"
+REVIEW_POLICY_PATH = CONFIG_DIR / "review_policy.json"
 GRADER_TAG = "grader_v2" if GRADER_V2_WEIGHTS.exists() else "legacy_v1"
 GRADER_WEIGHTS = GRADER_V2_WEIGHTS if GRADER_TAG == "grader_v2" else GRADER_V1_WEIGHTS
 MODEL_VERSION = "venus-dr-2.0.0" if GRADER_TAG == "grader_v2" else "venus-dr-1.0.0"
@@ -64,6 +65,19 @@ def sha256_of_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1 << 20), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+@lru_cache(maxsize=1)
+def review_policy() -> dict:
+    """Human-review parameters chosen on the validation sample by
+    backend.eval.review_policy: abstain band (logit half-width) and the
+    attention-agreement floor. Defaults are the architecture's if absent."""
+    defaults = {"abstain_band_logit": None, "abstain_band": 0.05, "attention_floor": 0.15, "attention_min_lift": 1.5, "chosen_on": "architecture defaults"}
+    if not REVIEW_POLICY_PATH.exists():
+        return defaults
+    with open(REVIEW_POLICY_PATH, "r", encoding="utf-8") as handle:
+        policy = json.load(handle)
+    return {**defaults, **policy, "attention_min_lift": None}
 
 
 class OperatingPointError(RuntimeError):

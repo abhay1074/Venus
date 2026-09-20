@@ -1,6 +1,6 @@
 # Validation report — Venus AI, model `venus-dr-2.0.0` (grader `grader_v2`)
 
-Generated 2026-09-20 17:39 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
+Generated 2026-09-20 17:52 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
 
 ## Data and splits
 

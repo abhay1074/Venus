@@ -30,7 +30,7 @@ import cv2
 import numpy as np
 
 from backend.venus import nets
-from backend.venus.config import GRADER_SIZE, GRADER_TAG, GRADER_WEIGHTS, ICDR_LABELS, operating_point
+from backend.venus.config import GRADER_SIZE, GRADER_TAG, GRADER_WEIGHTS, ICDR_LABELS, operating_point, review_policy
 from backend.venus.imaging import clahe
 
 _model = None
@@ -227,11 +227,23 @@ def rule_grade(stage1: dict, nv_probability: float) -> dict:
 
 def fuse(cnn: dict, rule: dict) -> dict:
     point = operating_point()
+    policy = review_policy()
     threshold = point["thresholds"]["referable"]
-    band = point["thresholds"]["abstain_band"]
     p = cnn["referable_probability"]
     referable = p >= threshold
-    abstain = abs(p - threshold) <= band
+    # Abstain band: in logit space when the validation-chosen policy exists
+    # (symmetric around a threshold near 0.1, where ±0.05 in probability is
+    # not), else the architecture's ±0.05 in probability.
+    if policy.get("abstain_band_logit"):
+        half = float(policy["abstain_band_logit"])
+        lo = 1 / (1 + np.exp(-(logit(threshold) - half))); hi = 1 / (1 + np.exp(-(logit(threshold) + half)))
+        abstain = lo <= p <= hi
+        band_text = f"±{half:.2f} logit ({lo:.3f}–{hi:.3f})"
+    else:
+        lo, hi = threshold - point["thresholds"]["abstain_band"], threshold + point["thresholds"]["abstain_band"]
+        abstain = abs(p - threshold) <= point["thresholds"]["abstain_band"]
+        band_text = f"±{point['thresholds']['abstain_band']:.2f}"
+    band = hi - threshold
     disagreement = abs(cnn["grade"] - rule["grade"])
     total_lesions = sum(rule["counts"].values())
 
@@ -241,7 +253,7 @@ def fuse(cnn: dict, rule: dict) -> dict:
     if referable and total_lesions == 0:
         reasons.append("CNN calls referable but no lesion was found")
     if abstain:
-        reasons.append(f"P(referable) {p:.2f} is within ±{band:.2f} of the threshold {threshold:.2f}")
+        reasons.append(f"P(referable) {p:.2f} is within the abstain band {band_text} around the threshold {threshold:.2f}")
 
     return {
         "grade": cnn["grade"],
@@ -250,7 +262,10 @@ def fuse(cnn: dict, rule: dict) -> dict:
         "p_referable": p,
         "threshold": threshold,
         "abstain": bool(abstain),
-        "abstain_band": band,
+        "abstain_band": round(float(band), 4),
+        "abstain_low": round(float(lo), 4),
+        "abstain_high": round(float(hi), 4),
+        "review_policy": policy.get("chosen_on"),
         "grades_agree_within_one": disagreement <= 1,
         "disagreement_levels": disagreement,
         "flag_for_review": bool(reasons),

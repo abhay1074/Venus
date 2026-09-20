@@ -26,7 +26,7 @@ import time
 import cv2
 import numpy as np
 
-from backend.venus.config import ICDR_LABELS
+from backend.venus.config import ICDR_LABELS, review_policy
 from backend.venus.imaging import disk, to_png_base64
 from backend.venus.stage2_grade import load_grader
 
@@ -164,12 +164,18 @@ def attention_agreement(heat: np.ndarray, stage1: dict, mask: np.ndarray, counte
     # reader can tell 0.30 on a lesion-covered retina from 0.30 on one lesion.
     chance = float(cv2.countNonZero(cv2.bitwise_and(wide, mask)) / max(cv2.countNonZero(mask), 1))
     lift = score / chance if chance > 0 else 0.0
-    low = score < ATTENTION_FLOOR and lift < ATTENTION_MIN_LIFT
+    policy = review_policy()
+    floor = float(policy.get("attention_floor", ATTENTION_FLOOR))
+    min_lift = policy.get("attention_min_lift", ATTENTION_MIN_LIFT)
+    # Validation-chosen policy: a plain floor (the lift condition is dropped,
+    # the floor already selects calls whose error rate is >= 60%).
+    low = score < floor and (min_lift is None or lift < min_lift)
     applies = counted > 0 and referable
     return {
         "score": round(score, 3),
         "chance_level": round(chance, 3),
         "lift": round(lift, 2),
+        "floor": floor,
         "lesion_pixels": lesion_pixels,
         "flag": bool(low and applies),
         "note": ("attention not on lesions" if (low and applies)

@@ -50,7 +50,13 @@ def measured_flag_rates() -> dict | None:
     if not VALIDATION_FLAGS.exists():
         return None
     v = json.load(open(VALIDATION_FLAGS, encoding="utf-8"))
-    return {"flag_rate": v["flag_rate"], "retake_rate": v["retake_rate"], "n": v["n_sampled"],
+    flag_rate = v["flag_rate"]
+    policy_path = CONFIG_DIR / "review_policy.json"
+    if policy_path.exists():
+        # The served review rule is the validation-chosen policy; its flag
+        # rate on the same sample is what the programme absorbs.
+        flag_rate = json.load(open(policy_path, encoding="utf-8")).get("resulting_flag_rate", flag_rate)
+    return {"flag_rate": flag_rate, "retake_rate": v["retake_rate"], "n": v["n_sampled"],
             "grader": v.get("grader"), "written_at": v.get("written_at"), "source": "validation manifest sample"}
 
 

@@ -1,0 +1,55 @@
+{
+  "written_at": "2026-09-20T17:47:51.425462+00:00",
+  "chosen_on": "validation sample, n = 487 gradable (val)",
+  "model_version": "venus-dr-2.0.0",
+  "grader": "grader_v2",
+  "abstain_band_logit": 0.35,
+  "attention_floor": 0.2,
+  "attention_candidates": {
+    "0.1": {
+      "flagged_share_of_referable_calls": 0.0462,
+      "error_rate_flagged": 0.6429,
+      "error_rate_unflagged": 0.1903
+    },
+    "0.15": {
+      "flagged_share_of_referable_calls": 0.0759,
+      "error_rate_flagged": 0.6957,
+      "error_rate_unflagged": 0.1714
+    },
+    "0.2": {
+      "flagged_share_of_referable_calls": 0.1254,
+      "error_rate_flagged": 0.6579,
+      "error_rate_unflagged": 0.1472
+    },
+    "0.25": {
+      "flagged_share_of_referable_calls": 0.1683,
+      "error_rate_flagged": 0.549,
+      "error_rate_unflagged": 0.1429
+    },
+    "0.3": {
+      "flagged_share_of_referable_calls": 0.2442,
+      "error_rate_flagged": 0.4595,
+      "error_rate_unflagged": 0.131
+    },
+    "0.35": {
+      "flagged_share_of_referable_calls": 0.3333,
+      "error_rate_flagged": 0.4059,
+      "error_rate_unflagged": 0.1139
+    },
+    "0.4": {
+      "flagged_share_of_referable_calls": 0.3729,
+      "error_rate_flagged": 0.3805,
+      "error_rate_unflagged": 0.1105
+    }
+  },
+  "resulting_flag_rate": 0.2772,
+  "flag_reasons": {
+    "disagreement": 83,
+    "no_lesion": 12,
+    "abstain": 29,
+    "attention": 38
+  },
+  "error_rate_flagged": 0.3185,
+  "error_rate_unflagged": 0.1136,
+  "share_of_cnn_errors_flagged": 0.5181
+}

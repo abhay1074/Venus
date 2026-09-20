@@ -105,7 +105,7 @@ export default function ResultView({ result, loading, onBook }) {
               <div className="text-xs text-slate-500">P(referable), calibrated · threshold {fusion.threshold.toFixed(2)}</div>
             </div>
           </div>
-          <ProbabilityBar p={fusion.p_referable} threshold={fusion.threshold} band={fusion.abstain_band} />
+          <ProbabilityBar p={fusion.p_referable} threshold={fusion.threshold} low={fusion.abstain_low ?? fusion.threshold - fusion.abstain_band} high={fusion.abstain_high ?? fusion.threshold + fusion.abstain_band} />
           {fusion.flag_reasons.length > 0 && (
             <ul className="mt-3 space-y-1 text-sm text-amber-900">
               {fusion.flag_reasons.map((r) => (
@@ -203,10 +203,10 @@ function Header({ session }) {
   );
 }
 
-function ProbabilityBar({ p, threshold, band }) {
+function ProbabilityBar({ p, threshold, low, high }) {
   return (
     <div className="relative mt-3 h-3 w-full rounded-full bg-slate-200">
-      <div className="absolute inset-y-0 rounded-full bg-amber-200" style={{ left: `${(threshold - band) * 100}%`, width: `${band * 200}%` }} />
+      <div className="absolute inset-y-0 rounded-full bg-amber-200" style={{ left: `${low * 100}%`, width: `${(high - low) * 100}%` }} />
       <div className={`absolute inset-y-0 left-0 rounded-full ${p >= threshold ? "bg-rose-500" : "bg-emerald-500"}`} style={{ width: `${Math.max(p * 100, 1)}%` }} />
       <div className="absolute -top-1 h-5 w-0.5 bg-venus-navy" style={{ left: `${threshold * 100}%` }} title={`threshold ${threshold}`} />
     </div>
