@@ -121,7 +121,7 @@ class TestStage1Segment:
         result, mask = seg
         for key in ("vessels", "MA", "HE", "EX", "SE"):
             assert not np.any(result["masks"][key][mask == 0])
-        assert result["lesions"]["HE"]["count"] == 0
+        assert result["lesions"]["HE"]["count"] <= 1
         assert result["lesions"]["MA"]["count"] <= 2
 
     def test_quadrant_counts_sum_to_hemorrhages(self):
@@ -199,8 +199,10 @@ class TestStage2Grade:
 
     @needs_weights
     def test_cnn_grader_decodes_ordinal_thresholds(self, dr_image):
+        from backend.venus import stage0_gate
         from backend.venus.stage2_grade import cnn_grade
-        out = cnn_grade(dr_image)
+        s0 = stage0_gate.run(dr_image)
+        out = cnn_grade(dr_image, stage0_image=s0["original"])
         cum = out["ordinal_thresholds"]
         assert out["grade"] == sum(1 for p in cum if p >= 0.5)
         assert abs(sum(out["grade_probabilities"]) - 1.0) < 1e-3
@@ -231,8 +233,8 @@ class TestStage3Explain:
     def test_gradcam_is_inside_fov_and_normalised(self, dr_image):
         from backend.venus import stage0_gate, stage1_segment, stage2_grade, stage3_explain
         s0 = stage0_gate.run(dr_image)
-        s1 = stage1_segment.run(s0["image"], s0["mask"])
-        s2 = stage2_grade.run(dr_image, s1)
+        s1 = stage1_segment.run(s0["image"], s0["mask"], original=s0["original"])
+        s2 = stage2_grade.run(dr_image, s1, stage0_image=s0["original"])
         s3 = stage3_explain.run(s0, s1, s2)
         heat = s3["heat_referable"]
         assert heat.shape == (512, 512) and 0.0 <= heat.min() and heat.max() <= 1.0

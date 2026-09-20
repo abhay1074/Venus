@@ -1,0 +1,416 @@
+{
+  "tag": "lesion_unet",
+  "architecture": "U-Net, 4 levels, 32 base filters, 512x512, 4 sigmoid channels",
+  "loss": "BCE (positive weight 10) + Dice, per channel",
+  "epochs": 60,
+  "batch": 4,
+  "lr": 0.0003,
+  "train_n": 383,
+  "valid_n": 149,
+  "test_n": 225,
+  "thresholds_chosen_on_valid_max_f1": {
+    "MA": 0.53,
+    "HE": 0.89,
+    "EX": 0.92,
+    "SE": 0.47
+  },
+  "valid": {
+    "MA": {
+      "aupr": 0.1604,
+      "pixels": 39059456,
+      "negatives_subsampled": false,
+      "threshold": 0.53,
+      "f1_at_threshold": 0.2563
+    },
+    "HE": {
+      "aupr": 0.5341,
+      "pixels": 39059456,
+      "negatives_subsampled": false,
+      "threshold": 0.89,
+      "f1_at_threshold": 0.5507
+    },
+    "EX": {
+      "aupr": 0.4858,
+      "pixels": 39059456,
+      "negatives_subsampled": false,
+      "threshold": 0.92,
+      "f1_at_threshold": 0.5149
+    },
+    "SE": {
+      "aupr": 0.6302,
+      "pixels": 39059456,
+      "negatives_subsampled": false,
+      "threshold": 0.47,
+      "f1_at_threshold": 0.6297
+    }
+  },
+  "test_scored_once": {
+    "MA": {
+      "aupr": 0.0791,
+      "pixels": 58982400,
+      "negatives_subsampled": false,
+      "threshold": 0.53,
+      "dice_at_threshold": 0.1657,
+      "precision": 0.1172,
+      "recall": 0.2827
+    },
+    "HE": {
+      "aupr": 0.4492,
+      "pixels": 58982400,
+      "negatives_subsampled": false,
+      "threshold": 0.89,
+      "dice_at_threshold": 0.4649,
+      "precision": 0.6059,
+      "recall": 0.3771
+    },
+    "EX": {
+      "aupr": 0.477,
+      "pixels": 58982400,
+      "negatives_subsampled": false,
+      "threshold": 0.92,
+      "dice_at_threshold": 0.4858,
+      "precision": 0.6517,
+      "recall": 0.3872
+    },
+    "SE": {
+      "aupr": 0.2615,
+      "pixels": 58982400,
+      "negatives_subsampled": false,
+      "threshold": 0.47,
+      "dice_at_threshold": 0.3084,
+      "precision": 0.2286,
+      "recall": 0.4739
+    }
+  },
+  "history": [
+    {
+      "epoch": 5,
+      "loss": 1.2248,
+      "val": {
+        "MA": {
+          "aupr": 0.0049,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.0144
+        },
+        "HE": {
+          "aupr": 0.0348,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.0839
+        },
+        "EX": {
+          "aupr": 0.0124,
+          "threshold": 0.15,
+          "f1_at_threshold": 0.0324
+        },
+        "SE": {
+          "aupr": 0.0213,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.055
+        }
+      },
+      "mean_aupr": 0.0183
+    },
+    {
+      "epoch": 10,
+      "loss": 1.1007,
+      "val": {
+        "MA": {
+          "aupr": 0.0088,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.0052
+        },
+        "HE": {
+          "aupr": 0.1716,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.2176
+        },
+        "EX": {
+          "aupr": 0.437,
+          "threshold": 0.6,
+          "f1_at_threshold": 0.4718
+        },
+        "SE": {
+          "aupr": 0.5071,
+          "threshold": 0.2,
+          "f1_at_threshold": 0.5203
+        }
+      },
+      "mean_aupr": 0.2811
+    },
+    {
+      "epoch": 15,
+      "loss": 1.0532,
+      "val": {
+        "MA": {
+          "aupr": 0.0078,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.0003
+        },
+        "HE": {
+          "aupr": 0.3202,
+          "threshold": 0.4,
+          "f1_at_threshold": 0.3823
+        },
+        "EX": {
+          "aupr": 0.5762,
+          "threshold": 0.2,
+          "f1_at_threshold": 0.611
+        },
+        "SE": {
+          "aupr": 0.4421,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.5285
+        }
+      },
+      "mean_aupr": 0.3366
+    },
+    {
+      "epoch": 20,
+      "loss": 1.0182,
+      "val": {
+        "MA": {
+          "aupr": 0.0165,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.003
+        },
+        "HE": {
+          "aupr": 0.6263,
+          "threshold": 0.25,
+          "f1_at_threshold": 0.5979
+        },
+        "EX": {
+          "aupr": 0.7421,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.7368
+        },
+        "SE": {
+          "aupr": 0.6899,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.6544
+        }
+      },
+      "mean_aupr": 0.5187
+    },
+    {
+      "epoch": 25,
+      "loss": 0.983,
+      "val": {
+        "MA": {
+          "aupr": 0.0535,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.1238
+        },
+        "HE": {
+          "aupr": 0.6039,
+          "threshold": 0.5,
+          "f1_at_threshold": 0.5571
+        },
+        "EX": {
+          "aupr": 0.6888,
+          "threshold": 0.4,
+          "f1_at_threshold": 0.6626
+        },
+        "SE": {
+          "aupr": 0.7741,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.7381
+        }
+      },
+      "mean_aupr": 0.5301
+    },
+    {
+      "epoch": 30,
+      "loss": 0.9408,
+      "val": {
+        "MA": {
+          "aupr": 0.2051,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.2596
+        },
+        "HE": {
+          "aupr": 0.6556,
+          "threshold": 0.25,
+          "f1_at_threshold": 0.6362
+        },
+        "EX": {
+          "aupr": 0.667,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.6949
+        },
+        "SE": {
+          "aupr": 0.6623,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.6073
+        }
+      },
+      "mean_aupr": 0.5475
+    },
+    {
+      "epoch": 35,
+      "loss": 0.9047,
+      "val": {
+        "MA": {
+          "aupr": 0.4006,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.445
+        },
+        "HE": {
+          "aupr": 0.7816,
+          "threshold": 0.45,
+          "f1_at_threshold": 0.7377
+        },
+        "EX": {
+          "aupr": 0.7431,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.731
+        },
+        "SE": {
+          "aupr": 0.7912,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.734
+        }
+      },
+      "mean_aupr": 0.6791
+    },
+    {
+      "epoch": 40,
+      "loss": 0.8797,
+      "val": {
+        "MA": {
+          "aupr": 0.5327,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.5208
+        },
+        "HE": {
+          "aupr": 0.8214,
+          "threshold": 0.25,
+          "f1_at_threshold": 0.7791
+        },
+        "EX": {
+          "aupr": 0.8098,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.7667
+        },
+        "SE": {
+          "aupr": 0.7756,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.6785
+        }
+      },
+      "mean_aupr": 0.7349
+    },
+    {
+      "epoch": 45,
+      "loss": 0.848,
+      "val": {
+        "MA": {
+          "aupr": 0.5216,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.4732
+        },
+        "HE": {
+          "aupr": 0.8461,
+          "threshold": 0.15,
+          "f1_at_threshold": 0.7907
+        },
+        "EX": {
+          "aupr": 0.8452,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.7891
+        },
+        "SE": {
+          "aupr": 0.8503,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.7775
+        }
+      },
+      "mean_aupr": 0.7658
+    },
+    {
+      "epoch": 50,
+      "loss": 0.8266,
+      "val": {
+        "MA": {
+          "aupr": 0.5197,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.4551
+        },
+        "HE": {
+          "aupr": 0.8427,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.7724
+        },
+        "EX": {
+          "aupr": 0.8238,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.7831
+        },
+        "SE": {
+          "aupr": 0.831,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.7602
+        }
+      },
+      "mean_aupr": 0.7543
+    },
+    {
+      "epoch": 55,
+      "loss": 0.8198,
+      "val": {
+        "MA": {
+          "aupr": 0.5486,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.5017
+        },
+        "HE": {
+          "aupr": 0.8633,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.8034
+        },
+        "EX": {
+          "aupr": 0.8242,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.7798
+        },
+        "SE": {
+          "aupr": 0.8368,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.771
+        }
+      },
+      "mean_aupr": 0.7682
+    },
+    {
+      "epoch": 60,
+      "loss": 0.8157,
+      "val": {
+        "MA": {
+          "aupr": 0.5503,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.501
+        },
+        "HE": {
+          "aupr": 0.869,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.812
+        },
+        "EX": {
+          "aupr": 0.8266,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.7839
+        },
+        "SE": {
+          "aupr": 0.8414,
+          "threshold": 0.1,
+          "f1_at_threshold": 0.7809
+        }
+      },
+      "mean_aupr": 0.7718
+    }
+  ],
+  "weights": "/home/asvin_laptop/venus-cache/models/lesion_unet.weights.h5",
+  "finished_at": "2026-09-20T14:17:15.686805+00:00",
+  "total_minutes": 13.2,
+  "aupr_note": "full-pixel AUPR (all negatives); in-training monitoring used subsampled negatives",
+  "rescored_at": "2026-09-20T15:45:44.187003+00:00"
+}

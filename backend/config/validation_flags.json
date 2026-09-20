@@ -1,0 +1,7284 @@
+{
+ "model_version": "venus-dr-2.0.0",
+ "grader": "grader_v2",
+ "written_at": "2026-09-20T16:02:43.674154+00:00",
+ "manifest": "val",
+ "n_sampled": 498,
+ "n_gradable": 267,
+ "retake_rate": 0.4639,
+ "quality_labels": {
+  "usable": 244,
+  "reject": 231,
+  "good": 23
+ },
+ "lesion_method": "unet",
+ "flag_rate": 0.3933,
+ "flag_reasons": {
+  "disagreement": 82,
+  "abstain": 37,
+  "no_lesion": 5,
+  "attention": 7
+ },
+ "flag_precision_for_cnn_errors": 0.181,
+ "cnn_error_rate_flagged_vs_unflagged": {
+  "flagged": 0.181,
+  "unflagged": 0.2222
+ },
+ "referable_accuracy_cnn": 0.794,
+ "attention_agreement": {
+  "note": "referable CNN calls only, where the heatmap is meaningful",
+  "correct": {
+   "n": 94,
+   "mean": 0.5115,
+   "median": 0.5405,
+   "p25": 0.3402,
+   "p75": 0.6683
+  },
+  "incorrect": {
+   "n": 47,
+   "mean": 0.2905,
+   "median": 0.279,
+   "p25": 0.204,
+   "p75": 0.394
+  }
+ },
+ "rule_grader_alone": {
+  "referable_sensitivity": 0.94,
+  "referable_specificity": 0.3114,
+  "exact_grade_agreement_with_truth": 0.3483,
+  "within_one_of_truth": 0.7453,
+  "agreement_with_cnn_within_one": 0.6929
+ },
+ "seconds_per_image": 1.828,
+ "rows": [
+  {
+   "image_id": "eyepacs/2243_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0909,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 6,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.09 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.149,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-0760-000",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0018,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.002,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/8882_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/363_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/20170328095522661",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/20170206105408182",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0304,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": null,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/31280_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0088,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.364,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/36314_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0016,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/19815_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.1079,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 6,
+    "EX": 5,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.11 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.263,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/23307_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0113,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.196,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/6127_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0208,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.36,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/1222_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/25041_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0205,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 11,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.37,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/8378_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0032,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/13438_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0212,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/20170327132740881",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0056,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": null,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/36864_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/24689_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0165,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/4165_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0056,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 10,
+    "HE": 6,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/14354_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0096,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 4,
+    "EX": 0,
+    "SE": 2
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.359,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/43790_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.02,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 8,
+    "HE": 4,
+    "EX": 0,
+    "SE": 5
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.382,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/33576_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/42026_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/f233638e0e90",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/4754_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0029,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/29203_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.004,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/20819_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0193,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.002,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/3347_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0899,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.09 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.185,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/2174_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0798,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 11,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.08 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.147,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/2562_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/24711_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/20170330153216510",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.7166,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 4,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.295,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/20170217091021120",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0056,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 1,
+    "EX": 3,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.576,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-1617-000",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.035,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/37305_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/35172_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0069,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.107,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/20170221162548131",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0045,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.215,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/7616_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/11952_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.1035,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.10 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.112,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/40342_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/9693_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/24424_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0025,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": null,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-1561-000",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0121,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.199,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/20170327112844313",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0065,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": null,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/1777_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0282,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/25013_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.103,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.10 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.006,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/35444_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/20170407130852926",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0073,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/7962_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.4734,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.322,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/24262_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0066,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.314,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/20273_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-1239-000",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0031,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": null,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/34785_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0147,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/5a179c123fd8",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0053,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 9,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.364,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/6314_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/21411_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0563,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.06 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.028,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/8234_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0167,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.006,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/9310_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0056,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 9,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/10886_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0298,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 18,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.077,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/43832_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0155,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.02,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/5241_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/24270_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0069,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": null,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/4959_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 1,
+   "p_referable": 0.1271,
+   "referable": true,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN calls referable but no lesion was found",
+    "P(referable) 0.13 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": null,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/26721_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/33747_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.2666,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.078,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/42063_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/731_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.02,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/15043_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0059,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/37571_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.021,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 3,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.076,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-0370-000",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/c64c0966b4cf",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0014,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/37026_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0751,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.08 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.221,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/41885_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0578,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 9,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.06 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/11593_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0519,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 5,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/27816_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0375,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/32420_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0086,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 5,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/22904_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/40928_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/2630_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0074,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 7,
+    "HE": 5,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.118,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/1394_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/30832_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0073,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.2,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/5203_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0052,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 3
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/25956_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0239,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.164,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/26370_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/20506_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.8001,
+   "referable": true,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 5,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.254,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/17822_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0071,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/4982378d72f9",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0002,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/b11dcdcbc8c8",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0027,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/7910_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0126,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.001,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-1332-000",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.3427,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.197,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/20170327102220440",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/25933_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/20170406082540787",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.1283,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 6,
+    "HE": 7,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.13 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.42,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/38902_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0388,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 6,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.324,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/7020_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0032,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 3,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/10502_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0312,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 12,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.136,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/12428_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0108,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/22607_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0115,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 8,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.029,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/3060_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0072,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 7,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.104,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-7599-601",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/13670_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0034,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.005,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/40556_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0013,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/20170412203735568",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0024,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 1,
+    "EX": 0,
+    "SE": 2
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.312,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/9547_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/38205_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/13089_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-0306-000",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0035,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.135,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/3196_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0234,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.018,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/27500_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/41351_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/37986_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0137,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 4,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.003,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/34171_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0195,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 7,
+    "EX": 5,
+    "SE": 3
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.635,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/5367_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0698,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 7,
+    "EX": 0,
+    "SE": 2
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.07 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.332,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/35444_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0902,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.09 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/30754_left",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.2185,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 3,
+    "EX": 24,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.449,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/42687_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0094,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/4375_right",
+   "grade": 0,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0703,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 4,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.07 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.328,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/5791_right",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-0517-000",
+   "grade": 0,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0034,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.013,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/29773_left",
+   "grade": 0,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/14245_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.1586,
+   "referable": true,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN calls referable but no lesion was found"
+   ],
+   "attention": null,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/655cafb4c932",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.8492,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 7,
+    "HE": 6,
+    "EX": 14,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.605,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/21756_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0099,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 11,
+    "HE": 11,
+    "EX": 0,
+    "SE": 7
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.627,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/44025_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0108,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.402,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/13753_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0207,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/39999_left",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/12070_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0139,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.148,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/11818_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.1294,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 0,
+    "EX": 3,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.13 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.087,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/23856_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.1018,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 9,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.10 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.153,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/42705_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.0418,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 6,
+    "HE": 5,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.334,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/43593_right",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/3612_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.2737,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.376,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/11495_right",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-1229-000",
+   "grade": 1,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0025,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/1689_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0811,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 6,
+    "HE": 7,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.08 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.257,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/15695_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.174,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.123,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2672-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.4086,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.276,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2757-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.236,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.27,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/18507_left",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/39391_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.1776,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.212,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/71c1a3cdbe47",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/25637_left",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/20062_left",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/42705_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0253,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 11,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.769,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/11818_left",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/7886_right",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/3526_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.0605,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.06 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.369,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/2d9d97a6e713",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/8114d6a160df",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/28015_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0107,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.101,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/7961_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0359,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 6,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.364,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2376-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 1,
+   "p_referable": 0.0862,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.09 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.1,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/8711_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.1985,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.279,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/39999_right",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/20292_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0344,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.27,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/12233_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0087,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.312,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/25717_right",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/2525_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.3939,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 3,
+    "EX": 4,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.4,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/13341_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0125,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/13766_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0292,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.198,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/5994_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.7553,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 9,
+    "HE": 5,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.449,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2103-100",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/b71428739d4e",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9249,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 6,
+    "EX": 16,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.547,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/33163_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.1442,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 7,
+    "HE": 5,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.14 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.246,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/32768_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9121,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "attention"
+   ],
+   "attention": 0.002,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/fdd18ccbbdc5",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/8bc6716c2238",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/41411_left",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/25787_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.7216,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 5,
+    "EX": 4,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.327,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/2382_right",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-2681-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.1102,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 4,
+    "EX": 0,
+    "SE": 2
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.11 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.214,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/0dc031c94225",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.2593,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 6,
+    "HE": 4,
+    "EX": 12,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.693,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/25158_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0716,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 9,
+    "HE": 4,
+    "EX": 3,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.07 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.394,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/227_left",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/18528_right",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/31442_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0742,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.07 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.098,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/19572_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.057,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.06 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.024,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/4257_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0139,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/9478_left",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/41394_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.2524,
+   "referable": true,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 3,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.081,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/32566_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.6147,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.163,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-1777-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.6758,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 4,
+    "EX": 4,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.372,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/4dd9d29eae5d",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-1974-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 1,
+   "p_referable": 0.0692,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 40,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.07 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.276,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/22987_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0705,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.07 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.002,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2281-100",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/12990_right",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/3060_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.025,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 0,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.293,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/29803_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.1706,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 10,
+    "HE": 3,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.287,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2539-100",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/20842_right",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/39834_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0329,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.01,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2263-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.6209,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 4,
+    "EX": 39,
+    "SE": 7
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.565,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/22987_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.407,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.164,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/21695_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.4136,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 11,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.494,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/c9485c38fdd5",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/28457_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.3928,
+   "referable": true,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.315,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/20062_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0052,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 7,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.001,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/40033_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0084,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/03e25101e8e8",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/13766_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0342,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 1,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.288,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2386-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0226,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/22110_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0531,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.274,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/6127_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0637,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.06 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.412,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/3124_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0014,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-1978-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.491,
+   "referable": true,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.219,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2776-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.503,
+   "referable": true,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 5,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.216,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/b576c5269ad1",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/39834_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.0626,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 2,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.06 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.265,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/20082_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0561,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.06 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.257,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-1908-100",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/4a213b405ee4",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/8711_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0189,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.405,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/38743_left",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/0eb52045349f",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/cb2f3c5d71a7",
+   "grade": 1,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 2,
+   "p_referable": 0.8374,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 10,
+    "HE": 5,
+    "EX": 3,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.48,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/6811_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0034,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 2,
+    "EX": 0,
+    "SE": 3
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.007,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/05a5183c92d0",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.405,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 4,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.286,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-1846-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.6953,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "attention"
+   ],
+   "attention": 0.002,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/20147_left",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/3464_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0376,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.285,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/9008_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 2,
+   "p_referable": 0.6704,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 6,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.211,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/34368_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0245,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.443,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/365f8c01d994",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.8061,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 5,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.295,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2788-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9716,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 6,
+    "HE": 3,
+    "EX": 33,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.649,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/2382_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0246,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.105,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/34706_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0018,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/00cb6555d108",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.3932,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.388,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/44337_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.3186,
+   "referable": true,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "attention"
+   ],
+   "attention": 0.001,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/37647_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.4067,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.221,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/12372_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0293,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 11,
+    "HE": 6,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels"
+   ],
+   "attention": 0.551,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/23856_left",
+   "grade": 1,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 0,
+   "p_referable": 0.0344,
+   "referable": false,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 4,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.346,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/10320_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.1985,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.332,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2364-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 2,
+   "p_referable": 0.3272,
+   "referable": true,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 2 and rule grade 0 differ by 2 levels",
+    "CNN calls referable but no lesion was found"
+   ],
+   "attention": 0.03,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/5962_left",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/cf0575534cec",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-2241-100",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.1188,
+   "referable": true,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN calls referable but no lesion was found",
+    "P(referable) 0.12 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.001,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/25637_right",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/38071_left",
+   "grade": 1,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/38071_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.6273,
+   "referable": true,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 3,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.499,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/42618_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.0779,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.08 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.238,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-5826-300",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9933,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 4,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.521,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/44029_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.986,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 6,
+    "HE": 9,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.419,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/35027_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/14339_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/b99c825b93c5",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9817,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 13,
+    "HE": 11,
+    "EX": 25,
+    "SE": 4
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.603,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/6337_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5353-300",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/8363_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/6018_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.8715,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 16,
+    "HE": 4,
+    "EX": 0,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.388,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/b9b6ee2b9453",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.8337,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 30,
+    "HE": 25,
+    "EX": 56,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.815,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/5740_right",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9095,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 10,
+    "HE": 3,
+    "EX": 11,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.499,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/24461_right",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.953,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.386,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-1812-100",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9739,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.272,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-4905-300",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9988,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 6,
+    "EX": 0,
+    "SE": 4
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.437,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-5579-300",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9959,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 8,
+    "HE": 14,
+    "EX": 4,
+    "SE": 3
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.553,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-5837-300",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.99,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 10,
+    "HE": 28,
+    "EX": 9,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.608,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/10043_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-2272-100",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9932,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.302,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/43803_right",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.8982,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 2,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.281,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-4155-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-4624-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/24744_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3608-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3845-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3178-100",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/9586_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/31565_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9603,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 14,
+    "EX": 0,
+    "SE": 3
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.566,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-5540-300",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9637,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.299,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/38638_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.944,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 4,
+    "EX": 3,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.267,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/4798_right",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9675,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 5,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.428,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-1914-100",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9881,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.375,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/10439_right",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9747,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.268,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/35962_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-2747-100",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5612-300",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/d141728fa392",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9783,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 27,
+    "HE": 12,
+    "EX": 45,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.769,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2488-100",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/9657_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0897,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 13,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.09 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.142,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-1793-100",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/38829_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9425,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 6,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.265,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/43fb6eda9b97",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.8815,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 11,
+    "HE": 7,
+    "EX": 8,
+    "SE": 5
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.499,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/27136_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.6687,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 3,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.247,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-5388-300",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9998,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 2,
+    "EX": 0,
+    "SE": 3
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.472,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/39344_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5365-300",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/71e4130bf5c8",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9965,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 26,
+    "HE": 27,
+    "EX": 25,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.797,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/38800_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "good",
+   "cnn_grade": 2,
+   "p_referable": 0.8225,
+   "referable": true,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 7,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.333,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/264_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.4424,
+   "referable": true,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.291,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/12666_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5453-300",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/42683_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/31565_right",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9807,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 3,
+    "EX": 3,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.281,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/33304_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5799-300",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9994,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 13,
+    "HE": 9,
+    "EX": 17,
+    "SE": 7
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.614,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/9324_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/1006345f70b7",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9852,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 7,
+    "HE": 19,
+    "EX": 131,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.857,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-4426-200",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 4,
+   "p_referable": 0.9854,
+   "referable": true,
+   "rule_grade": 4,
+   "rule_referable": true,
+   "counts": {
+    "MA": 9,
+    "HE": 23,
+    "EX": 5,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.708,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-3458-200",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9976,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 8,
+    "EX": 9,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.54,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/38508_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-0727-000",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0765,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.08 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.011,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-3970-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3459-200",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9856,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 8,
+    "HE": 15,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.62,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/16597_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9434,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 2,
+    "EX": 7,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.256,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/10726_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/1607_right",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.7798,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 9,
+    "HE": 7,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.276,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-1819-100",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.3957,
+   "referable": true,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 2,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.332,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-4904-300",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9901,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 13,
+    "HE": 11,
+    "EX": 7,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.614,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/36461_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3258-100",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.1892,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.431,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-4306-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5649-300",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/ca7f5caddf96",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/12589_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9802,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 4,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.385,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/6dfd80748e72",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/fa3e544a7401",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3745-200",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9975,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 20,
+    "HE": 9,
+    "EX": 5,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.544,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-4419-200",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9812,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.212,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/9eaac43744f5",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/ffa47f6a7bf4",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9932,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 29,
+    "HE": 30,
+    "EX": 51,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.831,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/24656_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5187-300",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9985,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 17,
+    "HE": 20,
+    "EX": 4,
+    "SE": 3
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.613,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/10726_right",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.0611,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 5,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.06 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.036,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/22561_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/33359_right",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9827,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 18,
+    "EX": 6,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.362,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/12789_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3974-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5618-300",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9795,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 6,
+    "HE": 5,
+    "EX": 0,
+    "SE": 3
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.475,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/e2a47a74e6e1",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/14992_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/aed4e743c230",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.8146,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 16,
+    "HE": 7,
+    "EX": 4,
+    "SE": 5
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.523,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-3799-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5887-300",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.987,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 4
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.499,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/8b26d3cd61e8",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3651-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/6684_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/1ee1eb7943db",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-4839-300",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/33799_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-4476-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/5577_right",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.1176,
+   "referable": true,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN calls referable but no lesion was found",
+    "P(referable) 0.12 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.129,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-3474-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/11288_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3839-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5909-300",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9924,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 9,
+    "HE": 17,
+    "EX": 3,
+    "SE": 4
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.603,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-2078-100",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3933-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/13584_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/40404_right",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.0691,
+   "referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 3,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "P(referable) 0.07 is within \u00b10.05 of the threshold 0.11"
+   ],
+   "attention": 0.294,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/5047_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.052,
+   "referable": false,
+   "rule_grade": 0,
+   "rule_referable": false,
+   "counts": {
+    "MA": 0,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": null,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/34101_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3849-200",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/9041eb43456e",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9892,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 18,
+    "HE": 27,
+    "EX": 20,
+    "SE": 5
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.663,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/2489_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-2736-100",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.968,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 1,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.289,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/35270_left",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/ba25f947f4ec",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-4412-200",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9897,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 21,
+    "HE": 30,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.655,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/21757_right",
+   "grade": 2,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/15696_left",
+   "grade": 2,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9794,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 34,
+    "HE": 24,
+    "EX": 25,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.759,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/12881_left",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/35052_right",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9686,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 16,
+    "HE": 27,
+    "EX": 7,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.624,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-5527-300",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/37034_right",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9661,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 7,
+    "HE": 4,
+    "EX": 18,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.621,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-5451-300",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/32604_right",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.8551,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.138,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-3286-200",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9847,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 61,
+    "HE": 34,
+    "EX": 5,
+    "SE": 3
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.688,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-4825-300",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/3e3a3955b9c5",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9303,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 33,
+    "HE": 14,
+    "EX": 5,
+    "SE": 6
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.632,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-5483-300",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/8c0d05233238",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/31616ff6b53b",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/4c60b10a3a6a",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/35052_left",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9811,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 18,
+    "HE": 11,
+    "EX": 0,
+    "SE": 4
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.413,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/28052_left",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3360-200",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9987,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 29,
+    "HE": 62,
+    "EX": 25,
+    "SE": 3
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.757,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-4337-200",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9982,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 18,
+    "HE": 17,
+    "EX": 18,
+    "SE": 4
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.543,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/4155_left",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3813-200",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9942,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 6,
+    "HE": 3,
+    "EX": 11,
+    "SE": 3
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.67,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/a763661f98a5",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-4072-200",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/18656_left",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9984,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 17,
+    "HE": 27,
+    "EX": 67,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.787,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/24656_left",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/7631_right",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/03c85870824c",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/20905_left",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9949,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 5,
+    "HE": 15,
+    "EX": 16,
+    "SE": 3
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.647,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/18656_right",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9983,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 21,
+    "HE": 33,
+    "EX": 67,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.766,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/4294a14c656a",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9931,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 10,
+    "HE": 21,
+    "EX": 75,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.74,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-1723-000",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/28052_right",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/070f67572d03",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/3988_left",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9897,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 21,
+    "HE": 15,
+    "EX": 17,
+    "SE": 8
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.595,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-5319-300",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9959,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 7,
+    "HE": 8,
+    "EX": 4,
+    "SE": 8
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.541,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/0dc8d25b3f69",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/32604_left",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9331,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "attention"
+   ],
+   "attention": 0.021,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/28840_left",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5444-300",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/37004_left",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9527,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 3,
+    "HE": 3,
+    "EX": 30,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.532,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/dd3dad6ca78f",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5334-300",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9984,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 9,
+    "HE": 3,
+    "EX": 9,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.453,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-4752-200",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/8363_left",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-5200-300",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/8a234d68b27e",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/37004_right",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9262,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 10,
+    "HE": 10,
+    "EX": 28,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.754,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-3529-200",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.998,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 18,
+    "HE": 13,
+    "EX": 6,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.496,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/12881_right",
+   "grade": 3,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/328_right",
+   "grade": 3,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9973,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 16,
+    "HE": 8,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.466,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6545-400",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 4,
+   "p_referable": 0.996,
+   "referable": true,
+   "rule_grade": 4,
+   "rule_referable": true,
+   "counts": {
+    "MA": 39,
+    "HE": 50,
+    "EX": 0,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.633,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/fb696a8e055a",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9919,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 29,
+    "HE": 33,
+    "EX": 33,
+    "SE": 4
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.845,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6754-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6938-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/0083ee8054ee",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6327-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6504-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6899-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/7c90ab025331",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.948,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 6,
+    "HE": 21,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.697,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6606-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/30255_left",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6460-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6765-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/4155_right",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/8db2ce991101",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/4a3da369b227",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 4,
+   "p_referable": 0.9975,
+   "referable": true,
+   "rule_grade": 4,
+   "rule_referable": true,
+   "counts": {
+    "MA": 15,
+    "HE": 31,
+    "EX": 21,
+    "SE": 22
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.743,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/b90bc89ce8d8",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6379-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6668-400",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 4,
+   "p_referable": 0.9968,
+   "referable": true,
+   "rule_grade": 4,
+   "rule_referable": true,
+   "counts": {
+    "MA": 29,
+    "HE": 78,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.874,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6837-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/17940_left",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6925-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/21096_right",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 4,
+   "p_referable": 0.9986,
+   "referable": true,
+   "rule_grade": 4,
+   "rule_referable": true,
+   "counts": {
+    "MA": 17,
+    "HE": 16,
+    "EX": 38,
+    "SE": 8
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.675,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6411-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6449-400",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 4,
+   "p_referable": 1.0,
+   "referable": true,
+   "rule_grade": 4,
+   "rule_referable": true,
+   "counts": {
+    "MA": 51,
+    "HE": 82,
+    "EX": 28,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "attention"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/887c26fc0e1f",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9923,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 30,
+    "HE": 37,
+    "EX": 4,
+    "SE": 7
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.692,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6900-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6906-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6423-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/21096_left",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/6f923b60934b",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.4958,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 7,
+    "EX": 0,
+    "SE": 3
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.505,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6922-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/51af8c112682",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6582-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6643-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/a6d45de20e4d",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6624-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6455-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/5c7ab966a3ee",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/24019_right",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 4,
+   "p_referable": 0.9936,
+   "referable": true,
+   "rule_grade": 4,
+   "rule_referable": true,
+   "counts": {
+    "MA": 2,
+    "HE": 8,
+    "EX": 25,
+    "SE": 8
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.554,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6335-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/cd972e5639e0",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/36125_left",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6306-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6708-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/8eeac97f02f0",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6294-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/3796af4d987a",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/b55d2ddb3e75",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9964,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 23,
+    "HE": 56,
+    "EX": 64,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.844,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6484-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/5dd2e26fc244",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/4688_right",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/5b5b80a3edee",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6844-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6463-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/27727_left",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/9157_right",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9881,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 14,
+    "HE": 17,
+    "EX": 26,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.645,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6710-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6591-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6695-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6626-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6824-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/9157_left",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/9e3510963315",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9839,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 31,
+    "HE": 19,
+    "EX": 15,
+    "SE": 3
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.68,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6956-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6564-400",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 4,
+   "p_referable": 0.9994,
+   "referable": true,
+   "rule_grade": 4,
+   "rule_referable": true,
+   "counts": {
+    "MA": 8,
+    "HE": 19,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.589,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6787-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6661-400",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 4,
+   "p_referable": 0.9972,
+   "referable": true,
+   "rule_grade": 4,
+   "rule_referable": true,
+   "counts": {
+    "MA": 4,
+    "HE": 3,
+    "EX": 16,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.276,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/25697_right",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6768-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6437-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/39081_right",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6792-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6843-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/24019_left",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6464-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6387-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/0bf37ca3156a",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6705-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/f69835dc7c50",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9902,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 26,
+    "HE": 37,
+    "EX": 18,
+    "SE": 14
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.806,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/262ad704319c",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-3979-200",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/31442_right",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 0,
+   "p_referable": 0.1205,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 2,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "P(referable) 0.12 is within \u00b10.05 of the threshold 0.11",
+    "attention"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/17940_right",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "eyepacs/30255_right",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "aptos/d0b132d2c7ec",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 3,
+   "p_referable": 0.9924,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 12,
+    "HE": 37,
+    "EX": 42,
+    "SE": 1
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.812,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6823-400",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 4,
+   "p_referable": 1.0,
+   "referable": true,
+   "rule_grade": 4,
+   "rule_referable": true,
+   "counts": {
+    "MA": 7,
+    "HE": 16,
+    "EX": 0,
+    "SE": 1
+   },
+   "flag": true,
+   "reasons": [
+    "attention"
+   ],
+   "attention": 0.0,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "ddr/007-6947-400",
+   "grade": 4,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 2,
+   "p_referable": 0.9268,
+   "referable": true,
+   "rule_grade": 2,
+   "rule_referable": true,
+   "counts": {
+    "MA": 0,
+    "HE": 3,
+    "EX": 0,
+    "SE": 2
+   },
+   "flag": false,
+   "reasons": [],
+   "attention": 0.299,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "aptos/94ef1d14597f",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  },
+  {
+   "image_id": "ddr/007-6700-400",
+   "grade": 4,
+   "accepted": false,
+   "quality": "reject"
+  }
+ ]
+}

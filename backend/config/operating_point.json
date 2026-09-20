@@ -1,228 +1,228 @@
 {
-  "model_version": "venus-dr-1.0.0",
-  "grader_tag": "legacy_v1",
-  "written_at": "2026-09-20T11:10:00.277146+00:00",
-  "calibration_fingerprint": "68e60b36c651d6e24f343226aaddcf45c9e7fb2bef9317b40c6a0f54c0e5f613",
-  "calibration_manifest": "calibration_split.csv",
-  "external_test_manifest": null,
-  "external_test_fingerprint": null,
+  "model_version": "venus-dr-2.0.0",
+  "grader_tag": "grader_v2",
+  "written_at": "2026-09-20T15:46:06.611609+00:00",
+  "calibration_fingerprint": "6d9863c704ba4e71d6a522bba135d57640b25724a3c474a15a6635a31c896000",
+  "calibration_manifest": "calibration.csv",
+  "external_test_manifest": "external_test_ddr.csv",
+  "external_test_fingerprint": "e1833d2342e7e67acb74ccc7000f2efe4ad4243a0f699e1d790851ae875475c5",
   "source": {
-    "description": "v1 grader (EfficientNet-B4/380) raw scores on the frozen EyePACS manifest, 1,500 images stratified 300 per grade; split by patient",
-    "external": "EyePACS test half (within the same frozen set; cross-source relative to the v1 training data)",
-    "n_calibration": 755,
-    "n_external": 745,
-    "n_patients_calibration": 689
+    "description": "grader_v2 predictions on the patient-disjoint calibration manifest (EyePACS, held out before training)",
+    "external": "DDR test split: a different acquisition source from every training image, ungradables removed, never trained on",
+    "n_calibration": 2000,
+    "n_external": 3720,
+    "n_patients_calibration": 1000
   },
   "calibration": {
     "method": "Platt scaling on logit(raw P(grade >= 2))",
-    "a": 0.36920167529490977,
-    "b": 2.258303880881939,
-    "ece_raw": 0.3048,
-    "ece_calibrated": 0.0551,
+    "a": 0.7772701953626736,
+    "b": -0.8825275361843463,
+    "ece_raw": 0.036,
+    "ece_calibrated": 0.0082,
     "reliability_diagram": [
       {
         "bin": [
           0.0,
           0.1
         ],
-        "n": 51,
-        "confidence": 0.063,
-        "accuracy": 0.0588
+        "n": 1445,
+        "confidence": 0.0229,
+        "accuracy": 0.0215
       },
       {
         "bin": [
           0.1,
           0.2
         ],
-        "n": 98,
-        "confidence": 0.1496,
-        "accuracy": 0.1837
+        "n": 149,
+        "confidence": 0.1403,
+        "accuracy": 0.1611
       },
       {
         "bin": [
           0.2,
           0.3
         ],
-        "n": 53,
-        "confidence": 0.2545,
-        "accuracy": 0.3585
+        "n": 70,
+        "confidence": 0.247,
+        "accuracy": 0.2571
       },
       {
         "bin": [
           0.3,
           0.4
         ],
-        "n": 45,
-        "confidence": 0.3495,
-        "accuracy": 0.4222
+        "n": 34,
+        "confidence": 0.3496,
+        "accuracy": 0.2941
       },
       {
         "bin": [
           0.4,
           0.5
         ],
-        "n": 43,
-        "confidence": 0.4412,
-        "accuracy": 0.4419
+        "n": 23,
+        "confidence": 0.4555,
+        "accuracy": 0.5217
       },
       {
         "bin": [
           0.5,
           0.6
         ],
-        "n": 37,
-        "confidence": 0.5499,
-        "accuracy": 0.3243
+        "n": 20,
+        "confidence": 0.546,
+        "accuracy": 0.55
       },
       {
         "bin": [
           0.6,
           0.7
         ],
-        "n": 39,
-        "confidence": 0.6475,
-        "accuracy": 0.3846
+        "n": 21,
+        "confidence": 0.6504,
+        "accuracy": 0.4762
       },
       {
         "bin": [
           0.7,
           0.8
         ],
-        "n": 53,
-        "confidence": 0.7548,
-        "accuracy": 0.717
+        "n": 28,
+        "confidence": 0.7534,
+        "accuracy": 0.7857
       },
       {
         "bin": [
           0.8,
           0.9
         ],
-        "n": 85,
-        "confidence": 0.8551,
-        "accuracy": 0.8941
+        "n": 53,
+        "confidence": 0.8602,
+        "accuracy": 0.8491
       },
       {
         "bin": [
           0.9,
           1.0
         ],
-        "n": 251,
-        "confidence": 0.9508,
-        "accuracy": 0.9721
+        "n": 157,
+        "confidence": 0.9627,
+        "accuracy": 0.9745
       }
     ]
   },
   "thresholds": {
-    "referable": 0.334075,
-    "referable_85pc_alternative": 0.464859,
+    "referable": 0.105674,
+    "referable_85pc_alternative": 0.187191,
     "chosen_on": "calibration manifest, at 90% sensitivity, then locked",
     "abstain_band": 0.05,
     "calibration_at_90": {
-      "tp": 417,
-      "fn": 46,
-      "fp": 124,
-      "tn": 168,
-      "sensitivity": 0.9006,
-      "specificity": 0.5753,
-      "ppv_at_indian_prevalence": 0.3177,
-      "npv_at_indian_prevalence": 0.9635,
-      "referred_fraction": 0.7166
+      "tp": 303,
+      "fn": 33,
+      "fp": 235,
+      "tn": 1429,
+      "sensitivity": 0.9018,
+      "specificity": 0.8588,
+      "ppv_at_indian_prevalence": 0.5836,
+      "npv_at_indian_prevalence": 0.9755,
+      "referred_fraction": 0.269
     },
     "calibration_at_85": {
-      "tp": 394,
-      "fn": 69,
-      "fp": 82,
-      "tn": 210,
-      "sensitivity": 0.851,
-      "specificity": 0.7192,
-      "ppv_at_indian_prevalence": 0.3995,
-      "npv_at_indian_prevalence": 0.9565,
-      "referred_fraction": 0.6305
+      "tp": 286,
+      "fn": 50,
+      "fp": 132,
+      "tn": 1532,
+      "sensitivity": 0.8512,
+      "specificity": 0.9207,
+      "ppv_at_indian_prevalence": 0.702,
+      "npv_at_indian_prevalence": 0.9657,
+      "referred_fraction": 0.209
     }
   },
   "external_test": {
     "name": "external_test",
-    "description": "EyePACS test half (within the same frozen set; cross-source relative to the v1 training data)",
-    "n": 745,
-    "n_referable": 437,
-    "auc": 0.8827,
+    "description": "DDR test split: a different acquisition source from every training image, ungradables removed, never trained on",
+    "n": 3720,
+    "n_referable": 1688,
+    "auc": 0.9746,
     "at_locked_threshold": {
-      "tp": 398,
-      "fn": 39,
-      "fp": 121,
-      "tn": 187,
-      "sensitivity": 0.9108,
-      "specificity": 0.6071,
-      "ppv_at_indian_prevalence": 0.3373,
-      "npv_at_indian_prevalence": 0.9687,
-      "referred_fraction": 0.6966
+      "tp": 1598,
+      "fn": 90,
+      "fp": 226,
+      "tn": 1806,
+      "sensitivity": 0.9467,
+      "specificity": 0.8888,
+      "ppv_at_indian_prevalence": 0.6514,
+      "npv_at_indian_prevalence": 0.987,
+      "referred_fraction": 0.4903
     },
     "at_85pc_threshold": {
-      "tp": 375,
-      "fn": 62,
-      "fp": 79,
-      "tn": 229,
-      "sensitivity": 0.8581,
-      "specificity": 0.7435,
-      "ppv_at_indian_prevalence": 0.4234,
-      "npv_at_indian_prevalence": 0.9598,
-      "referred_fraction": 0.6094
+      "tp": 1561,
+      "fn": 127,
+      "fp": 175,
+      "tn": 1857,
+      "sensitivity": 0.9248,
+      "specificity": 0.9139,
+      "ppv_at_indian_prevalence": 0.7021,
+      "npv_at_indian_prevalence": 0.9822,
+      "referred_fraction": 0.4667
     },
     "ci95_bootstrap_2000": {
       "auc": [
-        0.8569,
-        0.9045
+        0.9698,
+        0.9793
       ],
       "sensitivity": [
-        0.8816,
-        0.9348
+        0.9362,
+        0.9571
       ],
       "specificity": [
-        0.5544,
-        0.6575
+        0.8749,
+        0.9019
       ],
       "ppv_at_indian_prevalence": [
-        0.3086,
-        0.3689
+        0.6244,
+        0.68
       ]
     },
-    "ece": 0.041,
+    "ece": 0.0419,
     "reliability_diagram": [
       {
         "bin": [
           0.0,
           0.1
         ],
-        "n": 48,
-        "confidence": 0.0663,
-        "accuracy": 0.125
+        "n": 1889,
+        "confidence": 0.0122,
+        "accuracy": 0.0466
       },
       {
         "bin": [
           0.1,
           0.2
         ],
-        "n": 83,
-        "confidence": 0.1475,
-        "accuracy": 0.1807
+        "n": 102,
+        "confidence": 0.1439,
+        "accuracy": 0.402
       },
       {
         "bin": [
           0.2,
           0.3
         ],
-        "n": 74,
-        "confidence": 0.2502,
-        "accuracy": 0.1622
+        "n": 72,
+        "confidence": 0.2467,
+        "accuracy": 0.4167
       },
       {
         "bin": [
           0.3,
           0.4
         ],
-        "n": 57,
-        "confidence": 0.3454,
-        "accuracy": 0.3684
+        "n": 51,
+        "confidence": 0.3548,
+        "accuracy": 0.4118
       },
       {
         "bin": [
@@ -230,109 +230,298 @@
           0.5
         ],
         "n": 48,
-        "confidence": 0.4488,
-        "accuracy": 0.3542
+        "confidence": 0.4482,
+        "accuracy": 0.5625
       },
       {
         "bin": [
           0.5,
           0.6
         ],
-        "n": 39,
-        "confidence": 0.5428,
-        "accuracy": 0.6154
+        "n": 85,
+        "confidence": 0.5518,
+        "accuracy": 0.7059
       },
       {
         "bin": [
           0.6,
           0.7
         ],
-        "n": 40,
-        "confidence": 0.6543,
-        "accuracy": 0.575
+        "n": 64,
+        "confidence": 0.6469,
+        "accuracy": 0.8281
       },
       {
         "bin": [
           0.7,
           0.8
         ],
-        "n": 50,
-        "confidence": 0.7497,
-        "accuracy": 0.68
+        "n": 79,
+        "confidence": 0.7545,
+        "accuracy": 0.7722
       },
       {
         "bin": [
           0.8,
           0.9
         ],
-        "n": 76,
-        "confidence": 0.8534,
-        "accuracy": 0.8816
+        "n": 124,
+        "confidence": 0.8572,
+        "accuracy": 0.9355
       },
       {
         "bin": [
           0.9,
           1.0
         ],
-        "n": 230,
-        "confidence": 0.9523,
-        "accuracy": 0.9478
+        "n": 1206,
+        "confidence": 0.9806,
+        "accuracy": 0.9876
       }
     ],
-    "sensitivity_grade2_only": 0.7817,
+    "sensitivity_grade2_only": 0.9329,
     "referred_fraction_by_true_grade": {
-      "0": 0.3904,
-      "1": 0.3951,
-      "2": 0.7817,
-      "3": 0.9521,
-      "4": 0.9933
+      "0": 0.0477,
+      "1": 0.7302,
+      "2": 0.9329,
+      "3": 1.0,
+      "4": 1.0
     },
     "prevalence_for_ppv": 0.18,
     "roc_points_for_simulation": [
       {
         "sensitivity_target": 0.8,
-        "threshold": 0.560547,
-        "sensitivity": 0.8009,
-        "specificity": 0.8052
+        "threshold": 0.730961,
+        "sensitivity": 0.8004,
+        "specificity": 0.9813
       },
       {
         "sensitivity_target": 0.85,
-        "threshold": 0.473008,
-        "sensitivity": 0.8513,
-        "specificity": 0.7468
+        "threshold": 0.57425,
+        "sensitivity": 0.8501,
+        "specificity": 0.971
       },
       {
         "sensitivity_target": 0.9,
-        "threshold": 0.357914,
-        "sensitivity": 0.9016,
-        "specificity": 0.6494
+        "threshold": 0.349432,
+        "sensitivity": 0.9005,
+        "specificity": 0.9434
       },
       {
         "sensitivity_target": 0.95,
-        "threshold": 0.204763,
-        "sensitivity": 0.9519,
-        "specificity": 0.3799
+        "threshold": 0.09338,
+        "sensitivity": 0.9502,
+        "specificity": 0.8814
       },
       {
         "sensitivity_target": 0.975,
-        "threshold": 0.137267,
-        "sensitivity": 0.9771,
-        "specificity": 0.237
+        "threshold": 0.02232,
+        "sensitivity": 0.9751,
+        "specificity": 0.7672
       }
     ],
-    "scored_once": false,
-    "rescored_with_force": true,
-    "grade_metrics_for_contrast": null
+    "scored_once": true,
+    "rescored_with_force": false,
+    "grade_metrics_for_contrast": {
+      "quadratic_weighted_kappa": 0.913,
+      "exact_grade_accuracy": 0.8731,
+      "within_one_grade": 0.9511
+    }
   },
-  "secondary_heldout": null,
+  "secondary_heldout": {
+    "name": "heldout_eyepacs_frozen",
+    "description": "EyePACS patients frozen from the earlier grader: held-out patients, same source as part of training (within-source)",
+    "n": 2758,
+    "n_referable": 1559,
+    "auc": 0.9543,
+    "at_locked_threshold": {
+      "tp": 1461,
+      "fn": 98,
+      "fp": 295,
+      "tn": 904,
+      "sensitivity": 0.9371,
+      "specificity": 0.754,
+      "ppv_at_indian_prevalence": 0.4554,
+      "npv_at_indian_prevalence": 0.982,
+      "referred_fraction": 0.6367
+    },
+    "at_85pc_threshold": {
+      "tp": 1419,
+      "fn": 140,
+      "fp": 195,
+      "tn": 1004,
+      "sensitivity": 0.9102,
+      "specificity": 0.8374,
+      "ppv_at_indian_prevalence": 0.5513,
+      "npv_at_indian_prevalence": 0.977,
+      "referred_fraction": 0.5852
+    },
+    "ci95_bootstrap_2000": {
+      "auc": [
+        0.9469,
+        0.9608
+      ],
+      "sensitivity": [
+        0.9252,
+        0.9487
+      ],
+      "specificity": [
+        0.7291,
+        0.7769
+      ],
+      "ppv_at_indian_prevalence": [
+        0.4314,
+        0.4802
+      ]
+    },
+    "ece": 0.0678,
+    "reliability_diagram": [
+      {
+        "bin": [
+          0.0,
+          0.1
+        ],
+        "n": 984,
+        "confidence": 0.0268,
+        "accuracy": 0.0925
+      },
+      {
+        "bin": [
+          0.1,
+          0.2
+        ],
+        "n": 175,
+        "confidence": 0.1403,
+        "accuracy": 0.3029
+      },
+      {
+        "bin": [
+          0.2,
+          0.3
+        ],
+        "n": 99,
+        "confidence": 0.2472,
+        "accuracy": 0.404
+      },
+      {
+        "bin": [
+          0.3,
+          0.4
+        ],
+        "n": 78,
+        "confidence": 0.3517,
+        "accuracy": 0.6154
+      },
+      {
+        "bin": [
+          0.4,
+          0.5
+        ],
+        "n": 61,
+        "confidence": 0.4474,
+        "accuracy": 0.5902
+      },
+      {
+        "bin": [
+          0.5,
+          0.6
+        ],
+        "n": 54,
+        "confidence": 0.5507,
+        "accuracy": 0.6296
+      },
+      {
+        "bin": [
+          0.6,
+          0.7
+        ],
+        "n": 54,
+        "confidence": 0.6478,
+        "accuracy": 0.6852
+      },
+      {
+        "bin": [
+          0.7,
+          0.8
+        ],
+        "n": 93,
+        "confidence": 0.7534,
+        "accuracy": 0.8387
+      },
+      {
+        "bin": [
+          0.8,
+          0.9
+        ],
+        "n": 158,
+        "confidence": 0.8538,
+        "accuracy": 0.9241
+      },
+      {
+        "bin": [
+          0.9,
+          1.0
+        ],
+        "n": 1002,
+        "confidence": 0.9702,
+        "accuracy": 0.994
+      }
+    ],
+    "sensitivity_grade2_only": 0.8827,
+    "referred_fraction_by_true_grade": {
+      "0": 0.1463,
+      "1": 0.4097,
+      "2": 0.8827,
+      "3": 0.9658,
+      "4": 0.9865
+    },
+    "prevalence_for_ppv": 0.18,
+    "roc_points_for_simulation": [
+      {
+        "sensitivity_target": 0.8,
+        "threshold": 0.627444,
+        "sensitivity": 0.8005,
+        "specificity": 0.965
+      },
+      {
+        "sensitivity_target": 0.85,
+        "threshold": 0.406448,
+        "sensitivity": 0.8505,
+        "specificity": 0.9258
+      },
+      {
+        "sensitivity_target": 0.9,
+        "threshold": 0.220107,
+        "sensitivity": 0.9006,
+        "specificity": 0.8582
+      },
+      {
+        "sensitivity_target": 0.95,
+        "threshold": 0.08103,
+        "sensitivity": 0.9506,
+        "specificity": 0.7198
+      },
+      {
+        "sensitivity_target": 0.975,
+        "threshold": 0.036423,
+        "sensitivity": 0.9756,
+        "specificity": 0.5646
+      }
+    ],
+    "grade_metrics_for_contrast": {
+      "quadratic_weighted_kappa": 0.8019,
+      "exact_grade_accuracy": 0.6135,
+      "within_one_grade": 0.9007
+    }
+  },
   "targets": {
     "sensitivity": 0.9,
     "specificity": 0.85,
     "auc": 0.95,
     "ece": 0.05,
     "sensitivity_met": true,
-    "specificity_met": false,
-    "auc_met": false,
+    "specificity_met": true,
+    "auc_met": true,
     "ece_met": true
   },
   "notes": [

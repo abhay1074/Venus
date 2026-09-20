@@ -1,0 +1,23 @@
+{
+  "tag": "lesion_unet",
+  "thresholds": {
+    "MA": 0.53,
+    "HE": 0.89,
+    "EX": 0.92,
+    "SE": 0.47
+  },
+  "chosen_on": "DDR valid split, max pixel F1 (all pixels)",
+  "test_aupr": {
+    "MA": 0.0791,
+    "HE": 0.4492,
+    "EX": 0.477,
+    "SE": 0.2615
+  },
+  "test_dice": {
+    "MA": 0.1657,
+    "HE": 0.4649,
+    "EX": 0.4858,
+    "SE": 0.3084
+  },
+  "written_at": "2026-09-20T15:45:44.187003+00:00"
+}

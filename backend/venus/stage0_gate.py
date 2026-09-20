@@ -401,16 +401,19 @@ def run(image_bgr: np.ndarray) -> dict:
     features = quality_features(image, mask, geometry)
     label, score, reason, notes = quality_label(features)
     cnn = quality_cnn_probabilities(image)
-    if cnn is not None:
-        # The learned label decides; the handcrafted hard limits can only
-        # override it to reject (with the operator-facing reason).
-        learned = max(cnn, key=cnn.get)
-        if label != "reject":
-            label = learned
-            reason = None
-            if learned == "reject":
-                reason = "Image quality too low to grade (learned quality classifier) — retake"
-            score = round(float(cnn["good"] + 0.5 * cnn["usable"]), 3)
+    cnn_warning = None
+    if cnn is not None and label != "reject":
+        # Measured on 498 validation images (backend/config/validation_flags.json,
+        # first run): letting the EyeQ-trained CNN reject refused 46% of images
+        # and 78% of PDR images -- its "reject" class tracks disease severity
+        # and its cameras differ from APTOS/DDR. So the learned label decides
+        # good vs usable (i.e. whether to enhance) and its reject probability
+        # is reported as a warning; only the handcrafted hard limits reject.
+        label = "good" if cnn["good"] >= cnn["usable"] and cnn["reject"] < 0.5 else "usable"
+        if cnn["reject"] >= 0.5:
+            cnn_warning = f"learned quality classifier: low quality (P = {cnn['reject']:.2f}); enhanced and graded, read with care"
+            notes = notes + ["learned classifier: low quality"]
+        score = round(float(cnn["good"] + 0.5 * cnn["usable"]), 3)
     enhanced = label == "usable"
     working = enhance(image, mask) if enhanced else image.copy()
     working[mask == 0] = 0
@@ -423,7 +426,8 @@ def run(image_bgr: np.ndarray) -> dict:
         "notes": notes,
         "retake_reason": reason,
         "cnn_probabilities": cnn,
-        "model": ("EyeQ-trained quality CNN, overridden to reject by handcrafted hard limits" if cnn is not None
+        "cnn_warning": cnn_warning,
+        "model": ("EyeQ-trained quality CNN chooses good/usable; handcrafted hard limits decide rejection" if cnn is not None
                   else "handcrafted features against fixed limits (quality CNN weights not present)"),
     }
     return {

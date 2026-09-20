@@ -29,7 +29,10 @@ from backend.venus.imaging import clahe, disk
 import json
 import threading
 
-from backend.venus.config import LESION_THRESHOLDS_PATH, UNET_WEIGHTS
+from backend.venus.config import CONFIG_DIR, LESION_THRESHOLDS_PATH, UNET_WEIGHTS
+
+COLOUR_REFERENCE_PATH = CONFIG_DIR / "unet_colour_reference.json"
+_colour_reference: dict | None = None
 
 _unet = None
 _unet_thresholds: dict | None = None
@@ -324,12 +327,39 @@ def unet_status() -> dict:
     return {"loaded": _unet is not None, "error": _unet_error, "thresholds": _unet_thresholds}
 
 
+def colour_normalise(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
+    """Match the FOV's per-channel LAB mean and std to the DDR training
+    statistics (config/unet_colour_reference.json).
+
+    The U-Net learned DDR's cameras; a very red or very pale retina from
+    another device produced spurious hemorrhages (13 on a healthy CC0 image)
+    that this removes without touching real lesions. It is applied to the
+    un-enhanced frame, because the network was trained on raw frames."""
+    global _colour_reference
+    if _colour_reference is None:
+        if not COLOUR_REFERENCE_PATH.exists():
+            return image
+        with open(COLOUR_REFERENCE_PATH, "r", encoding="utf-8") as handle:
+            _colour_reference = json.load(handle)
+    ref_mean, ref_std = _colour_reference["lab_mean"], _colour_reference["lab_std"]
+    lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB).astype(np.float32)
+    inside = mask > 0
+    for c in range(3):
+        channel = lab[:, :, c]
+        mu, sd = float(channel[inside].mean()), float(channel[inside].std())
+        lab[:, :, c] = (channel - mu) / max(sd, 1e-3) * ref_std[c] + ref_mean[c]
+    out = cv2.cvtColor(np.clip(lab, 0, 255).astype(np.uint8), cv2.COLOR_LAB2BGR)
+    out[~inside] = 0
+    return out
+
+
 def unet_lesions(image: np.ndarray, mask: np.ndarray, od_mask: np.ndarray):
-    """Per-lesion probability maps from the U-Net, thresholded at the values
-    chosen on the DDR valid split, with the same rim/disc post-processing the
-    classical path applies. Returns {key: (mask, components)}."""
+    """Per-lesion probability maps from the U-Net on the colour-normalised
+    frame, thresholded at the values chosen on the DDR valid split, with the
+    same rim/disc post-processing the classical path applies.
+    Returns {key: (mask, components)}."""
     model = load_unet()
-    rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
+    rgb = cv2.cvtColor(colour_normalise(image, mask), cv2.COLOR_BGR2RGB).astype(np.float32)
     probs = model.predict(rgb[None, ...], verbose=0)[0]
     inner = cv2.erode(mask, disk(6))
     od_wide = cv2.dilate(od_mask, disk(6))
@@ -367,15 +397,19 @@ def quadrant_counts(components: list, fovea_centre: list, size: int) -> list:
 
 # ------------------------------------------------------------------- run --
 
-def run(image: np.ndarray, mask: np.ndarray) -> dict:
+def run(image: np.ndarray, mask: np.ndarray, original: np.ndarray | None = None) -> dict:
+    """`image` is the Stage 0 working frame (enhanced when usable) for the
+    landmark and classical detectors; `original` is the un-enhanced frame the
+    U-Net sees (it was trained on raw frames). Defaults to `image`."""
     started = time.perf_counter()
+    original = image if original is None else original
     fov_area = max(cv2.countNonZero(mask), 1)
     od = optic_disc(image, mask)
     fov = fovea(image, mask, od)
     ves = vessels(image, mask)
     if load_unet() is not None:
         method = "unet"
-        found = unet_lesions(image, mask, od["mask"])
+        found = unet_lesions(original, mask, od["mask"])
         ma_mask, ma = found["MA"]; he_mask, he = found["HE"]; ex_mask, ex = found["EX"]; se_mask, se = found["SE"]
     else:
         method = "classical"

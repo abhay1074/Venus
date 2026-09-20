@@ -47,7 +47,7 @@ def main(argv=None) -> int:
 
     df = pd.read_csv(MANIFEST_DIR / f"{args.manifest}.csv")
     per_grade = max(args.n // 5, 1)
-    sample = df.groupby("grade", group_keys=False).apply(lambda g: g.sample(min(per_grade, len(g)), random_state=42))
+    sample = pd.concat([g.sample(min(per_grade, len(g)), random_state=42) for _, g in df.groupby("grade")])
     point = operating_point()
     stage0_gate.load_gate(); stage0_gate.load_quality(); stage2_grade.load_grader(); stage1_segment.load_unet()
     rows, started = [], time.perf_counter()
@@ -59,7 +59,7 @@ def main(argv=None) -> int:
         rec = {"image_id": row.image_id, "grade": int(row.grade), "accepted": s0["accepted"],
                "quality": s0["quality"]["label"] if s0["quality"] else "reject"}
         if s0["accepted"]:
-            s1 = stage1_segment.run(s0["image"], s0["mask"])
+            s1 = stage1_segment.run(s0["image"], s0["mask"], original=s0["original"])
             s2 = stage2_grade.run(image, s1, stage0_image=s0["original"])
             s3 = stage3_explain.run(s0, s1, s2)
             f = s2["fusion"]

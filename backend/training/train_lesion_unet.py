@@ -96,27 +96,32 @@ def dice_bce_loss(y_true, y_pred):
 
 # ------------------------------------------------------------ metrics --
 
-def evaluate(model, images, masks, batch, thresholds=None):
+def evaluate(model, images, masks, batch, thresholds=None, subsample=None):
+    """Per-class pixel AUPR (all pixels unless `subsample` negatives are drawn,
+    which is only acceptable for cheap in-training monitoring: subsampling
+    negatives inflates precision), thresholds by max F1 when none are given,
+    else Dice / precision / recall at the given thresholds."""
     probs = model.predict(dataset(images, masks, batch, False), verbose=0)
     out = {}
     for c, key in enumerate(LESIONS):
         y = masks[:, :, :, c].reshape(-1).astype(np.uint8)
-        p = probs[:, :, :, c].reshape(-1)
+        p = probs[:, :, :, c].reshape(-1).astype(np.float32)
         if y.sum() == 0:
             out[key] = {"aupr": None}
             continue
-        # Subsample negatives for the PR computation (300M pixels otherwise).
-        rng = np.random.default_rng(0)
-        pos = np.flatnonzero(y)
-        neg = rng.choice(np.flatnonzero(y == 0), size=min(2_000_000, int((y == 0).sum())), replace=False)
-        sel = np.concatenate([pos, neg])
-        aupr = float(average_precision_score(y[sel], p[sel]))
-        entry = {"aupr": round(aupr, 4)}
+        if subsample:
+            rng = np.random.default_rng(0)
+            pos = np.flatnonzero(y)
+            neg = rng.choice(np.flatnonzero(y == 0), size=min(subsample, int((y == 0).sum())), replace=False)
+            sel = np.concatenate([pos, neg])
+            y, p = y[sel], p[sel]
+        aupr = float(average_precision_score(y, p))
+        entry = {"aupr": round(aupr, 4), "pixels": int(len(y)), "negatives_subsampled": bool(subsample)}
         if thresholds is None:
             best_f1, best_t = 0.0, 0.5
-            for t in np.linspace(0.1, 0.9, 17):
-                pred = p[sel] >= t
-                tp = int((pred & (y[sel] == 1)).sum()); fp = int((pred & (y[sel] == 0)).sum()); fn = int((~pred & (y[sel] == 1)).sum())
+            for t in np.linspace(0.05, 0.98, 32):
+                pred = p >= t
+                tp = int((pred & (y == 1)).sum()); fp = int((pred & (y == 0)).sum()); fn = int((~pred & (y == 1)).sum())
                 f1 = 2 * tp / max(2 * tp + fp + fn, 1)
                 if f1 > best_f1:
                     best_f1, best_t = f1, float(t)
@@ -169,7 +174,7 @@ def main(argv=None) -> int:
         t0 = time.perf_counter()
         loss = float(model.fit(train_ds, epochs=1, verbose=0).history["loss"][0])
         if (epoch + 1) % 5 == 0 or epoch + 1 == args.epochs:
-            val = evaluate(model, val_x, val_y, args.batch)
+            val = evaluate(model, val_x, val_y, args.batch, subsample=2_000_000)
             mean_aupr = float(np.mean([v["aupr"] for v in val.values() if v["aupr"] is not None]))
             improved = mean_aupr > best
             if improved:

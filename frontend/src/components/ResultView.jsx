@@ -240,6 +240,7 @@ function Stage0Panel({ s0, compact }) {
       {q?.cnn_probabilities && (
         <div className="mt-1 text-[11px] text-slate-500">quality CNN: good {(q.cnn_probabilities.good * 100).toFixed(0)}% · usable {(q.cnn_probabilities.usable * 100).toFixed(0)}% · reject {(q.cnn_probabilities.reject * 100).toFixed(0)}%</div>
       )}
+      {q?.cnn_warning && <div className="mt-1 text-[11px] text-amber-800">{q.cnn_warning}</div>}
       {f && (
         <div className="mt-2 grid grid-cols-3 gap-1 text-[11px] text-slate-600">
           <div>sharpness <b>{f.sharpness.toFixed(0)}</b></div>
