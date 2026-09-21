@@ -32,7 +32,8 @@ export default function ValidationPage() {
   return (
     <div className="space-y-5">
       <div className="card p-5">
-        <h2 className="card-title">Pre-registered validation protocol · grader {op.grader_tag} · model {op.model_version}</h2>
+        <h2 className="card-title">Pre-registered validation protocol · grader {op.grader_tag} · model {op.model_version}{op.site ? ` · site calibration ${op.site.name}` : ""}</h2>
+        {op.site && <p className="mt-1 text-xs text-amber-700">{op.site.note}</p>}
         <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-slate-700">
           <li><b>Calibration set:</b> {op.source.description} (n = {op.source.n_calibration}, {op.source.n_patients_calibration} patients). Its SHA-256 is the fingerprint the serving code verifies on every start.</li>
           <li><b>Platt scaling</b> fitted on it: ECE {op.calibration.ece_raw} → <b>{op.calibration.ece_calibrated}</b>. The raw grader output ranks; calibration is what makes P(referable) reportable as a probability.</li>

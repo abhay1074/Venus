@@ -1,0 +1,14 @@
+# Keep the API image small: checkpoints, records and reports are mounted at run time.
+.git
+.venv
+dist
+frontend/node_modules
+frontend/dist
+backend/weights
+backend/reports
+backend/data/venus.sqlite
+backend/data/raw
+models/export
+mediscan-src
+**/__pycache__
+**/*.zip*

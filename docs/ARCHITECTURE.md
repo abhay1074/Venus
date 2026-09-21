@@ -110,7 +110,12 @@ faint macular exudates that actually decide a grade fall under it. Median/MAD do
   abstain band — ±0.35 in logit space around the locked threshold once the validation-chosen
   `config/review_policy.json` exists (the architecture's ±0.05 in probability is asymmetric at
   a threshold near 0.1), else ±0.05; the attention flag joins in `pipeline.py`.
-- §6.4 calibration and operating point: `eval/calibrate.py` (see docs/VALIDATION.md).
+- §6.4 calibration and operating point: `eval/calibrate.py` (see docs/VALIDATION.md). The same
+  procedure runs on a deployment site's own labelled images (`data/site_manifest.py` →
+  `calibrate --site`, wrapped by `scripts/site-calibrate.sh`): a site operating point under model
+  version `+site_<name>`, its own lock entry, activated deliberately; `eval/site_calibration.py`
+  measured on Messidor-2 that ~400 labelled images restore the intended 0.90 / 0.90 operating point
+  where the locked EyePACS calibration over-refers (0.98 / 0.64).
 
 ## §7 Stage 3 — `stage3_explain.py`, `report.py`
 
