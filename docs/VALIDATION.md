@@ -1,6 +1,6 @@
 # Validation report — Venus AI, model `venus-dr-2.0.0` (grader `grader_v2`)
 
-Generated 2026-09-21 09:26 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
+Generated 2026-09-21 09:50 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
 
 ## Data and splits
 
@@ -60,6 +60,21 @@ Five-grade contrast: QWK 0.714, exact 64.8%, within one grade 91.6%.
 
 EfficientNet-B3 at 512 px, ordinal, 4 cumulative sigmoids; 15 epochs, batch 8, AdamW, cosine decay, mixed_float16, float32 head, XLA True. Augmentation: dihedral, zoom 0.9-1.0, brightness/contrast/saturation ±20%. Loss: weighted BCE on cumulative targets, threshold weights [1,2,1,1], pos_weight [2.28, 3.13, 6.0, 6.0]. Train n = 39,147, val n = 3,403; best validation referable-AUC 0.9636 (epoch 8); 137.7 min on an RTX 5060 laptop GPU.
 
+## Things tried and not shipped: a 1024 px lesion network for microaneurysms
+
+U-Net, 4 levels, 32 base filters, 1024x1024 frames, trained on 512 px lesion-biased crops (4 per image per epoch), 4 sigmoid channels (160 epochs, 88.3 min), DDR test scored once: MA AUPR 0.099, HE AUPR 0.417, EX AUPR 0.475, SE AUPR 0.203 (the served 512 px network: see the table below). Served for MA only on the same 497 raw validation images:
+
+| | 512 px network only (served) | + 1024 px network for MA |
+|---|---|---|
+| rule grader alone, exact / within one grade | 47.9% / 84.5% | 48.7% / 82.9% |
+| attention agreement, median correct / incorrect referable calls | 0.56 / 0.293 | 0.546 / 0.295 |
+| review policy: attention floor · flag rate | 0.2 · 25.1% | 0.15 · 25.6% |
+| CNN error rate among flagged vs unflagged | 28.8% vs 13.4% | 25.2% vs 14.6% |
+| share of the CNN's referable errors flagged | 41.9% | 37.2% |
+| CPU time per image, median | 1.7 s | 2.6 s |
+
+On the same 497 raw validation images the 1024 px network changes nothing downstream: the rule grader's exact grade agreement moves 0.479 -> 0.487 and within-one 0.845 -> 0.829; the attention flag gets less precise (error rate among flagged referable calls at the 0.20 cut 0.60 -> 0.42, so no cut reaches the 60 % rule) and the review policy catches 41.9 % -> 37.2 % of the CNN's referable errors; CPU time per image 1.7 s -> 2.6 s. Its gain is confined to pixel MA AUPR on the DDR test split (0.079 -> 0.099). The serving path stays in the code (config/lesion_thresholds_1024.json re-enables it); the 512 px network reads every class.
+
 ## Things tried and not shipped: a second seed, test-time augmentation
 
 Does a second training seed (seed 7, same recipe; ensemble = mean of P(grade >= k)) beat grader_v2 alone, and does it add to test-time augmentation? Measured on the calibration and validation sets only (the external tests were not re-scored):
@@ -76,12 +91,10 @@ AUC of the referable decision. Averaging two seeds adds about the same as test-t
 
 | lesion | read by | AUPR | Dice at threshold | threshold (DDR valid, max F1) |
 |---|---|---|---|---|
-| MA | 1024 px network | 0.099 | 0.232 | 0.05 |
+| MA | 512 px network | 0.079 | 0.166 | 0.53 |
 | HE | 512 px network | 0.449 | 0.465 | 0.89 |
 | EX | 512 px network | 0.477 | 0.486 | 0.92 |
 | SE | 512 px network | 0.262 | 0.308 | 0.47 |
-
-Two networks read the image: the 512 px U-Net for every class and, for MA, the same architecture trained on 512 px lesion-biased crops of 1024 px frames (160 epochs, 88.3 min). Trained to read microaneurysms (1-3 px at 512). On DDR valid it improves MA pixel AUPR by 28% over the 512 px network (0.205 vs 0.160), HE/EX by 6-10%, and loses SE by 24%; it is served for MA only, where the gain justifies a second network per image. The other classes stay with the 512 px network. Test numbers per class are the ones each network recorded when it was scored once; nothing was re-scored for this choice. Its DDR-valid AUPR per class: MA 0.205, HE 0.568, EX 0.536, SE 0.478; its test numbers for the classes it does not serve: HE 0.417, EX 0.475, SE 0.203. Minimum component area for MA at 1024 px: 6 px (10th percentile of ground-truth MA component area at 1024 px on DDR valid (median 17 px)).
 
 ## Image quality classifier
 
@@ -89,22 +102,22 @@ EfficientNet-B0 at 256, 3-class softmax, EyeQ train labels on EyePACS images, sp
 
 ## Human review: flag rate, attention agreement, rule grader (validation sample)
 
-498 grade-stratified validation images through the served path (lesions by unet), 487 gradable (retake rate 2.2%; quality labels {'usable': 464, 'good': 23, 'reject': 11}).
+498 grade-stratified validation images through the served path (lesions by unet), 497 gradable (retake rate 0.2%; quality labels {'usable': 476, 'good': 21, 'reject': 1}).
 
-- **Human-review flag rate 25.1%** under the architecture's default rules (±0.05 probability band, attention < 0.15 with lift < 1.5) — reasons: disagreement 83, abstain 53, no_lesion 12, attention 10. CNN referable-error rate among flagged images 23.8% vs 14.8% among unflagged (referable accuracy overall 83.0%).
-- **Attention agreement** on referable CNN calls: correct calls median 0.542 (IQR 0.349–0.69, n = 241) vs incorrect calls median 0.273 (IQR 0.156–0.421, n = 69). Where the network's attention sits on the detected lesions, it is more often right: the score is a review signal, not a decoration.
-- **Review policy chosen on the same sample** (`config/review_policy.json`, served): abstain band ±0.35 in logit space around the locked threshold, attention floor 0.2 (the highest cut at which ≥ 60 % of the flagged referable calls are CNN errors). Resulting **flag rate 27.7%** (reasons: disagreement 83, no_lesion 12, abstain 29, attention 38); CNN error rate 31.9% among flagged vs 11.4% unflagged; 51.8% of the CNN's referable errors land in the review queue. This is the rate the district simulation uses.
-- **Rule grader alone** (ICDR table on the lesion counts): referable sensitivity 91.2%, specificity 49.4%; exact grade 47.0%, within one grade 85.0%; agrees with the CNN within one grade on 83.0% of images. It is a consistency check that a clinician can verify by hand, not a second classifier.
+- **Human-review flag rate 23.9%** under the architecture's default rules (±0.05 probability band, attention < 0.15 with lift < 1.5) — reasons: disagreement 80, abstain 29, attention 23, no_lesion 12. CNN referable-error rate among flagged images 26.9% vs 14.3% among unflagged (referable accuracy overall 82.7%).
+- **Attention agreement** on referable CNN calls: correct calls median 0.56 (IQR 0.37–0.71, n = 249) vs incorrect calls median 0.293 (IQR 0.181–0.4695, n = 74). Where the network's attention sits on the detected lesions, it is more often right: the score is a review signal, not a decoration.
+- **Review policy chosen on the same sample** (`config/review_policy.json`, served): abstain band ±0.35 in logit space around the locked threshold, attention floor 0.2 (the highest cut at which ≥ 60 % of the flagged referable calls are CNN errors). Resulting **flag rate 25.1%** (reasons: disagreement 80, no_lesion 12, abstain 29, attention 30); CNN error rate 28.8% among flagged vs 13.4% unflagged; 41.9% of the CNN's referable errors land in the review queue. This is the rate the district simulation uses.
+- **Rule grader alone** (ICDR table on the lesion counts): referable sensitivity 92.2%, specificity 50.0%; exact grade 47.9%, within one grade 84.5%; agrees with the CNN within one grade on 83.9% of images. It is a consistency check that a clinician can verify by hand, not a second classifier.
 
 ## Timing (requirement: < 30 s per image)
 
-50 images, TTA off, AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD (16 threads, no GPU): **median 2.6 s, p95 2.9 s**, max 5.0 s → requirement met at p95. Per stage (median): S0 185 ms, S1 1686 ms, S2 150 ms, S3 264 ms (Grad-CAM 103 ms), report 301 ms.
+50 images, TTA off, AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD (16 threads, no GPU): **median 1.5 s, p95 1.7 s**, max 2.8 s → requirement met at p95. Per stage (median): S0 176 ms, S1 634 ms, S2 150 ms, S3 261 ms (Grad-CAM 103 ms), report 290 ms.
 
 On the RTX 5060 (WSL): median 3.4 s, p95 4.1 s — inference is not the cost on either machine; Stage 1 landmarks and the overlay encoding are. (Measured before the PNG-encoding change that took the CPU median from 4.2 s to 1.7 s.)
 
 ## District simulation (Stage 4, coupled to the numbers above)
 
-144 full-year runs (cameras × ophthalmologists × operating point). Under the constraints missed ≤ 1192 (20% of 5960 referable cases) and p95 wait ≤ 7.0 days: **2 ophthalmologists with AI (at the 95.0% sensitivity point) vs 7 without, ₹0.69 Cr vs ₹1.72 Cr per year, 1112 vs 932 referable cases missed.**
+144 full-year runs (cameras × ophthalmologists × operating point). Under the constraints missed ≤ 1192 (20% of 5960 referable cases) and p95 wait ≤ 7.0 days: **2 ophthalmologists with AI (at the 95.0% sensitivity point) vs 7 without, ₹0.68 Cr vs ₹1.71 Cr per year, 1108 vs 932 referable cases missed.**
 
 ## Stated plainly
 

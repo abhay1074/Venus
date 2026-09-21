@@ -39,7 +39,7 @@ LESION_THRESHOLDS_PATH = CONFIG_DIR / "lesion_thresholds.json"
 # classes its thresholds file lists under "serves" (microaneurysms: 1-3 px
 # at 512). Absent files simply mean the 512 px network reads every class.
 UNET_HIRES_WEIGHTS = WEIGHTS_DIR / "lesion_unet_1024.weights.h5"
-LESION_THRESHOLDS_HIRES_PATH = CONFIG_DIR / "lesion_thresholds_1024.json"
+LESION_THRESHOLDS_HIRES_PATH = Path(os.getenv("VENUS_UNET_HIRES_SPEC", str(CONFIG_DIR / "lesion_thresholds_1024.json")))  # point at a missing file to disable
 REVIEW_POLICY_PATH = CONFIG_DIR / "review_policy.json"
 GRADER_TAG = "grader_v2" if GRADER_V2_WEIGHTS.exists() else "legacy_v1"
 GRADER_WEIGHTS = GRADER_V2_WEIGHTS if GRADER_TAG == "grader_v2" else GRADER_V1_WEIGHTS

@@ -27,6 +27,7 @@ import json
 import os
 import sys
 import time
+from pathlib import Path
 from datetime import datetime, timezone
 
 os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
@@ -43,6 +44,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--n", type=int, default=600)
     parser.add_argument("--manifest", default="val")
+    parser.add_argument("--out", default=None, help="write here instead of config/validation_flags.json (an experiment)")
     args = parser.parse_args(argv)
 
     df = pd.read_csv(MANIFEST_DIR / f"{args.manifest}.csv")
@@ -134,7 +136,7 @@ def main(argv=None) -> int:
         "rows": rows,
     }
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-    with open(CONFIG_DIR / "validation_flags.json", "w", encoding="utf-8") as handle:
+    with open((Path(args.out) if args.out else CONFIG_DIR / "validation_flags.json"), "w", encoding="utf-8") as handle:
         json.dump(out, handle, indent=1, default=lambda o: bool(o) if isinstance(o, np.bool_) else o)
     print(json.dumps({k: v for k, v in out.items() if k != "rows"}, indent=1, default=str))
     return 0

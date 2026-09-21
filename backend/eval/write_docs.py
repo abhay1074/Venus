@@ -105,6 +105,21 @@ def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_car
                   f"{grader_card['schedule']}, {grader_card['precision']}, XLA {grader_card['xla']}. Augmentation: {grader_card['augmentation']}. Loss: {grader_card['loss']}. "
                   f"Train n = {grader_card['train_n']:,}, val n = {grader_card['val_n']:,}; best validation referable-AUC {grader_card['best_val_referable_auc']} "
                   f"(epoch {max(h, key=lambda r: r['referable_auc'] or 0)['epoch']}); {grader_card['total_minutes']} min on an RTX 5060 laptop GPU.", ""]
+    unet_exp = load(CONFIG_DIR / "experiments" / "lesion_unet_1024.json")
+    if unet_exp and not unet_exp.get("decision", {}).get("shipped", True):
+        d = unet_exp["decision"]; w = d["validation_with_1024_for_MA"]; o = d["validation_512_only"]
+        lines += ["## Things tried and not shipped: a 1024 px lesion network for microaneurysms", "",
+                  f"{unet_exp['architecture']} ({unet_exp['epochs']} epochs, {unet_exp['total_minutes']} min), DDR test scored once: "
+                  + ", ".join(f"{k} AUPR {f3(unet_exp['test_aupr'][k])}" for k in ("MA", "HE", "EX", "SE")) + f" (the served 512 px network: see the table below). "
+                  f"Served for MA only on the same {o['n_gradable']} raw validation images:", "",
+                  "| | 512 px network only (served) | + 1024 px network for MA |", "|---|---|---|",
+                  f"| rule grader alone, exact / within one grade | {pct(o['rule_grader_alone']['exact_grade_agreement_with_truth'])} / {pct(o['rule_grader_alone']['within_one_of_truth'])} | {pct(w['rule_grader_alone']['exact_grade_agreement_with_truth'])} / {pct(w['rule_grader_alone']['within_one_of_truth'])} |",
+                  f"| attention agreement, median correct / incorrect referable calls | {o['attention_agreement']['correct']['median']} / {o['attention_agreement']['incorrect']['median']} | {w['attention_agreement']['correct']['median']} / {w['attention_agreement']['incorrect']['median']} |",
+                  f"| review policy: attention floor · flag rate | {o['review_policy']['attention_floor']} · {pct(o['review_policy']['resulting_flag_rate'])} | {w['review_policy']['attention_floor']} · {pct(w['review_policy']['resulting_flag_rate'])} |",
+                  f"| CNN error rate among flagged vs unflagged | {pct(o['review_policy']['error_rate_flagged'])} vs {pct(o['review_policy']['error_rate_unflagged'])} | {pct(w['review_policy']['error_rate_flagged'])} vs {pct(w['review_policy']['error_rate_unflagged'])} |",
+                  f"| share of the CNN's referable errors flagged | {pct(o['review_policy']['share_of_cnn_errors_flagged'])} | {pct(w['review_policy']['share_of_cnn_errors_flagged'])} |",
+                  f"| CPU time per image, median | {d['cpu_timing_median_ms']['512_only'] / 1000:.1f} s | {d['cpu_timing_median_ms']['with_1024_for_MA'] / 1000:.1f} s |",
+                  "", d["why"], ""]
     if ensemble:
         lines += ["## Things tried and not shipped: a second seed, test-time augmentation", "",
                   f"{ensemble['question']} Measured on the calibration and validation sets only (the external tests were not re-scored):", "",

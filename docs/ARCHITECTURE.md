@@ -61,14 +61,15 @@ Two paths, and every result says which one produced the evidence (`stage1.method
   positive-weighted BCE, dihedral + photometric augmentation. Per-class thresholds chosen on
   the DDR valid split (max pixel F1); the DDR test split scored once (AUPR, Dice). The same
   rim / disc post-processing and component floors as the classical path apply.
-  A second copy of the architecture, trained on 512 px lesion-biased random crops of 1024 px
-  frames (`--size 1024 --patch 512`), reads the classes listed in
-  `config/lesion_thresholds_1024.json` — microaneurysms, which are 1–3 px at 512 — from a
-  fresh FOV normalisation of the raw upload; it is thresholded and counted at its own
-  resolution (minimum area 6 px, the 10th percentile of ground-truth MA area on DDR valid)
-  and the mask comes back to the 512 working frame. The class assignment was chosen on DDR
-  valid (MA pixel AUPR 0.205 vs 0.160; HE/EX +6–10 %, SE −24 %, so those stay with the 512 px
-  network), and `stage1.method` reads `unet (MA at 1024 px)`. Cost: ~1 s CPU per image.
+  The code also carries an optional second network at a larger frame (`config.UNET_HIRES_WEIGHTS`
+  + a `config/lesion_thresholds_1024.json` naming the classes it serves): a copy of the
+  architecture trained on 512 px lesion-biased crops of 1024 px frames, run on a fresh FOV
+  normalisation of the raw upload, thresholded and counted at its own resolution, mask
+  brought back to 512. It lifted MA pixel AUPR 0.079 → 0.099 on the DDR test but changed
+  nothing downstream on validation (rule grader flat, attention flag slightly less precise)
+  at +0.9 s per image, so it is **not enabled**; `config/experiments/lesion_unet_1024.json`
+  holds the measurement and re-enabling it is one file (`stage1.method` then reads
+  `unet (MA at 1024 px)`).
 - **`classical`** otherwise — the architecture's no-GPU fallbacks below.
 
 | structure | method |

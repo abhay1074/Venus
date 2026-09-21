@@ -156,6 +156,8 @@ export default function ValidationPage() {
         </div>
       )}
 
+      {extras?.experiments?.lesion_unet_1024 && <UnetExperimentCard exp={extras.experiments.lesion_unet_1024} />}
+
       <div className="card p-5">
         <div className="label">Stated plainly</div>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
@@ -233,6 +235,31 @@ function EnsembleCard({ check }) {
         </tbody>
       </table>
       <p className="mt-2 text-xs text-slate-500">Referable-DR AUC. The ensemble adds about what TTA adds and nothing on top of it, at twice the CPU cost per image: the served grader stays one network, and the external test's single scoring stands.</p>
+    </div>
+  );
+}
+
+function UnetExperimentCard({ exp }) {
+  const d = exp.decision || {}; const w = d.validation_with_1024_for_MA; const o = d.validation_512_only;
+  if (!w || !o) return null;
+  const pct = (x) => `${(x * 100).toFixed(1)}%`;
+  const row = (label, a, b) => <tr className="border-t border-venus-line"><td className="py-1">{label}</td><td>{a}</td><td>{b}</td></tr>;
+  return (
+    <div className="card p-5">
+      <div className="label">Measured and not shipped · a 1024 px lesion network for microaneurysms</div>
+      <p className="mt-1 text-xs text-slate-500">{exp.architecture} · {exp.epochs} epochs · DDR test scored once: MA AUPR {exp.test_aupr.MA} (512 px network: 0.079), HE {exp.test_aupr.HE}, EX {exp.test_aupr.EX}, SE {exp.test_aupr.SE}. Served for MA only on the same {o.n_gradable} raw validation images:</p>
+      <table className="mt-2 w-full text-sm">
+        <thead className="text-left text-xs text-slate-500"><tr><th></th><th>512 px only (served)</th><th>+ 1024 px for MA</th></tr></thead>
+        <tbody>
+          {row("rule grader alone, exact / within one", `${pct(o.rule_grader_alone.exact_grade_agreement_with_truth)} / ${pct(o.rule_grader_alone.within_one_of_truth)}`, `${pct(w.rule_grader_alone.exact_grade_agreement_with_truth)} / ${pct(w.rule_grader_alone.within_one_of_truth)}`)}
+          {row("attention agreement, median correct / incorrect", `${o.attention_agreement.correct.median} / ${o.attention_agreement.incorrect.median}`, `${w.attention_agreement.correct.median} / ${w.attention_agreement.incorrect.median}`)}
+          {row("review policy: floor · flag rate", `${o.review_policy.attention_floor} · ${pct(o.review_policy.resulting_flag_rate)}`, `${w.review_policy.attention_floor} · ${pct(w.review_policy.resulting_flag_rate)}`)}
+          {row("CNN error rate, flagged vs unflagged", `${pct(o.review_policy.error_rate_flagged)} vs ${pct(o.review_policy.error_rate_unflagged)}`, `${pct(w.review_policy.error_rate_flagged)} vs ${pct(w.review_policy.error_rate_unflagged)}`)}
+          {row("share of CNN referable errors flagged", pct(o.review_policy.share_of_cnn_errors_flagged), pct(w.review_policy.share_of_cnn_errors_flagged))}
+          {row("CPU time per image, median", `${(d.cpu_timing_median_ms["512_only"] / 1000).toFixed(1)} s`, `${(d.cpu_timing_median_ms.with_1024_for_MA / 1000).toFixed(1)} s`)}
+        </tbody>
+      </table>
+      <p className="mt-2 text-xs text-slate-500">{d.why}</p>
     </div>
   );
 }

@@ -125,6 +125,11 @@ async def get_validation_extras() -> dict:
                 out[key] = json.load(handle)
     if "validation_flags" in out:
         out["validation_flags"].pop("rows", None)
+    experiments = {}
+    for path in sorted((CONFIG_DIR / "experiments").glob("*.json")) if (CONFIG_DIR / "experiments").exists() else []:
+        with open(path, "r", encoding="utf-8") as handle:
+            experiments[path.stem] = json.load(handle)
+    out["experiments"] = experiments
     return out
 
 

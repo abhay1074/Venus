@@ -35,8 +35,13 @@ def logit(x):
     return np.log(x / (1 - x))
 
 
-def main() -> int:
-    v = json.load(open(CONFIG_DIR / "validation_flags.json", encoding="utf-8"))
+def main(argv=None) -> int:
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--flags", default=str(CONFIG_DIR / "validation_flags.json"), help="flag_rate output to choose from (an experiment's file, if not the served one)")
+    parser.add_argument("--out", default=str(CONFIG_DIR / "review_policy.json"), help="where to write; default is the served policy")
+    args = parser.parse_args(argv)
+    v = json.load(open(args.flags, encoding="utf-8"))
     op = json.load(open(OPERATING_POINT_PATH, encoding="utf-8"))
     t = op["thresholds"]["referable"]
     rows = [r for r in v["rows"] if r["accepted"]]
@@ -74,7 +79,7 @@ def main() -> int:
         "error_rate_flagged": round(float(err[flag].mean()), 4), "error_rate_unflagged": round(float(err[~flag].mean()), 4),
         "share_of_cnn_errors_flagged": round(float(flag[err].mean()), 4),
     }
-    with open(CONFIG_DIR / "review_policy.json", "w", encoding="utf-8") as handle:
+    with open(args.out, "w", encoding="utf-8") as handle:
         json.dump(policy, handle, indent=2)
     print(json.dumps({k: v for k, v in policy.items() if k != "attention_candidates"}, indent=1))
     return 0

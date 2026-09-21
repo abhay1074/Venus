@@ -30,9 +30,9 @@ architecture document section by section; `docs/VALIDATION.md` is generated, nev
   `C:\Users\anilm\Downloads\MediScan-main\MediScan-main\backend\data\raw\eye` (`VENUS_DATA_ROOT`).
 - Trained checkpoints are gitignored. `wsl bash scripts/pull-models.sh` copies them from
   `~/venus-cache/models` into `backend/weights` (v1 checkpoints came from the old MediScan repo).
-- Lesions are read by two U-Nets: `lesion_unet.weights.h5` (512 px, every class) and
-  `lesion_unet_1024.weights.h5` (served only for the classes in `config/lesion_thresholds_1024.json`,
-  currently MA). Remove that JSON and the 512 px network reads everything; nothing else changes.
+- Lesions are read by the 512 px U-Net. A 1024 px network exists (`backend/weights/lesion_unet_1024.weights.h5`,
+  `~/venus-cache/models/`) and the serving path for it is in `stage1_segment` — it is disabled on purpose
+  (`config/experiments/lesion_unet_1024.json` says why); a `config/lesion_thresholds_1024.json` re-enables it.
 
 ## Rules that are not negotiable
 

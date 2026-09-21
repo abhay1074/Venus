@@ -61,9 +61,10 @@ by default (`useSimulink=true` switches to `parsim` over `Simulink.SimulationInp
 is unsupported by `importNetworkFromTensorFlow` in your release, the `.onnx` export of the same
 model is tried next (`importNetworkFromONNX`); EfficientNet and the U-Net use only standard
 layers (conv, depthwise conv, batch norm, swish, squeeze-excite multiply, transposed conv).
-When `models/export/lesion_unet_1024` and `config/lesion_thresholds_1024.json` exist, the 1024 px
-U-Net reads the classes that file lists (microaneurysms) from a fresh FOV normalisation of the
-uploaded image, exactly as the Python path does; without them the 512 px network reads every class.
+If `models/export/lesion_unet_1024` and a `config/lesion_thresholds_1024.json` exist, the 1024 px
+U-Net reads the classes that file lists from a fresh FOV normalisation of the uploaded image, exactly
+as the Python path does; the shipped configuration has no such file (the experiment is recorded in
+`config/experiments/lesion_unet_1024.json`), so the 512 px network reads every class.
 
 ## Correspondence with the Python reference
 
