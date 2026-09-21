@@ -45,7 +45,7 @@ is generated from the same files with the CIs, the protocol and the caveats.
 | Lesion U-Net, pixel AUPR / Dice (DDR test, 225 images, once) | HE 0.45 / 0.47 · EX 0.48 / 0.49 · SE 0.26 / 0.31 · MA 0.08 / 0.17 | thresholds chosen on DDR valid |
 | Quality CNN, ungradable-detection AUC | **0.992** (held-out patients); 99.9 % of DDR's ungradable class caught | EyeQ labels |
 | Attention agreement, referable calls (median) | **0.54** when the CNN is right vs **0.27** when it is wrong | 487 validation images |
-| Human-review flag rate · retake rate | 25.1 % · 2.2 % | same |
+| Human-review flag rate (validation-chosen policy) · retake rate | 27.7 % · 2.2 % | same; 31.9 % of flagged calls are CNN errors vs 11.4 % of unflagged |
 | End-to-end time, laptop CPU, all three networks | **median 1.7 s, p95 1.7 s** | 50 images |
 | District: ophthalmologists for ≥ 80 % programme sensitivity, p95 wait ≤ 7 days | **2 with AI vs 7 without**, ₹0.69 Cr vs ₹1.72 Cr / year | 144 full-year runs |
 

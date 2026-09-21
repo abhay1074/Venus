@@ -34,7 +34,7 @@ def f3(x):
     return "—" if x is None else f"{x:.3f}"
 
 
-def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card, flags=None, ensemble=None) -> str:
+def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card, flags=None, ensemble=None, policy=None) -> str:
     t = op["external_test"]; at = t["at_locked_threshold"]; ci = t["ci95_bootstrap_2000"]; tg = op["targets"]
     sec = op.get("secondary_heldout")
     lines = [f"# Validation report — Venus AI, model `{op['model_version']}` (grader `{op['grader_tag']}`)", "",
@@ -132,13 +132,20 @@ def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_car
         lines += ["## Human review: flag rate, attention agreement, rule grader (validation sample)", "",
                   f"{flags['n_sampled']} grade-stratified validation images through the served path (lesions by {flags['lesion_method']}), "
                   f"{flags['n_gradable']} gradable (retake rate {pct(flags['retake_rate'])}; quality labels {flags['quality_labels']}).", "",
-                  f"- **Human-review flag rate {pct(flags['flag_rate'])}** — reasons: " + ", ".join(f"{k} {v}" for k, v in fr.items()) + ". "
+                  f"- **Human-review flag rate {pct(flags['flag_rate'])}** under the architecture's default rules (±0.05 probability band, attention < 0.15 with lift < 1.5) — reasons: " + ", ".join(f"{k} {v}" for k, v in fr.items()) + ". "
                   f"CNN referable-error rate among flagged images {pct(flags['cnn_error_rate_flagged_vs_unflagged']['flagged'])} vs "
                   f"{pct(flags['cnn_error_rate_flagged_vs_unflagged']['unflagged'])} among unflagged (referable accuracy overall {pct(flags['referable_accuracy_cnn'])}).",
                   f"- **Attention agreement** on referable CNN calls: correct calls median {a['correct'].get('median', '—')} (IQR {a['correct'].get('p25', '—')}–{a['correct'].get('p75', '—')}, n = {a['correct'].get('n', 0)}) vs "
                   f"incorrect calls median {a['incorrect'].get('median', '—')} (IQR {a['incorrect'].get('p25', '—')}–{a['incorrect'].get('p75', '—')}, n = {a['incorrect'].get('n', 0)}). "
                   "Where the network's attention sits on the detected lesions, it is more often right: the score is a review signal, not a decoration.",
-                  f"- **Rule grader alone** (ICDR table on the lesion counts): referable sensitivity {pct(r['referable_sensitivity'])}, specificity {pct(r['referable_specificity'])}; "
+                  ]
+        if policy:
+            pr = policy["flag_reasons"]
+            lines += [f"- **Review policy chosen on the same sample** (`config/review_policy.json`, served): abstain band ±{policy['abstain_band_logit']} in logit space around the locked threshold, "
+                      f"attention floor {policy['attention_floor']} (the highest cut at which ≥ 60 % of the flagged referable calls are CNN errors). Resulting **flag rate {pct(policy['resulting_flag_rate'])}** "
+                      f"(reasons: " + ", ".join(f"{k} {v}" for k, v in pr.items()) + f"); CNN error rate {pct(policy['error_rate_flagged'])} among flagged vs {pct(policy['error_rate_unflagged'])} unflagged; "
+                      f"{pct(policy['share_of_cnn_errors_flagged'])} of the CNN's referable errors land in the review queue. This is the rate the district simulation uses."]
+        lines += [f"- **Rule grader alone** (ICDR table on the lesion counts): referable sensitivity {pct(r['referable_sensitivity'])}, specificity {pct(r['referable_specificity'])}; "
                   f"exact grade {pct(r['exact_grade_agreement_with_truth'])}, within one grade {pct(r['within_one_of_truth'])}; agrees with the CNN within one grade on {pct(r['agreement_with_cnn_within_one'])} of images. "
                   "It is a consistency check that a clinician can verify by hand, not a second classifier.", ""]
     if timing:
@@ -193,8 +200,9 @@ def main() -> int:
     unet_card = load(CARDS / "lesion_unet.summary.json")
     flags = load(CONFIG_DIR / "validation_flags.json")
     ensemble = load(CONFIG_DIR / "ensemble_check.json")
+    policy = load(CONFIG_DIR / "review_policy.json")
     DOCS.mkdir(exist_ok=True)
-    (DOCS / "VALIDATION.md").write_text(validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card, flags, ensemble), encoding="utf-8")
+    (DOCS / "VALIDATION.md").write_text(validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card, flags, ensemble, policy), encoding="utf-8")
     print(f"wrote {DOCS / 'VALIDATION.md'}")
     CARDS.mkdir(parents=True, exist_ok=True)
     for name, card in (("grader_v2", grader_card), ("lesion_unet", unet_card), ("quality_cnn", quality_card)):

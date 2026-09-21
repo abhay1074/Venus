@@ -1,6 +1,6 @@
 # Validation report — Venus AI, model `venus-dr-2.0.0` (grader `grader_v2`)
 
-Generated 2026-09-21 07:00 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
+Generated 2026-09-21 07:02 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
 
 ## Data and splits
 
@@ -89,8 +89,9 @@ EfficientNet-B0 at 256, 3-class softmax, EyeQ train labels on EyePACS images, sp
 
 498 grade-stratified validation images through the served path (lesions by unet), 487 gradable (retake rate 2.2%; quality labels {'usable': 464, 'good': 23, 'reject': 11}).
 
-- **Human-review flag rate 25.1%** — reasons: disagreement 83, abstain 53, no_lesion 12, attention 10. CNN referable-error rate among flagged images 23.8% vs 14.8% among unflagged (referable accuracy overall 83.0%).
+- **Human-review flag rate 25.1%** under the architecture's default rules (±0.05 probability band, attention < 0.15 with lift < 1.5) — reasons: disagreement 83, abstain 53, no_lesion 12, attention 10. CNN referable-error rate among flagged images 23.8% vs 14.8% among unflagged (referable accuracy overall 83.0%).
 - **Attention agreement** on referable CNN calls: correct calls median 0.542 (IQR 0.349–0.69, n = 241) vs incorrect calls median 0.273 (IQR 0.156–0.421, n = 69). Where the network's attention sits on the detected lesions, it is more often right: the score is a review signal, not a decoration.
+- **Review policy chosen on the same sample** (`config/review_policy.json`, served): abstain band ±0.35 in logit space around the locked threshold, attention floor 0.2 (the highest cut at which ≥ 60 % of the flagged referable calls are CNN errors). Resulting **flag rate 27.7%** (reasons: disagreement 83, no_lesion 12, abstain 29, attention 38); CNN error rate 31.9% among flagged vs 11.4% unflagged; 51.8% of the CNN's referable errors land in the review queue. This is the rate the district simulation uses.
 - **Rule grader alone** (ICDR table on the lesion counts): referable sensitivity 91.2%, specificity 49.4%; exact grade 47.0%, within one grade 85.0%; agrees with the CNN within one grade on 83.0% of images. It is a consistency check that a clinician can verify by hand, not a second classifier.
 
 ## Timing (requirement: < 30 s per image)
@@ -101,7 +102,7 @@ On the RTX 5060 (WSL): median 3.4 s, p95 4.1 s — inference is not the cost on 
 
 ## District simulation (Stage 4, coupled to the numbers above)
 
-144 full-year runs (cameras × ophthalmologists × operating point). Under the constraints missed ≤ 1183 (20% of 5917 referable cases) and p95 wait ≤ 7.0 days: **2 ophthalmologists with AI (at the 95.0% sensitivity point) vs 7 without, ₹0.69 Cr vs ₹1.72 Cr per year, 1130 vs 866 referable cases missed.**
+144 full-year runs (cameras × ophthalmologists × operating point). Under the constraints missed ≤ 1192 (20% of 5960 referable cases) and p95 wait ≤ 7.0 days: **2 ophthalmologists with AI (at the 95.0% sensitivity point) vs 7 without, ₹0.69 Cr vs ₹1.72 Cr per year, 1112 vs 932 referable cases missed.**
 
 ## Stated plainly
 
