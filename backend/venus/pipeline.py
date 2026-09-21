@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 
 from backend.venus import report as report_module
 from backend.venus import stage0_gate, stage1_segment, stage2_grade, stage3_explain, stage5_schedule
-from backend.venus.config import MODEL_VERSION, operating_point
+from backend.venus.config import operating_point
 from backend.venus.imaging import decode_image, to_png_base64
 
 RECOMMENDATIONS = {
@@ -72,7 +72,7 @@ def screen_image(payload: bytes, intake: dict | None = None, tta: bool = False,
         tier = stage5_schedule.priority_tier(None, intake)
         total = int((time.perf_counter() - started) * 1000)
         result = {
-            "session_id": session_id, "captured_at": captured_at, "model_version": MODEL_VERSION,
+            "session_id": session_id, "captured_at": captured_at, "model_version": point["model_version"],
             "calibration_fingerprint": point["calibration_fingerprint"],
             "accepted": False, "stop_reason": s0["stop_reason"],
             "stage0": {k: v for k, v in s0.items() if k not in ("image", "mask", "original")},
@@ -105,7 +105,7 @@ def screen_image(payload: bytes, intake: dict | None = None, tta: bool = False,
     result = {
         "session_id": session_id,
         "captured_at": captured_at,
-        "model_version": MODEL_VERSION,
+        "model_version": point["model_version"],
         "calibration_fingerprint": point["calibration_fingerprint"],
         "accepted": True,
         "stop_reason": None,

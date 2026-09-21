@@ -79,6 +79,15 @@ def _measured_rates() -> dict:
     return m
 
 
+def _served_version() -> str:
+    """The version the operating point carries (a site calibration appends
+    +site_<name>); the config constant is the fallback before a point exists."""
+    try:
+        return operating_point()["model_version"]
+    except OperatingPointError:
+        return MODEL_VERSION
+
+
 @app.get("/health")
 async def health() -> dict:
     try:
@@ -89,7 +98,7 @@ async def health() -> dict:
         op = {"ok": False, "error": str(exc)}
     return {
         "status": "ok" if op["ok"] and stage2_grade.grader_status()["loaded"] else "degraded",
-        "model_version": MODEL_VERSION,
+        "model_version": _served_version(),
         "gate": stage0_gate.gate_status(),
         "grader": stage2_grade.grader_status(),
         "quality_cnn": stage0_gate.quality_status(),

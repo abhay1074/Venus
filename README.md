@@ -65,6 +65,22 @@ opens a screen directly. `docker compose up` builds and runs both services. For 
 `scripts\build-offline-bundle.ps1` produces a folder with a wheel cache and `run.bat`: the API
 serves the built front end itself, one process, no network.
 
+## Deploying at a new site
+
+```bash
+wsl bash scripts/site-calibrate.sh <site-name> <images-folder> <labels.csv> [--activate]
+```
+
+`labels.csv` is `image,grade[,patient]` from the site's reader (`docs/examples/site_labels_example.csv`).
+The images go through Stage 0 into a fingerprinted manifest, the served grader scores them, and
+Platt scaling plus the 90 % sensitivity threshold are re-fitted on them — the same procedure as the
+primary calibration — into `config/operating_point_site_<name>.json` under model version
+`venus-dr-2.0.0+site_<name>`, with the external test scored once under that version.
+`--activate` makes it the served point (the server then verifies the site manifest's SHA-256 on
+every start). `backend/eval/site_calibration.py` measured what this buys on Messidor-2: ~400
+labelled images take the locked point's 0.98 / 0.64 to 0.89 / 0.90 with ECE 0.02. A worked
+example built from 400 Messidor-2 images is committed as `site_mock-messidor`.
+
 ## Training and validation (WSL, RTX 5060)
 
 ```bash
@@ -94,7 +110,7 @@ not committed). The manifests with their fingerprints are committed.
 backend/venus/      stage0_gate stage1_segment stage2_grade stage3_explain stage4_simulate stage5_schedule
                     nets (shared network definitions) report pipeline (screen_image) config
 backend/main.py     FastAPI: /screen /screenings /report /simulate /sweep /intake /appointments /worklist /validation-extras
-backend/data/       sources cache_stage0 rehash build_manifests  + manifests/ (committed, fingerprinted)
+backend/data/       sources cache_stage0 rehash build_manifests site_manifest  + manifests/ (committed, fingerprinted)
 backend/training/   train_grader train_lesion_unet train_quality
 backend/eval/       calibrate (locks the operating point) score_grader score_external flag_rate review_policy
                     compare_graders site_calibration timing export_models write_docs figures (docs/figures from the same JSON)
@@ -102,7 +118,7 @@ backend/tests/      one TestCase per stage + end to end (29 tests; weight-depend
 frontend/           React + Vite + Tailwind + Recharts
 matlab/             +drscreen (all stages), simulink (MATLAB DES + SimEvents builder + parsim sweep), app, tests
 samples/            demo images with provenance and licences
-scripts/            setup.ps1 serve.ps1 serve-gpu.sh wsl-gpu.sh train-all.sh pull-models.sh finalise-models.sh
+scripts/            setup.ps1 serve.ps1 serve-gpu.sh wsl-gpu.sh train-all.sh site-calibrate.sh pull-models.sh finalise-models.sh
                     build-offline-bundle.ps1 preflight.py
 docs/               ARCHITECTURE.md (as built, section by section) VALIDATION.md (generated) figures/ (generated)
                     MATLAB_MAPPING.md DEMO.md

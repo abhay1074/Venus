@@ -151,16 +151,18 @@ def grade_metrics(df: pd.DataFrame) -> dict | None:
 
 # --------------------------------------------------------------- data --
 
-def load_v2(tag: str):
+def load_v2(tag: str, site: str | None = None):
+    """`site` names a site manifest (backend.data.site_manifest) whose
+    predictions replace the EyePACS calibration set; the external test stays."""
     pred_dir = CACHE_DIR / "predictions"
-    cal = pd.read_csv(pred_dir / f"{tag}_calibration.csv")
+    cal = pd.read_csv(pred_dir / f"{tag}_{site or 'calibration'}.csv")
     ext = pd.read_csv(pred_dir / f"{tag}_external_test_ddr.csv")
     held_path = pred_dir / f"{tag}_heldout_eyepacs_frozen.csv"
     held = pd.read_csv(held_path) if held_path.exists() else None
     for frame in (cal, ext, held):
         if frame is not None:
             frame["referable_raw"] = frame["p_ge2"]
-    return cal, ext, held, "calibration.csv", "external_test_ddr.csv"
+    return cal, ext, held, f"{site or 'calibration'}.csv", "external_test_ddr.csv"
 
 
 def load_legacy():
@@ -189,15 +191,24 @@ def main(argv=None) -> int:
     parser.add_argument("--legacy", action="store_true", help="use the v1 grader's frozen EyePACS CSV")
     parser.add_argument("--model-version", default=MODEL_VERSION)
     parser.add_argument("--force", action="store_true", help="re-score the external test for a version already scored")
+    parser.add_argument("--site", default=None, help="site manifest stem (site_<name>): calibrate on the site's labelled images instead of EyePACS")
+    parser.add_argument("--out", default=None, help="output path; default config/operating_point.json, or config/operating_point_<site>.json with --site")
     args = parser.parse_args(argv)
+    if args.site:
+        # A site operating point is a distinct model version: same grader, its
+        # own calibration set and threshold. Activating it (copying it over
+        # operating_point.json) is a deliberate step, see scripts/site-calibrate.sh.
+        args.model_version = f"{args.model_version}+{args.site}"
+    out_path = Path(args.out) if args.out else (CONFIG_DIR / f"operating_point_{args.site}.json" if args.site else OPERATING_POINT_PATH)
 
     if args.legacy:
         cal, ext, held, cal_manifest, ext_manifest = load_legacy()
         source = {"description": "v1 grader (EfficientNet-B4/380) raw scores on the frozen EyePACS manifest, 1,500 images stratified 300 per grade; split by patient",
                   "external": "EyePACS test half (within the same frozen set; cross-source relative to the v1 training data)"}
     else:
-        cal, ext, held, cal_manifest, ext_manifest = load_v2(args.tag)
-        source = {"description": f"{args.tag} predictions on the patient-disjoint calibration manifest (EyePACS, held out before training)",
+        cal, ext, held, cal_manifest, ext_manifest = load_v2(args.tag, args.site)
+        source = {"description": (f"{args.tag} predictions on the site calibration manifest {args.site} (the site's own labelled images, read through Stage 0)"
+                                  if args.site else f"{args.tag} predictions on the patient-disjoint calibration manifest (EyePACS, held out before training)"),
                   "external": "DDR test split: a different acquisition source from every training image, ungradables removed, never trained on"}
     fingerprint = sha256_of_file(MANIFEST_DIR / cal_manifest)
     ext_fingerprint = sha256_of_file(MANIFEST_DIR / ext_manifest) if ext_manifest else None
@@ -212,7 +223,10 @@ def main(argv=None) -> int:
     t85 = threshold_for_sensitivity(cal_prob, y_cal, 0.85)
 
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-    previously = json.load(open(LOCK)) if LOCK.exists() else {}
+    lock = json.load(open(LOCK)) if LOCK.exists() else {}
+    # Site operating points keep their own lock entries so the primary
+    # version's single scoring is never forgotten.
+    previously = lock.get("sites", {}).get(args.site, {}) if args.site else lock
     already = previously.get("model_version") == args.model_version
     if already and not args.force:
         print(f"refusing: external test already scored for {args.model_version} on {previously.get('scored_at')}. "
@@ -260,11 +274,19 @@ def main(argv=None) -> int:
             "Five-grade metrics are reported for contrast; the referable decision (grade >= 2) is the claim.",
         ],
     }
-    with open(OPERATING_POINT_PATH, "w", encoding="utf-8") as handle:
+    if args.site:
+        point["site"] = {"name": args.site, "note": "calibration (Platt a, b) and the 90 % sensitivity threshold chosen on this site's labelled images; "
+                                                    "the external test is the same DDR split, scored once under this site version"}
+    with open(out_path, "w", encoding="utf-8") as handle:
         json.dump(point, handle, indent=2)
+    entry = {"model_version": args.model_version, "scored_at": point["written_at"], "calibration_fingerprint": fingerprint,
+             "external_test_fingerprint": ext_fingerprint}
+    if args.site:
+        lock.setdefault("sites", {})[args.site] = entry
+    else:
+        lock = {**lock, **entry}
     with open(LOCK, "w", encoding="utf-8") as handle:
-        json.dump({"model_version": args.model_version, "scored_at": point["written_at"], "calibration_fingerprint": fingerprint,
-                   "external_test_fingerprint": ext_fingerprint}, handle, indent=2)
+        json.dump(lock, handle, indent=2)
 
     print(f"calibration n={len(cal)}  external n={len(ext)}  fingerprint {fingerprint[:16]}...")
     print(f"Platt a={a:.4f} b={b:.4f}   ECE raw {ece_raw:.3f} -> calibrated {ece_cal:.3f}")
@@ -275,7 +297,7 @@ def main(argv=None) -> int:
     if secondary:
         s = secondary["at_locked_threshold"]
         print(f"HELD-OUT  AUC {secondary['auc']:.3f}  sens {s['sensitivity']:.3f}  spec {s['specificity']:.3f}")
-    print(f"wrote {OPERATING_POINT_PATH}")
+    print(f"wrote {out_path}")
     return 0
 
 

@@ -98,7 +98,9 @@ verified in MATLAB.
 **"Will it work on our cameras?"** Not without a site calibration set, and we measured what that
 takes: on Messidor-2 (a third source) the locked threshold over-refers — specificity 0.64 at
 sensitivity 0.98 — and re-fitting the calibration and threshold on about 400 labelled images
-from that site restores 0.89 / 0.90 with ECE 0.02. That is the deployment step, and its price.
+from that site restores 0.89 / 0.90 with ECE 0.02. That is the deployment step, and its price —
+and it is one command: `scripts/site-calibrate.sh <site> <images> <labels.csv>` (a worked example
+from 400 Messidor-2 images is in the repo as `site_mock-messidor`).
 
 **"Does it work offline?"** Yes: models, SQLite records and PDF reports are local; the API
 serves the built front end itself; `scripts/build-offline-bundle.ps1` makes the PHC folder.

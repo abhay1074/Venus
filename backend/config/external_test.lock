@@ -5,5 +5,13 @@
   "external_test_fingerprint": "e1833d2342e7e67acb74ccc7000f2efe4ad4243a0f699e1d790851ae875475c5",
   "additional": {
     "external_test_messidor2": "venus-dr-2.0.0"
+  },
+  "sites": {
+    "site_mock-messidor": {
+      "model_version": "venus-dr-2.0.0+site_mock-messidor",
+      "scored_at": "2026-09-21T12:40:03.621443+00:00",
+      "calibration_fingerprint": "f81e83aa0eb917c797850292d663e05c0824c30596580c86b0aa936e19d87375",
+      "external_test_fingerprint": "e1833d2342e7e67acb74ccc7000f2efe4ad4243a0f699e1d790851ae875475c5"
+    }
   }
 }

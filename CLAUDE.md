@@ -42,6 +42,9 @@ architecture document section by section; `docs/VALIDATION.md` is generated, nev
   the server refuses to start if either does not match. Re-run `backend.eval.calibrate` after
   any model change, then `backend.eval.timing`, then `backend.eval.write_docs`.
 - A missed target is reported with its CI, not re-tuned. Numbers in docs come from JSON.
+- Site operating points (`calibrate --site`, `scripts/site-calibrate.sh`) live in
+  `config/operating_point_site_<name>.json` with their own lock entries; the served file changes only
+  with `--activate`. The served `model_version` is read from the operating point, not the constant.
 - Experiments train under their own `--tag`; only the default tags write served config
   (`config/lesion_thresholds.json` comes from tag `lesion_unet`). Promote by copying weights +
   thresholds deliberately, then re-run flag_rate → review_policy → write_docs.

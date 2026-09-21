@@ -20,7 +20,7 @@ from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 
-from backend.venus.config import ICDR_LABELS, MODEL_VERSION, REPORT_DIR
+from backend.venus.config import ICDR_LABELS, REPORT_DIR
 
 NAVY = colors.HexColor("#102A43")
 TEAL = colors.HexColor("#0F766E")
