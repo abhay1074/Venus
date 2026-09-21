@@ -119,32 +119,46 @@ end
 
 function runs = runWithSimulink(configs, base)
     % parsim over Simulink.SimulationInput objects; each run changes only the
-    % model-workspace variables. Outputs are read back from the terminators'
-    % counters and the logged queue statistics.
+    % model-workspace variable `params` (the DoctorPoolDES block parameters
+    % are expressions on it), the capture capacity and the generator's
+    % Generate action. The terminators' counters (resultCount, dischargeCount,
+    % missedCount, logged by To Workspace blocks) come back in the
+    % SimulationOutput; the MATLAB DES reference supplies the waiting-time and
+    % cost fields the block model does not log, and both missed counts are
+    % kept side by side (runs(i).simulink).
+    here = fileparts(mfilename('fullpath'));
+    addpath(here);
     model = 'district_screening';
-    if ~isfile(fullfile(fileparts(mfilename('fullpath')), [model '.slx'])), buildDistrictModel(base, model); end
+    if ~isfile(fullfile(here, [model '.slx'])), buildDistrictModel(base, model); end
     load_system(model);
     n = numel(configs);
     in(1:n) = Simulink.SimulationInput(model);
     for i = 1:n
         p = paramsFor(base, configs{i});
-        in(i) = in(i).setVariable('params', p);
-        in(i) = in(i).setBlockParameter([model '/Capture + Stage 0'], 'Capacity', num2str(p.phcs * p.camerasPerPhc));
-        % The doctor pool reads params.ophthalmologists etc. from the model
-        % workspace (DoctorPoolDES block parameters are expressions), so only
-        % the plain-server variant needs its Capacity set here.
+        in(i) = in(i).setVariable('params', p, 'Workspace', model);
+        in(i) = in(i).setBlockParameter([model '/Capture + Stage 0'], 'Capacity', num2str(p.phcs * min(p.camerasPerPhc, p.operatorsPerPhc)));
+        in(i) = in(i).setBlockParameter([model '/Patient generator'], 'GenerateAction', generateAction(p));
         if getSimulinkBlockHandle([model '/Tele-review + in-person']) > 0
             in(i) = in(i).setBlockParameter([model '/Tele-review + in-person'], 'Capacity', num2str(p.ophthalmologists));
         end
     end
-    outs = parsim(in, 'ShowProgress', 'on', 'TransferBaseWorkspaceVariables', 'on');
+    outs = parsim(in, 'ShowProgress', 'on', 'TransferBaseWorkspaceVariables', 'on', ...
+                  'AttachedFiles', {fullfile(here, 'DoctorPoolDES.m'), fullfile(here, 'districtBus.m'), fullfile(here, 'generateAction.m')});
     runs = cell(n, 1);
     for i = 1:n
-        % Statistics come from the block-level logged signals; the MATLAB DES
-        % reference supplies the fields the block model does not log.
         r = simulateDistrict(paramsFor(base, configs{i}));
-        r.simulinkMissed = outs(i).get('missed');
         runs{i} = summarise(r, configs{i});
+        runs{i}.simulink = struct('resulted', lastValue(outs(i), 'resultCount'), 'discharged', lastValue(outs(i), 'dischargeCount'), ...
+                                  'missedByAi', lastValue(outs(i), 'missedCount'));
+    end
+end
+
+function v = lastValue(out, name)
+    v = 0;                       % a terminator nothing reached logs no variable: zero arrivals
+    try
+        ts = out.get(name);
+        if ~isempty(ts) && ~isempty(ts.Data), v = ts.Data(end); end
+    catch
     end
 end
 

@@ -34,3 +34,10 @@ dist/
 *.zip.*
 *.7z
 backend/config/timing_report_cpu.json
+# MATLAB / Simulink build products (the .slx itself is committed: buildDistrictModel regenerates it)
+matlab/slprj/
+matlab/**/slprj/
+matlab/**/*.slxc
+matlab/**/*.asv
+matlab/models_cache/
+matlab/simulink/sweep_result.json

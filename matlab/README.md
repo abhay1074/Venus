@@ -49,16 +49,22 @@ machine without MATLAB, so the first run is the first execution: run `runTests` 
 fix anything it reports — the logic is a line-for-line port of code that passes its 29
 Python tests.
 
-`buildDistrictModel.m` builds the SimEvents diagram with `add_block`/`set_param`. Block
-parameter names differ between SimEvents releases; every `set_param` is wrapped so a renamed
-parameter prints one line (`set_param(<block>, '<name>') failed`) instead of aborting.
-Fix the reported names against the block dialog (Entity Generator → Event actions →
-Generate; Entity Output Switch → Switching criterion "From attribute"). The doctors are a
-MATLAB Discrete-Event System block running `DoctorPoolDES.m` (internal priority queue, K
-slots, the daily hour budget of `simulateDistrict.m`: a case that would push a doctor past the
-budget waits for the next working day); `buildDistrictModel(p, name, struct('plainServer',
-true))` builds the older Entity Server variant for comparison. `runSweep` uses the MATLAB DES
-by default (`useSimulink=true` switches to `parsim` over `Simulink.SimulationInput`).
+`buildDistrictModel.m` builds the SimEvents diagram with `add_block`/`set_param` — **verified
+in R2026a** (library `sldelib`; the entity type is a bus object `PatientBus` recreated by the
+model's PreLoadFcn from `districtBus.m`; the generator's Generate action comes from
+`generateAction.m`; an Entity Output Switch reads `route` / `outcome` as the port index; the
+terminators' arrival counters are logged by To Workspace blocks). Every `set_param` is still
+wrapped so a future rename prints one line instead of aborting. The doctors are a MATLAB
+Discrete-Event System block running `DoctorPoolDES.m` (K slots with the daily hour budget of
+`simulateDistrict.m`: a case that would push a doctor past the budget waits for the next working
+day) behind an Entity Queue with priority on `aiPositive`; `buildDistrictModel(p, name,
+struct('plainServer', true))` builds the plain Entity Server variant for comparison.
+
+Measured: a full simulated year takes 16 s in SimEvents; at 2 ophthalmologists it misses 255
+referable cases at the AI against 254 in the MATLAB DES and 18,156 vs 18,347 cases resulted.
+`runSweep(struct('useSimulink', true))` runs every configuration through `parsim` (12 runs in
+141 s on 8 workers) and keeps the SimEvents counters beside the DES numbers in
+`runs(i).simulink`; the default `useSimulink=false` path is the MATLAB DES alone.
 
 Under GNU Octave (`octave_smoke.m`) the port also verifies the calibration fingerprint
 (`sha256File` uses Octave's `hash`), reads the served operating point and review policy into
