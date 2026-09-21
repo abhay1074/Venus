@@ -1,6 +1,6 @@
 # Validation report — Venus AI, model `venus-dr-2.0.0` (grader `grader_v2`)
 
-Generated 2026-09-20 17:52 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
+Generated 2026-09-21 07:00 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
 
 ## Data and splits
 
@@ -59,6 +59,18 @@ Five-grade contrast: QWK 0.714, exact 64.8%, within one grade 91.6%.
 ## Grader training
 
 EfficientNet-B3 at 512 px, ordinal, 4 cumulative sigmoids; 15 epochs, batch 8, AdamW, cosine decay, mixed_float16, float32 head, XLA True. Augmentation: dihedral, zoom 0.9-1.0, brightness/contrast/saturation ±20%. Loss: weighted BCE on cumulative targets, threshold weights [1,2,1,1], pos_weight [2.28, 3.13, 6.0, 6.0]. Train n = 39,147, val n = 3,403; best validation referable-AUC 0.9636 (epoch 8); 137.7 min on an RTX 5060 laptop GPU.
+
+## Things tried and not shipped: a second seed, test-time augmentation
+
+Does a second training seed (seed 7, same recipe; ensemble = mean of P(grade 2265 k)) beat grader_v2 alone, and does it add to test-time augmentation? Measured on the calibration and validation sets only (the external tests were not re-scored):
+
+| set | TTA | grader_v2 | grader_v2_s7 | mean ensemble | ensemble − best single (paired bootstrap 95% CI) |
+|---|---|---|---|---|---|
+| calibration (n = 2,000) | off | 0.947 | 0.943 | 0.950 | +0.0030 [-0.0004, 0.0067] |
+| calibration (n = 2,000) | on | 0.949 | 0.943 | 0.949 | -0.0002 [-0.0032, 0.0031] |
+| val (n = 3,403) | off | 0.964 | 0.965 | 0.967 | +0.0018 [-0.0002, 0.0039] |
+
+AUC of the referable decision. Averaging two seeds adds about the same as test-time augmentation (+0.003 on calibration, and TTA on top of the ensemble adds nothing); five-grade exact accuracy moves by about one point. That is below what the district numbers would notice and would double the grader's inference cost on a CPU, so the served grader stays a single network without TTA, and the external test's one scoring stands.
 
 ## Lesion segmentation (DDR test split, scored once)
 

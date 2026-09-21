@@ -1,0 +1,141 @@
+{
+  "written_at": "2026-09-21T07:05:00+00:00",
+  "question": "Does a second training seed (seed 7, same recipe; ensemble = mean of P(grade 2265 k)) beat grader_v2 alone, and does it add to test-time augmentation?",
+  "comparisons": [
+    {
+      "manifest": "calibration",
+      "n": 2000,
+      "n_referable": 336,
+      "tta": false,
+      "single": {
+        "grader_v2": {
+          "auc": 0.9466,
+          "ci95": [
+            0.931,
+            0.9601
+          ],
+          "grade_accuracy": 0.8395
+        },
+        "grader_v2_s7": {
+          "auc": 0.9432,
+          "ci95": [
+            0.9264,
+            0.9581
+          ],
+          "grade_accuracy": 0.8395
+        }
+      },
+      "ensemble_mean": {
+        "tags": [
+          "grader_v2",
+          "grader_v2_s7"
+        ],
+        "auc": 0.9495,
+        "ci95": [
+          0.9336,
+          0.9635
+        ],
+        "vs_best_single": "grader_v2",
+        "paired_auc_difference": {
+          "mean": 0.003,
+          "ci95": [
+            -0.0004,
+            0.0067
+          ],
+          "p_le_0": 0.0405
+        },
+        "grade_accuracy": 0.847
+      }
+    },
+    {
+      "manifest": "calibration",
+      "n": 2000,
+      "n_referable": 336,
+      "tta": true,
+      "single": {
+        "grader_v2": {
+          "auc": 0.9493,
+          "ci95": [
+            0.9335,
+            0.963
+          ],
+          "grade_accuracy": 0.85
+        },
+        "grader_v2_s7": {
+          "auc": 0.9428,
+          "ci95": [
+            0.9249,
+            0.9585
+          ],
+          "grade_accuracy": 0.8495
+        }
+      },
+      "ensemble_mean": {
+        "tags": [
+          "grader_v2",
+          "grader_v2_s7"
+        ],
+        "auc": 0.9491,
+        "ci95": [
+          0.933,
+          0.963
+        ],
+        "vs_best_single": "grader_v2",
+        "paired_auc_difference": {
+          "mean": -0.0002,
+          "ci95": [
+            -0.0032,
+            0.0031
+          ],
+          "p_le_0": 0.536
+        },
+        "grade_accuracy": 0.8545
+      }
+    },
+    {
+      "manifest": "val",
+      "n": 3403,
+      "n_referable": 812,
+      "tta": false,
+      "single": {
+        "grader_v2": {
+          "auc": 0.9636,
+          "ci95": [
+            0.9558,
+            0.9706
+          ],
+          "grade_accuracy": 0.8445
+        },
+        "grader_v2_s7": {
+          "auc": 0.9652,
+          "ci95": [
+            0.9574,
+            0.9721
+          ],
+          "grade_accuracy": 0.8463
+        }
+      },
+      "ensemble_mean": {
+        "tags": [
+          "grader_v2",
+          "grader_v2_s7"
+        ],
+        "auc": 0.967,
+        "ci95": [
+          0.9593,
+          0.9736
+        ],
+        "vs_best_single": "grader_v2_s7",
+        "paired_auc_difference": {
+          "mean": 0.0018,
+          "ci95": [
+            -0.0002,
+            0.0039
+          ],
+          "p_le_0": 0.037
+        },
+        "grade_accuracy": 0.854
+      }
+    }
+  ]
+}

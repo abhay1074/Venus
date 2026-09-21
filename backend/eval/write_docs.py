@@ -34,7 +34,7 @@ def f3(x):
     return "—" if x is None else f"{x:.3f}"
 
 
-def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card, flags=None) -> str:
+def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card, flags=None, ensemble=None) -> str:
     t = op["external_test"]; at = t["at_locked_threshold"]; ci = t["ci95_bootstrap_2000"]; tg = op["targets"]
     sec = op.get("secondary_heldout")
     lines = [f"# Validation report — Venus AI, model `{op['model_version']}` (grader `{op['grader_tag']}`)", "",
@@ -105,6 +105,18 @@ def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_car
                   f"{grader_card['schedule']}, {grader_card['precision']}, XLA {grader_card['xla']}. Augmentation: {grader_card['augmentation']}. Loss: {grader_card['loss']}. "
                   f"Train n = {grader_card['train_n']:,}, val n = {grader_card['val_n']:,}; best validation referable-AUC {grader_card['best_val_referable_auc']} "
                   f"(epoch {max(h, key=lambda r: r['referable_auc'] or 0)['epoch']}); {grader_card['total_minutes']} min on an RTX 5060 laptop GPU.", ""]
+    if ensemble:
+        lines += ["## Things tried and not shipped: a second seed, test-time augmentation", "",
+                  f"{ensemble['question']} Measured on the calibration and validation sets only (the external tests were not re-scored):", "",
+                  "| set | TTA | " + " | ".join(ensemble["comparisons"][0]["single"].keys()) + " | mean ensemble | ensemble − best single (paired bootstrap 95% CI) |",
+                  "|---|---|" + "---|" * (len(ensemble["comparisons"][0]["single"]) + 2)]
+        for c in ensemble["comparisons"]:
+            e = c.get("ensemble_mean", {}); d = e.get("paired_auc_difference", {})
+            lines.append(f"| {c['manifest']} (n = {c['n']:,}) | {'on' if c['tta'] else 'off'} | " + " | ".join(f3(v["auc"]) for v in c["single"].values())
+                         + f" | {f3(e.get('auc'))} | {d.get('mean', 0):+.4f} [{d.get('ci95', ['', ''])[0]}, {d.get('ci95', ['', ''])[1]}] |")
+        lines += ["", "AUC of the referable decision. Averaging two seeds adds about the same as test-time augmentation (+0.003 on calibration, and TTA on top of the "
+                  "ensemble adds nothing); five-grade exact accuracy moves by about one point. That is below what the district numbers would notice and would double "
+                  "the grader's inference cost on a CPU, so the served grader stays a single network without TTA, and the external test's one scoring stands.", ""]
     if lesion:
         lines += ["## Lesion segmentation (DDR test split, scored once)", "", "| lesion | AUPR | Dice at threshold | threshold (DDR valid, max F1) |", "|---|---|---|---|"]
         for k in ("MA", "HE", "EX", "SE"):
@@ -180,8 +192,9 @@ def main() -> int:
     quality_card = load(CARDS / "quality_cnn.summary.json")
     unet_card = load(CARDS / "lesion_unet.summary.json")
     flags = load(CONFIG_DIR / "validation_flags.json")
+    ensemble = load(CONFIG_DIR / "ensemble_check.json")
     DOCS.mkdir(exist_ok=True)
-    (DOCS / "VALIDATION.md").write_text(validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card, flags), encoding="utf-8")
+    (DOCS / "VALIDATION.md").write_text(validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card, flags, ensemble), encoding="utf-8")
     print(f"wrote {DOCS / 'VALIDATION.md'}")
     CARDS.mkdir(parents=True, exist_ok=True)
     for name, card in (("grader_v2", grader_card), ("lesion_unet", unet_card), ("quality_cnn", quality_card)):
