@@ -11,8 +11,8 @@ function sweep = runSweep(opts)
 %   opts (struct, all optional): cameras, doctors, maxMissedFraction,
 %   maxP95WaitDays, sampleFraction, useParallel (parfor over runs, needs
 %   Parallel Computing Toolbox), useSimulink (parsim on district_screening.slx
-%   with Simulink.SimulationInput; the block model does not include the
-%   doctors' daily hour budget, see buildDistrictModel).
+%   with Simulink.SimulationInput; the block model's doctor pool is
+%   DoctorPoolDES.m, so it carries the daily hour budget like the MATLAB DES).
 %
 %   The result is also written to matlab/simulink/sweep_result.json in the
 %   same shape as backend/config/sweep_cache.json so the web front end can
@@ -130,7 +130,12 @@ function runs = runWithSimulink(configs, base)
         p = paramsFor(base, configs{i});
         in(i) = in(i).setVariable('params', p);
         in(i) = in(i).setBlockParameter([model '/Capture + Stage 0'], 'Capacity', num2str(p.phcs * p.camerasPerPhc));
-        in(i) = in(i).setBlockParameter([model '/Tele-review + in-person'], 'Capacity', num2str(p.ophthalmologists));
+        % The doctor pool reads params.ophthalmologists etc. from the model
+        % workspace (DoctorPoolDES block parameters are expressions), so only
+        % the plain-server variant needs its Capacity set here.
+        if getSimulinkBlockHandle([model '/Tele-review + in-person']) > 0
+            in(i) = in(i).setBlockParameter([model '/Tele-review + in-person'], 'Capacity', num2str(p.ophthalmologists));
+        end
     end
     outs = parsim(in, 'ShowProgress', 'on', 'TransferBaseWorkspaceVariables', 'on');
     runs = cell(n, 1);

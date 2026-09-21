@@ -121,8 +121,11 @@ cloud.md            the work diary; CLAUDE.md the notes for whoever continues
 - **Mild DR is not a claim.** The referable decision (grade ≥ 2) is what the threshold, the CIs
   and the simulation describe; five-grade metrics are shown for contrast.
 - **The MATLAB port was written without MATLAB.** Every file parses and the pure logic passes its
-  cases under GNU Octave (`matlab/octave_smoke.m`); the toolbox-dependent parts (network import,
-  Grad-CAM, Report Generator, SimEvents block parameters) are verified on first run in MATLAB, as
+  cases under GNU Octave (`matlab/octave_smoke.m`): the calibration fingerprint verifies, the
+  district DES reproduces Python's sweep numbers within sampling error (doctor hours 2,947 vs
+  2,903; programme sensitivity 0.814 vs 0.814), the graders, fusion, review policy and tiers match
+  case by case. The toolbox-dependent parts (network import, Grad-CAM, Report Generator, SimEvents
+  block parameters, the `DoctorPoolDES` block) are verified on first run in MATLAB, as
   `matlab/README.md` describes.
 
 Screening aid, not a diagnosis. Every image is read by an eye-care professional.

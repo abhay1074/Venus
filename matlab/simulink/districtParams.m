@@ -20,6 +20,21 @@ function p = districtParams(varargin)
         % No operating point on this machine: keep the defaults, say so.
         warning('districtParams:noOperatingPoint', 'operating_point.json not found; using default sensitivity/specificity');
     end
+    % Flag and retake rates measured on validation images (backend.eval.flag_rate);
+    % the served review rule is the validation-chosen policy, whose flag rate on
+    % the same sample is what the programme absorbs. Mirrors
+    % stage4_simulate.measured_flag_rates.
+    configDir = fullfile(drscreen.repoRoot(), 'backend', 'config');
+    flagsPath = fullfile(configDir, 'validation_flags.json');
+    if isfile(flagsPath)
+        v = jsondecode(fileread(flagsPath));
+        p.flagRate = v.flag_rate; p.retakeProbability = v.retake_rate;
+        policyPath = fullfile(configDir, 'review_policy.json');
+        if isfile(policyPath)
+            pol = jsondecode(fileread(policyPath));
+            if isfield(pol, 'resulting_flag_rate'), p.flagRate = pol.resulting_flag_rate; end
+        end
+    end
     for i = 1:2:numel(varargin)
         p.(varargin{i}) = varargin{i + 1};
     end

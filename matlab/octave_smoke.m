@@ -93,4 +93,19 @@ else
     disp('colourNormalise: rgb2lab not available in this Octave (image package); skipped');
 end
 
+% operating point + measured rates: the same numbers Python serves
+op = drscreen.operatingPoint();
+pyOp = jsondecode(fileread(fullfile(drscreen.repoRoot(), 'backend', 'config', 'operating_point.json')));
+fails += check(strcmp(op.calibrationFingerprint, pyOp.calibration_fingerprint) && abs(op.thresholds.referable - pyOp.thresholds.referable) < 1e-9, 'operatingPoint: fingerprint verified, threshold matches');
+dp = districtParams();
+pyFlags = jsondecode(fileread(fullfile(drscreen.repoRoot(), 'backend', 'config', 'review_policy.json')));
+fails += check(abs(dp.flagRate - pyFlags.resulting_flag_rate) < 1e-9 && abs(dp.sensitivity - pyOp.external_test.at_locked_threshold.sensitivity) < 1e-9, 'districtParams: coupled to the served operating point and review policy');
+% cross-check against Python's cached sweep (same parameters, different RNG): AI at 2 doctors, 95 % point
+sw = jsondecode(fileread(fullfile(drscreen.repoRoot(), 'backend', 'config', 'sweep_cache.json')));
+best = sw.best_ai; roc = pyOp.external_test.roc_points_for_simulation; r95 = roc([roc.sensitivity_target] == best.sensitivity_target);
+mp = districtParams('ophthalmologists', best.ophthalmologists, 'camerasPerPhc', best.cameras_per_phc, 'sensitivity', r95.sensitivity, 'specificity', r95.specificity, 'sampleFraction', 0.25);
+mr = simulateDistrict(mp);
+printf('      cross-check AI@%d doctors: MATLAB doctor hours %.0f vs Python %.0f; missed %.0f vs %.0f; programme sens %.3f vs %.3f\n', best.ophthalmologists, mr.doctorHours, best.doctor_hours, mr.referableMissedByAi + mr.referableMissedByReader, best.missed_total, mr.programmeSensitivity, best.programme_sensitivity);
+fails += check(abs(mr.doctorHours - best.doctor_hours) < 0.15 * best.doctor_hours && abs(mr.programmeSensitivity - best.programme_sensitivity) < 0.06, 'simulateDistrict: agrees with the Python sweep within sampling error');
+
 printf('%d failures\n', fails);

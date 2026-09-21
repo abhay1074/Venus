@@ -53,9 +53,18 @@ Python tests.
 parameter names differ between SimEvents releases; every `set_param` is wrapped so a renamed
 parameter prints one line (`set_param(<block>, '<name>') failed`) instead of aborting.
 Fix the reported names against the block dialog (Entity Generator → Event actions →
-Generate; Entity Output Switch → Switching criterion "From attribute"). The block model does
-not include the doctors' daily hour budget; `simulateDistrict.m` does, and `runSweep` uses it
+Generate; Entity Output Switch → Switching criterion "From attribute"). The doctors are a
+MATLAB Discrete-Event System block running `DoctorPoolDES.m` (internal priority queue, K
+slots, the daily hour budget of `simulateDistrict.m`: a case that would push a doctor past the
+budget waits for the next working day); `buildDistrictModel(p, name, struct('plainServer',
+true))` builds the older Entity Server variant for comparison. `runSweep` uses the MATLAB DES
 by default (`useSimulink=true` switches to `parsim` over `Simulink.SimulationInput`).
+
+Under GNU Octave (`octave_smoke.m`) the port also verifies the calibration fingerprint
+(`sha256File` uses Octave's `hash`), reads the served operating point and review policy into
+`districtParams`, and cross-checks `simulateDistrict` against Python's cached sweep at the same
+parameters (2 ophthalmologists with AI: doctor hours 2,947 vs 2,903, programme sensitivity
+0.814 vs 0.814 — different RNG streams, same model).
 
 `drscreen.loadModels` imports the SavedModel folders and caches each as `.mat`. If a layer
 is unsupported by `importNetworkFromTensorFlow` in your release, the `.onnx` export of the same
