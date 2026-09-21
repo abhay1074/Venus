@@ -150,7 +150,7 @@ export default function ResultView({ result, loading, onBook }) {
             </div>
           </div>
           <div>
-            <div className="label">Rule grader · ICDR criteria <span className="normal-case text-slate-400">· lesions by {result.stage1.method === "unet" ? "U-Net (DDR-trained)" : "classical detectors"}</span></div>
+            <div className="label">Rule grader · ICDR criteria <span className="normal-case text-slate-400">· lesions by {result.stage1.method === "classical" ? "classical detectors" : result.stage1.method.startsWith("unet (") ? `U-Nets (DDR-trained; ${result.stage1.method.slice(6, -1)})` : "U-Net (DDR-trained)"}</span></div>
             <ul className="mt-1 space-y-1 text-xs text-slate-700">
               {rule.trace.map((t) => <li key={t}>• {t}</li>)}
             </ul>

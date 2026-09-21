@@ -111,6 +111,8 @@ export default function App() {
       <footer className="mx-auto max-w-7xl px-4 py-6 text-xs text-slate-500 sm:px-6">
         Screening aid, not a diagnosis. Every image is read by an eye-care professional. Model {health.model_version || "—"}
         {health.operating_point?.fingerprint ? ` · calibration ${health.operating_point.fingerprint.slice(0, 12)}…` : ""}
+        {health.lesion_unet?.loaded ? ` · lesions: U-Net 512 px${health.lesion_unet.hires?.loaded ? ` + ${health.lesion_unet.hires.serves.join("/")} at ${health.lesion_unet.hires.frame_size} px` : ""}` : health.online ? " · lesions: classical detectors" : ""}
+        {health.quality_cnn?.loaded ? " · quality CNN on" : ""}
       </footer>
     </div>
   );
