@@ -8,7 +8,9 @@ function s3 = explain(s0, s1, s2, models)
 %   SE white), the disc and fovea in cyan. Attention agreement = share of
 %   Grad-CAM mass inside a lesion neighbourhood (radius 20 px, one CAM cell),
 %   with the chance level (neighbourhood share of the FOV) and the lift.
-%   A referable call whose heat is low AND no better than chance is flagged.
+%   A referable call whose heat share is below the validation-chosen floor
+%   (config/review_policy.json, 0.20; else 0.15 AND no better than chance)
+%   is flagged. Mirrors backend.venus.stage3_explain.attention_agreement.
 
     t0 = tic;
     mask = s0.mask; original = s0.original;
@@ -23,7 +25,8 @@ function s3 = explain(s0, s1, s2, models)
     camMs = round(1000 * toc(t0));
 
     counted = s2.rule.counts.MA + s2.rule.counts.HE + s2.rule.counts.EX + s2.rule.counts.SE;
-    agreement = attentionAgreement(heatRef, s1.masks, mask, counted, s2.fusion.referable);
+    if isfield(models, 'policy'), policy = models.policy; else, policy = drscreen.reviewPolicy(); end
+    agreement = attentionAgreement(heatRef, s1.masks, mask, counted, s2.fusion.referable, policy);
 
     overlays.gradcamReferable = overlayHeat(original, heatRef);
     overlays.gradcamGrade = overlayHeat(original, heatGrade);
@@ -74,7 +77,7 @@ function out = lesionOverlay(original, s1)
     out = insertMarker(out, s1.fovea.centre, 'plus', 'Color', [0 200 255], 'Size', 9);
 end
 
-function a = attentionAgreement(heat, masks, fovMask, counted, referable)
+function a = attentionAgreement(heat, masks, fovMask, counted, referable, policy)
     union = masks.MA | masks.HE | masks.EX | masks.SE;
     lesionPixels = nnz(union);
     if lesionPixels == 0
@@ -86,7 +89,8 @@ function a = attentionAgreement(heat, masks, fovMask, counted, referable)
     score = 0; if total > 1e-6, score = inside / total; end
     chance = nnz(wide & fovMask) / max(nnz(fovMask), 1);
     lift = 0; if chance > 0, lift = score / chance; end
-    low = score < 0.15 && lift < 1.5;
+    floorValue = policy.attentionFloor;
+    low = score < floorValue && (isnan(policy.attentionMinLift) || lift < policy.attentionMinLift);
     applies = counted > 0 && referable;
     if low && applies
         note = 'attention not on lesions';
@@ -98,5 +102,5 @@ function a = attentionAgreement(heat, masks, fovMask, counted, referable)
         note = 'attention overlaps lesion evidence';
     end
     a = struct('score', round(score * 1000) / 1000, 'chanceLevel', round(chance * 1000) / 1000, 'lift', round(lift * 100) / 100, ...
-        'lesionPixels', lesionPixels, 'flag', low && applies, 'note', note);
+        'floor', floorValue, 'lesionPixels', lesionPixels, 'flag', low && applies, 'note', note);
 end

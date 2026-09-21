@@ -39,6 +39,14 @@ f2 = drscreen.fuse(struct('grade', 2, 'gradeLabel', 'Moderate NPDR', 'referableP
 fails += check(f2.abstain && f2.flagForReview && f2.referable, 'fuse: abstain band flagged');
 f3 = drscreen.fuse(struct('grade', 0, 'gradeLabel', 'No DR', 'referableProbability', 0.05), rule, point);
 fails += check(~f3.flagForReview && ~f3.referable, 'fuse: clean negative not flagged');
+pointLow = point; pointLow.thresholds.referable = 0.1;
+policy = struct('abstainBandLogit', 0.35, 'attentionFloor', 0.2, 'attentionMinLift', NaN, 'chosenOn', 'test');
+ruleMod = struct('grade', 2, 'counts', struct('MA', 3, 'HE', 2, 'EX', 0, 'SE', 0));
+fHi = drscreen.fuse(struct('grade', 2, 'gradeLabel', 'Moderate NPDR', 'referableProbability', 0.13), ruleMod, pointLow, policy);
+fLo = drscreen.fuse(struct('grade', 1, 'gradeLabel', 'Mild NPDR', 'referableProbability', 0.06), ruleMod, pointLow, policy);
+fails += check(fHi.abstain && ~fLo.abstain && abs(fHi.abstainLow - 0.0726) < 1e-3 && abs(fHi.abstainHigh - 0.1363) < 1e-3, 'fuse: logit abstain band under policy');
+pol = drscreen.reviewPolicy();
+fails += check(abs(pol.abstainBandLogit - 0.35) < 1e-9 && abs(pol.attentionFloor - 0.2) < 1e-9 && isnan(pol.attentionMinLift), 'reviewPolicy: reads config/review_policy.json');
 
 res = @(grade, pr, flag, nv) struct('accepted', true, 'stage2', struct('fusion', struct('grade', grade, 'pReferable', pr, 'referable', pr >= 0.334, 'flagForReview', flag, 'flagReasons', {{}}), 'cnn', struct('nvProbability', nv)));
 fails += check(strcmp(getfield(drscreen.tier([]), 'tier'), 'P0'), 'tier: reject -> P0');

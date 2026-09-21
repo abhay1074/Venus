@@ -15,6 +15,7 @@ function models = loadModels(modelDir)
 
     if nargin < 1, modelDir = fullfile(drscreen.repoRoot(), 'models', 'export'); end
     models.point = drscreen.operatingPoint();
+    models.policy = drscreen.reviewPolicy();
     models.grader = importOne(fullfile(modelDir, 'grader_v2'), true);
     models.gate = importOne(fullfile(modelDir, 'modality_gate'), true);
     models.quality = importOne(fullfile(modelDir, 'quality_cnn'), false);

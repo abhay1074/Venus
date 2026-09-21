@@ -33,7 +33,7 @@ function result = screenImage(imagePath, models, opts)
     t2 = tic;
     cnn = drscreen.gradeCNN(s0, models, point, tta);
     rule = drscreen.gradeRule(s1, cnn.nvProbability);
-    fusion = drscreen.fuse(cnn, rule, point);
+    fusion = drscreen.fuse(cnn, rule, point, models.policy);
     s2 = struct('cnn', cnn, 'rule', rule, 'fusion', fusion, 'elapsedMs', round(1000 * toc(t2)));
     s3 = drscreen.explain(s0, s1, s2, models);
     if s3.attentionAgreement.flag

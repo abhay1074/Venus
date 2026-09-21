@@ -59,6 +59,20 @@ classdef GradeTest < matlab.unittest.TestCase
             t.verifyFalse(f3.flagForReview); t.verifyFalse(f3.referable);
         end
 
+        function abstainBandIsLogitSymmetricUnderPolicy(t)
+            % Threshold 0.1, half-width 0.35 logit -> band [0.073, 0.136]:
+            % 0.13 abstains, 0.06 does not (it would under a +/-0.05 band).
+            point = GradeTest.fakePoint(); point.thresholds.referable = 0.1;
+            policy = struct('abstainBandLogit', 0.35, 'attentionFloor', 0.2, 'attentionMinLift', NaN, 'chosenOn', 'test');
+            rule = struct('grade', 2, 'counts', struct('MA', 3, 'HE', 2, 'EX', 0, 'SE', 0));
+            hi = drscreen.fuse(struct('grade', 2, 'gradeLabel', 'Moderate NPDR', 'referableProbability', 0.13), rule, point, policy);
+            lo = drscreen.fuse(struct('grade', 1, 'gradeLabel', 'Mild NPDR', 'referableProbability', 0.06), rule, point, policy);
+            t.verifyTrue(hi.abstain); t.verifyFalse(lo.abstain);
+            t.verifyEqual(hi.abstainLow, 0.0726, 'AbsTol', 1e-3); t.verifyEqual(hi.abstainHigh, 0.1363, 'AbsTol', 1e-3);
+            legacy = struct('abstainBandLogit', NaN, 'attentionFloor', 0.15, 'attentionMinLift', 1.5, 'chosenOn', '');
+            t.verifyTrue(getfield(drscreen.fuse(struct('grade', 1, 'gradeLabel', 'Mild NPDR', 'referableProbability', 0.06), rule, point, legacy), 'abstain'));
+        end
+
         function operatingPointFingerprintIsVerified(t)
             % Reads the real config; must load without error and match the
             % manifest on disk. (Skips if the repo has no operating point yet.)
