@@ -62,7 +62,7 @@ EfficientNet-B3 at 512 px, ordinal, 4 cumulative sigmoids; 15 epochs, batch 8, A
 
 ## Things tried and not shipped: a second seed, test-time augmentation
 
-Does a second training seed (seed 7, same recipe; ensemble = mean of P(grade 2265 k)) beat grader_v2 alone, and does it add to test-time augmentation? Measured on the calibration and validation sets only (the external tests were not re-scored):
+Does a second training seed (seed 7, same recipe; ensemble = mean of P(grade >= k)) beat grader_v2 alone, and does it add to test-time augmentation? Measured on the calibration and validation sets only (the external tests were not re-scored):
 
 | set | TTA | grader_v2 | grader_v2_s7 | mean ensemble | ensemble − best single (paired bootstrap 95% CI) |
 |---|---|---|---|---|---|
