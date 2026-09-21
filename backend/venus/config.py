@@ -41,7 +41,10 @@ LESION_THRESHOLDS_PATH = CONFIG_DIR / "lesion_thresholds.json"
 UNET_HIRES_WEIGHTS = WEIGHTS_DIR / "lesion_unet_1024.weights.h5"
 LESION_THRESHOLDS_HIRES_PATH = Path(os.getenv("VENUS_UNET_HIRES_SPEC", str(CONFIG_DIR / "lesion_thresholds_1024.json")))  # point at a missing file to disable
 REVIEW_POLICY_PATH = CONFIG_DIR / "review_policy.json"
-GRADER_TAG = "grader_v2" if GRADER_V2_WEIGHTS.exists() else "legacy_v1"
+# VENUS_GRADER_TAG names the grader an environment without checkpoints (CI,
+# a docs build) is standing in for, so the committed operating point can be
+# read; serving never sets it, the weights on disk decide.
+GRADER_TAG = os.getenv("VENUS_GRADER_TAG") or ("grader_v2" if GRADER_V2_WEIGHTS.exists() else "legacy_v1")
 GRADER_WEIGHTS = GRADER_V2_WEIGHTS if GRADER_TAG == "grader_v2" else GRADER_V1_WEIGHTS
 MODEL_VERSION = "venus-dr-2.0.0" if GRADER_TAG == "grader_v2" else "venus-dr-1.0.0"
 OPERATING_POINT_PATH = CONFIG_DIR / "operating_point.json"

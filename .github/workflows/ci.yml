@@ -16,14 +16,33 @@ jobs:
           cache: pip
       - run: pip install -r backend/requirements.txt
       # The trained checkpoints are not in the repository: tests that need them
-      # skip themselves; the stage logic, rule grader, fusion, scheduler and
-      # simulation tests run in full.
+      # skip themselves; the stage logic, rule grader, fusion, review policy,
+      # scheduler, simulation and API tests run in full against the committed
+      # operating point (VENUS_GRADER_TAG says which grader it belongs to).
       - run: python -m pytest backend/tests -q
         env:
           TF_CPP_MIN_LOG_LEVEL: "3"
-      - run: python -m backend.eval.calibrate --legacy --force
-      - name: operating point loads and fingerprint verifies
-        run: python -c "from backend.venus.config import operating_point; p = operating_point(); print(p['model_version'], p['thresholds']['referable'])"
+          VENUS_GRADER_TAG: grader_v2
+      - name: operating point loads and its calibration fingerprint verifies
+        run: python -c "from backend.venus.config import operating_point; p = operating_point(); print(p['model_version'], p['grader_tag'], p['thresholds']['referable'])"
+        env:
+          VENUS_GRADER_TAG: grader_v2
+      - name: docs regenerate from the config JSON without drift
+        run: |
+          python -m backend.eval.write_docs
+          git diff --exit-code -- docs/VALIDATION.md models/cards || (echo "docs/VALIDATION.md is stale: run python -m backend.eval.write_docs" && exit 1)
+        env:
+          VENUS_GRADER_TAG: grader_v2
+
+  matlab-port:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends octave
+      # Every .m file parses and the pure logic (graders, fusion, review policy,
+      # tiers, scheduler, district DES vs Python's cached sweep) passes under
+      # GNU Octave; the toolbox parts are verified in MATLAB.
+      - run: octave-cli --no-gui --eval "cd('matlab'); octave_smoke"
 
   frontend:
     runs-on: ubuntu-latest

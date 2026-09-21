@@ -38,7 +38,7 @@ def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_car
     t = op["external_test"]; at = t["at_locked_threshold"]; ci = t["ci95_bootstrap_2000"]; tg = op["targets"]
     sec = op.get("secondary_heldout")
     lines = [f"# Validation report — Venus AI, model `{op['model_version']}` (grader `{op['grader_tag']}`)", "",
-             f"Generated {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')} by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; "
+             f"Generated from the operating point written {op['written_at'][:16].replace('T', ' ')} UTC by `backend/eval/write_docs.py`, from the JSON artefacts the code wrote when it measured; "
              "nothing here is typed by hand. The Validation screen in the app renders the same files.", ""]
 
     lines += ["## Data and splits", ""]
@@ -99,6 +99,21 @@ def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_car
         if ext.get("grade_metrics_for_contrast"):
             g = ext["grade_metrics_for_contrast"]
             lines += [f"Five-grade contrast: QWK {f3(g['quadratic_weighted_kappa'])}, exact {pct(g['exact_grade_accuracy'])}, within one grade {pct(g['within_one_grade'])}.", ""]
+    site = load(CONFIG_DIR / "site_calibration_messidor2.json")
+    if site:
+        L, F = site["locked_operating_point"], site["site_calibration_full_half"]
+        lines += ["## What a site calibration set buys (Messidor-2, evaluation of a deployment step)", "",
+                  f"{site['protocol']}. n = {site['n_images']:,} images, {site['n_patients']} patients, {site['n_referable']} referable.", "",
+                  "| operating point | sensitivity | specificity | ECE |", "|---|---|---|---|",
+                  f"| locked (EyePACS calibration set), on the held-out halves | {f3(L['sensitivity']['mean'])} | {f3(L['specificity']['mean'])} | {f3(L['ece']['mean'])} |",
+                  f"| site calibration on the other half (n ≈ {F['n_mean']}) | {f3(F['sensitivity']['mean'])} | {f3(F['specificity']['mean'])} | {f3(F['ece']['mean'])} |"]
+        for n, s_ in site["site_calibration_by_sample_size"].items():
+            if s_:
+                lines.append(f"| site sample of {n} labelled images | {f3(s_['sensitivity']['mean'])} [{f3(s_['sensitivity']['p5'])}, {f3(s_['sensitivity']['p95'])}] | "
+                             f"{f3(s_['specificity']['mean'])} [{f3(s_['specificity']['p5'])}, {f3(s_['specificity']['p95'])}] | {f3(s_['ece']['mean'])} |")
+        lines += ["", "Brackets are the 5th–95th percentile over the repeats. Discrimination transfers across acquisition sources; calibration does not, and "
+                  "re-fitting Platt scaling and the 90 % sensitivity threshold on a few hundred labelled images from the site restores the intended operating "
+                  "point. This is the number behind \"a site-specific calibration set is a prerequisite for deployment\". The served operating point is unchanged.", ""]
     if grader_card:
         h = grader_card["history"]
         lines += ["## Grader training", "", f"{grader_card['backbone']} at {grader_card['input']} px, {grader_card['head']}; {grader_card['epochs']} epochs, batch {grader_card['batch']}, "

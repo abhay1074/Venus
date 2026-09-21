@@ -95,5 +95,10 @@ Under Octave it verifies the calibration fingerprint and reproduces the Python s
 doctor pool is a `matlab.DiscreteEventSystem` with the daily hour budget; the toolbox parts are
 verified in MATLAB.
 
+**"Will it work on our cameras?"** Not without a site calibration set, and we measured what that
+takes: on Messidor-2 (a third source) the locked threshold over-refers — specificity 0.64 at
+sensitivity 0.98 — and re-fitting the calibration and threshold on about 400 labelled images
+from that site restores 0.89 / 0.90 with ECE 0.02. That is the deployment step, and its price.
+
 **"Does it work offline?"** Yes: models, SQLite records and PDF reports are local; the API
 serves the built front end itself; `scripts/build-offline-bundle.ps1` makes the PHC folder.

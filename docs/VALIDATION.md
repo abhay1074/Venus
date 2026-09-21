@@ -1,6 +1,6 @@
 # Validation report — Venus AI, model `venus-dr-2.0.0` (grader `grader_v2`)
 
-Generated 2026-09-21 09:50 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
+Generated from the operating point written 2026-09-20 15:46 UTC by `backend/eval/write_docs.py`, from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
 
 ## Data and splits
 
@@ -55,6 +55,21 @@ AUC **0.963** [0.9535, 0.9707]; at the locked threshold sensitivity **0.980** [0
 On this set's own ROC, 90% sensitivity corresponds to specificity 0.900: the discrimination transfers across sources, the calibration shifts conservatively (the locked threshold over-refers here rather than missing cases). A site-specific calibration set before deployment is the remedy the architecture prescribes, and this is the measurement behind it.
 
 Five-grade contrast: QWK 0.714, exact 64.8%, within one grade 91.6%.
+
+## What a site calibration set buys (Messidor-2, evaluation of a deployment step)
+
+20 random patient-disjoint halves; site Platt (a, b) and the 90 % sensitivity threshold fitted on the calibration half (or a random subset of it of the stated size), evaluated on the other half; the locked operating point evaluated on the same halves. n = 1,744 images, 874 patients, 457 referable.
+
+| operating point | sensitivity | specificity | ECE |
+|---|---|---|---|
+| locked (EyePACS calibration set), on the held-out halves | 0.981 | 0.644 | 0.079 |
+| site calibration on the other half (n ≈ 872) | 0.896 | 0.900 | 0.021 |
+| site sample of 100 labelled images | 0.882 [0.793, 0.965] | 0.893 [0.772, 0.968] | 0.039 |
+| site sample of 200 labelled images | 0.892 [0.823, 0.949] | 0.894 [0.806, 0.952] | 0.028 |
+| site sample of 400 labelled images | 0.892 [0.843, 0.929] | 0.904 [0.858, 0.946] | 0.023 |
+| site sample of 800 labelled images | 0.900 [0.868, 0.935] | 0.898 [0.868, 0.929] | 0.021 |
+
+Brackets are the 5th–95th percentile over the repeats. Discrimination transfers across acquisition sources; calibration does not, and re-fitting Platt scaling and the 90 % sensitivity threshold on a few hundred labelled images from the site restores the intended operating point. This is the number behind "a site-specific calibration set is a prerequisite for deployment". The served operating point is unchanged.
 
 ## Grader training
 

@@ -42,6 +42,7 @@ is generated from the same files with the CIs, the protocol and the caveats.
 | PPV / NPV at 18 % Indian prevalence · ECE | 0.651 / 0.987 · 0.042 | same |
 | Messidor-2 (adjudicated labels, third source), scored once at the same threshold | AUC **0.963**, sens **0.980**, spec 0.645 (its own ROC: 0.90 sens at 0.90 spec) | 1,744 images, 874 patients |
 | Held-out EyePACS patients (within-source) | AUC 0.954, sens 0.937, spec 0.754 | 2,758 images |
+| **What a site calibration set buys** (Messidor-2, patient-disjoint halves, 20 repeats) | locked point: sens 0.981 / spec 0.644 / ECE 0.079 → re-fitted on **400 labelled site images: sens 0.89 [0.84, 0.93] / spec 0.90 [0.86, 0.95] / ECE 0.023** | `backend/eval/site_calibration.py`; served point unchanged |
 | Lesion U-Net, pixel AUPR / Dice (DDR test, 225 images, once) | HE 0.45 / 0.47 · EX 0.48 / 0.49 · SE 0.26 / 0.31 · MA 0.08 / 0.17 | thresholds chosen on DDR valid; a 1024 px network lifts MA to 0.10 / 0.23 but changes nothing downstream at +0.9 s per image — measured, not shipped |
 | Quality CNN, ungradable-detection AUC | **0.992** (held-out patients); 99.9 % of DDR's ungradable class caught | EyeQ labels |
 | Attention agreement, referable calls (median) | **0.54** when the CNN is right vs **0.27** when it is wrong | 487 validation images |
@@ -96,7 +97,7 @@ backend/main.py     FastAPI: /screen /screenings /report /simulate /sweep /intak
 backend/data/       sources cache_stage0 rehash build_manifests  + manifests/ (committed, fingerprinted)
 backend/training/   train_grader train_lesion_unet train_quality
 backend/eval/       calibrate (locks the operating point) score_grader score_external flag_rate review_policy
-                    compare_graders timing export_models write_docs figures (docs/figures from the same JSON)
+                    compare_graders site_calibration timing export_models write_docs figures (docs/figures from the same JSON)
 backend/tests/      one TestCase per stage + end to end (29 tests; weight-dependent ones skip without weights)
 frontend/           React + Vite + Tailwind + Recharts
 matlab/             +drscreen (all stages), simulink (MATLAB DES + SimEvents builder + parsim sweep), app, tests
@@ -117,8 +118,9 @@ cloud.md            the work diary; CLAUDE.md the notes for whoever continues
   adjudicated). On Messidor-2 the locked threshold over-refers (specificity 0.65 at sensitivity
   0.98) although its own ROC reaches 0.90/0.90: discrimination transfers, calibration shifts. A
   site-specific calibration set is a prerequisite for deployment, and this is the measurement
-  behind that statement. Performance on Indian portable-camera images is unmeasured until such a
-  set exists.
+  behind that statement — and `backend/eval/site_calibration.py` measures what the prerequisite
+  costs: re-fitting on ~400 labelled images from the site restores 0.89 / 0.90 with ECE 0.02.
+  Performance on Indian portable-camera images is unmeasured until such a set exists.
 - **Neovascularization is a classifier probability** (P(grade ≥ 4)), never a segmentation.
 - **Mild DR is not a claim.** The referable decision (grade ≥ 2) is what the threshold, the CIs
   and the simulation describe; five-grade metrics are shown for contrast.

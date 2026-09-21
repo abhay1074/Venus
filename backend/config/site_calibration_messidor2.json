@@ -1,0 +1,184 @@
+{
+  "written_at": "2026-09-21T12:15:23.406007+00:00",
+  "manifest": "external_test_messidor2",
+  "n_images": 1744,
+  "n_patients": 874,
+  "n_referable": 457,
+  "model_version": "venus-dr-2.0.0",
+  "grader": "grader_v2",
+  "protocol": "20 random patient-disjoint halves; site Platt (a, b) and the 90 % sensitivity threshold fitted on the calibration half (or a random subset of it of the stated size), evaluated on the other half; the locked operating point evaluated on the same halves",
+  "locked_operating_point": {
+    "sensitivity": {
+      "mean": 0.9813,
+      "p5": 0.9715,
+      "p95": 0.9874
+    },
+    "specificity": {
+      "mean": 0.6444,
+      "p5": 0.6204,
+      "p95": 0.6706
+    },
+    "ece": {
+      "mean": 0.0793,
+      "p5": 0.0684,
+      "p95": 0.091
+    },
+    "referred_fraction": {
+      "mean": 0.5198,
+      "p5": 0.495,
+      "p95": 0.5423
+    },
+    "auc": {
+      "mean": 0.9634,
+      "p5": 0.9596,
+      "p95": 0.9673
+    }
+  },
+  "site_calibration_full_half": {
+    "n_mean": 872,
+    "sensitivity": {
+      "mean": 0.8961,
+      "p5": 0.8544,
+      "p95": 0.9351
+    },
+    "specificity": {
+      "mean": 0.8997,
+      "p5": 0.8682,
+      "p95": 0.9287
+    },
+    "ece": {
+      "mean": 0.0207,
+      "p5": 0.0162,
+      "p95": 0.0281
+    },
+    "referred_fraction": {
+      "mean": 0.3093,
+      "p5": 0.2701,
+      "p95": 0.3376
+    },
+    "auc": {
+      "mean": 0.9634,
+      "p5": 0.9596,
+      "p95": 0.9673
+    }
+  },
+  "site_calibration_by_sample_size": {
+    "100": {
+      "n": 100,
+      "repeats": 20,
+      "sensitivity": {
+        "mean": 0.8818,
+        "p5": 0.7928,
+        "p95": 0.9647
+      },
+      "specificity": {
+        "mean": 0.8934,
+        "p5": 0.7718,
+        "p95": 0.9678
+      },
+      "ece": {
+        "mean": 0.0392,
+        "p5": 0.0172,
+        "p95": 0.0701
+      },
+      "referred_fraction": {
+        "mean": 0.3102,
+        "p5": 0.2281,
+        "p95": 0.4214
+      },
+      "auc": {
+        "mean": 0.9634,
+        "p5": 0.9596,
+        "p95": 0.9673
+      }
+    },
+    "200": {
+      "n": 200,
+      "repeats": 20,
+      "sensitivity": {
+        "mean": 0.8919,
+        "p5": 0.8227,
+        "p95": 0.9493
+      },
+      "specificity": {
+        "mean": 0.8938,
+        "p5": 0.8064,
+        "p95": 0.9518
+      },
+      "ece": {
+        "mean": 0.0275,
+        "p5": 0.0164,
+        "p95": 0.0429
+      },
+      "referred_fraction": {
+        "mean": 0.3126,
+        "p5": 0.2483,
+        "p95": 0.3998
+      },
+      "auc": {
+        "mean": 0.9634,
+        "p5": 0.9596,
+        "p95": 0.9673
+      }
+    },
+    "400": {
+      "n": 400,
+      "repeats": 20,
+      "sensitivity": {
+        "mean": 0.8918,
+        "p5": 0.8428,
+        "p95": 0.9289
+      },
+      "specificity": {
+        "mean": 0.9037,
+        "p5": 0.858,
+        "p95": 0.9456
+      },
+      "ece": {
+        "mean": 0.0228,
+        "p5": 0.0143,
+        "p95": 0.0301
+      },
+      "referred_fraction": {
+        "mean": 0.3053,
+        "p5": 0.255,
+        "p95": 0.3484
+      },
+      "auc": {
+        "mean": 0.9634,
+        "p5": 0.9596,
+        "p95": 0.9673
+      }
+    },
+    "800": {
+      "n": 800,
+      "repeats": 20,
+      "sensitivity": {
+        "mean": 0.8997,
+        "p5": 0.8682,
+        "p95": 0.9351
+      },
+      "specificity": {
+        "mean": 0.8978,
+        "p5": 0.8681,
+        "p95": 0.9287
+      },
+      "ece": {
+        "mean": 0.0209,
+        "p5": 0.0144,
+        "p95": 0.0273
+      },
+      "referred_fraction": {
+        "mean": 0.3117,
+        "p5": 0.2744,
+        "p95": 0.3397
+      },
+      "auc": {
+        "mean": 0.9634,
+        "p5": 0.9596,
+        "p95": 0.9673
+      }
+    }
+  },
+  "note": "Evaluation of a deployment step; the served operating point is unchanged. Site calibration re-fits Platt and re-chooses the threshold at 90 % sensitivity on the site's own labelled sample, which is what backend.eval.calibrate does on the EyePACS calibration set."
+}

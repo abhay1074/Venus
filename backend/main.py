@@ -118,7 +118,8 @@ async def get_validation_extras() -> dict:
     the evaluation scripts wrote; nothing is computed here."""
     out = {}
     for key, name in (("review_policy", "review_policy.json"), ("validation_flags", "validation_flags.json"),
-                      ("lesion_thresholds", "lesion_thresholds.json"), ("ensemble_check", "ensemble_check.json")):
+                      ("lesion_thresholds", "lesion_thresholds.json"), ("ensemble_check", "ensemble_check.json"),
+                      ("site_calibration", "site_calibration_messidor2.json")):
         path = CONFIG_DIR / name
         if path.exists():
             with open(path, "r", encoding="utf-8") as handle:

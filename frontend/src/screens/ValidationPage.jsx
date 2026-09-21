@@ -156,6 +156,8 @@ export default function ValidationPage() {
         </div>
       )}
 
+      {extras?.site_calibration && <SiteCalibrationCard site={extras.site_calibration} />}
+
       {extras?.experiments?.lesion_unet_1024 && <UnetExperimentCard exp={extras.experiments.lesion_unet_1024} />}
 
       <div className="card p-5">
@@ -235,6 +237,28 @@ function EnsembleCard({ check }) {
         </tbody>
       </table>
       <p className="mt-2 text-xs text-slate-500">Referable-DR AUC. The ensemble adds about what TTA adds and nothing on top of it, at twice the CPU cost per image: the served grader stays one network, and the external test's single scoring stands.</p>
+    </div>
+  );
+}
+
+function SiteCalibrationCard({ site }) {
+  const L = site.locked_operating_point; const F = site.site_calibration_full_half;
+  const sizes = Object.entries(site.site_calibration_by_sample_size || {}).filter(([, v]) => v);
+  const f3 = (x) => x.toFixed(3);
+  const ci = (m) => `${f3(m.mean)} [${f3(m.p5)}, ${f3(m.p95)}]`;
+  return (
+    <div className="card p-5">
+      <div className="label">What a site calibration set buys · Messidor-2 · evaluation of a deployment step, served point unchanged</div>
+      <p className="mt-1 text-xs text-slate-500">{site.protocol}. n = {site.n_images} images, {site.n_patients} patients, {site.n_referable} referable.</p>
+      <table className="mt-2 w-full text-sm">
+        <thead className="text-left text-xs text-slate-500"><tr><th>operating point</th><th>sensitivity</th><th>specificity</th><th>ECE</th></tr></thead>
+        <tbody>
+          <tr className="border-t border-venus-line"><td className="py-1">locked (EyePACS calibration set), on the held-out halves</td><td>{f3(L.sensitivity.mean)}</td><td>{f3(L.specificity.mean)}</td><td>{f3(L.ece.mean)}</td></tr>
+          <tr className="border-t border-venus-line font-semibold text-venus-navy"><td className="py-1">site calibration on the other half (n ≈ {F.n_mean})</td><td>{f3(F.sensitivity.mean)}</td><td>{f3(F.specificity.mean)}</td><td>{f3(F.ece.mean)}</td></tr>
+          {sizes.map(([n, s]) => <tr key={n} className="border-t border-venus-line"><td className="py-1">site sample of {n} labelled images</td><td>{ci(s.sensitivity)}</td><td>{ci(s.specificity)}</td><td>{f3(s.ece.mean)}</td></tr>)}
+        </tbody>
+      </table>
+      <p className="mt-2 text-xs text-slate-500">Brackets: 5th–95th percentile over the repeats. Discrimination transfers across acquisition sources; calibration does not. Re-fitting Platt scaling and the 90% threshold on a few hundred labelled site images restores the intended operating point — the deployment step, with its price.</p>
     </div>
   );
 }
