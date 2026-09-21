@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { CheckCircle2, XCircle } from "lucide-react";
-import { getOperatingPoint } from "../api/venus.js";
+import { getOperatingPoint, getValidationExtras } from "../api/venus.js";
 
 // Published references the numbers sit beside, with the same metric definitions.
 const BENCHMARKS = [
@@ -11,9 +11,11 @@ const BENCHMARKS = [
 
 export default function ValidationPage() {
   const [op, setOp] = useState(null);
+  const [extras, setExtras] = useState(null);
   const [error, setError] = useState("");
   useEffect(() => {
     getOperatingPoint().then(setOp).catch((e) => setError(e.message));
+    getValidationExtras().then(setExtras).catch(() => setExtras({}));
   }, []);
 
   if (error) return <div className="card p-5 text-sm text-rose-700">{error}</div>;
@@ -145,6 +147,15 @@ export default function ValidationPage() {
         </div>
       </div>
 
+      {extras?.review_policy && <ReviewPolicyCard policy={extras.review_policy} flags={extras.validation_flags} />}
+
+      {(extras?.lesion_thresholds || extras?.ensemble_check) && (
+        <div className="grid gap-5 lg:grid-cols-2">
+          {extras.lesion_thresholds && <LesionCard lesion={extras.lesion_thresholds} />}
+          {extras.ensemble_check && <EnsembleCard check={extras.ensemble_check} />}
+        </div>
+      )}
+
       <div className="card p-5">
         <div className="label">Stated plainly</div>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
@@ -152,6 +163,76 @@ export default function ValidationPage() {
           <li>Mild DR (grade 1 vs 0) is not a claim of this system; the referable decision (grade ≥ 2) is what the threshold, the CIs and the simulation describe.</li>
         </ul>
       </div>
+    </div>
+  );
+}
+
+function ReviewPolicyCard({ policy, flags }) {
+  const pct = (x) => `${(x * 100).toFixed(1)}%`;
+  const reasons = Object.entries(policy.flag_reasons || {});
+  const att = flags?.attention_agreement;
+  return (
+    <div className="card p-5">
+      <div className="label">Human-review policy · chosen on the validation sample, served as config/review_policy.json</div>
+      <p className="mt-1 text-xs text-slate-500">{policy.chosen_on} · grader {policy.grader} · written {new Date(policy.written_at).toLocaleString()}</p>
+      <div className="mt-3 grid grid-cols-2 gap-2 text-center text-sm md:grid-cols-5">
+        <Small k="abstain band (logit, ± around threshold)" v={`±${policy.abstain_band_logit}`} />
+        <Small k="attention floor (referable calls)" v={policy.attention_floor} />
+        <Small k="resulting flag rate" v={pct(policy.resulting_flag_rate)} />
+        <Small k="CNN error rate: flagged vs not" v={`${pct(policy.error_rate_flagged)} / ${pct(policy.error_rate_unflagged)}`} />
+        <Small k="of CNN errors flagged" v={pct(policy.share_of_cnn_errors_flagged)} />
+      </div>
+      <p className="mt-3 text-sm text-slate-700">
+        Flags by reason: {reasons.map(([k, v]) => `${k} ${v}`).join(", ")}.
+        {att && ` Attention agreement on referable calls: median ${att.correct?.median} when the CNN is right (n = ${att.correct?.n}) vs ${att.incorrect?.median} when it is wrong (n = ${att.incorrect?.n}).`}
+        {" "}The attention floor is the highest cut at which at least 60% of the flagged referable calls are CNN errors; the band is symmetric in logit space because ±0.05 in probability is not, at a threshold near 0.1. The district simulation uses this flag rate.
+      </p>
+    </div>
+  );
+}
+
+function LesionCard({ lesion }) {
+  const keys = ["MA", "HE", "EX", "SE"];
+  const names = { MA: "microaneurysms", HE: "hemorrhages", EX: "hard exudates", SE: "soft exudates" };
+  return (
+    <div className="card p-5">
+      <div className="label">Lesion U-Net · DDR test split, scored once · thresholds from DDR valid (max F1)</div>
+      <table className="mt-2 w-full text-sm">
+        <thead className="text-left text-xs text-slate-500"><tr><th>lesion</th><th>pixel AUPR</th><th>Dice at threshold</th><th>threshold</th></tr></thead>
+        <tbody>
+          {keys.map((k) => (
+            <tr key={k} className="border-t border-venus-line"><td>{k} <span className="text-xs text-slate-500">{names[k]}</span></td><td>{lesion.test_aupr?.[k]?.toFixed(3)}</td><td>{lesion.test_dice?.[k]?.toFixed(3)}</td><td>{lesion.thresholds?.[k]}</td></tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="mt-2 text-xs text-slate-500">{lesion.tag}{lesion.frame_size ? ` · ${lesion.frame_size} px frames` : " · 512 px frames"} · written {new Date(lesion.written_at).toLocaleString()}. Microaneurysms are 1–3 px at 512 px: the weakest class, stated as such.</p>
+    </div>
+  );
+}
+
+function EnsembleCard({ check }) {
+  const rows = check.comparisons || [];
+  const tags = rows[0] ? Object.keys(rows[0].single) : [];
+  return (
+    <div className="card p-5">
+      <div className="label">Measured and not shipped · a second seed, test-time augmentation</div>
+      <p className="mt-1 text-xs text-slate-500">{check.question} Calibration and validation sets only; the external tests were not re-scored.</p>
+      <table className="mt-2 w-full text-sm">
+        <thead className="text-left text-xs text-slate-500"><tr><th>set</th><th>TTA</th>{tags.map((t) => <th key={t}>{t}</th>)}<th>mean ensemble</th><th>Δ vs best single (95% CI)</th></tr></thead>
+        <tbody>
+          {rows.map((r, i) => {
+            const e = r.ensemble_mean || {}; const d = e.paired_auc_difference || {};
+            return (
+              <tr key={i} className="border-t border-venus-line">
+                <td>{r.manifest} <span className="text-xs text-slate-500">n = {r.n}</span></td><td>{r.tta ? "on" : "off"}</td>
+                {tags.map((t) => <td key={t}>{r.single[t]?.auc?.toFixed(3)}</td>)}
+                <td className="font-semibold">{e.auc?.toFixed(3)}</td><td>{d.mean > 0 ? "+" : ""}{d.mean?.toFixed(4)} [{d.ci95?.[0]}, {d.ci95?.[1]}]</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <p className="mt-2 text-xs text-slate-500">Referable-DR AUC. The ensemble adds about what TTA adds and nothing on top of it, at twice the CPU cost per image: the served grader stays one network, and the external test's single scoring stands.</p>
     </div>
   );
 }

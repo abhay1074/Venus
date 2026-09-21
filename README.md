@@ -84,14 +84,14 @@ not committed). The manifests with their fingerprints are committed.
 | **Review queue** | flagged cases first, both grades side by side, why each was flagged, measured flag rate |
 | **District** | one-year discrete-event simulation, AI vs human-only, at editable staffing; the cached Pareto sweep (cameras × doctors × operating point) with the four slide numbers under editable constraints |
 | **Appointments** | two-minute intake with consent, tier from the result + risk factors, earliest feasible slot at the nearest facility (ageing, bumping), simulated SMS, doctor worklist with outcomes and no-show re-queue |
-| **Validation** | the pre-registered protocol, metrics with CIs, reliability diagram, ROC points fed to the sweep, subgroup by grade, secondary held-out set, benchmark table, what is stated plainly |
+| **Validation** | the pre-registered protocol, metrics with CIs, reliability diagram, ROC points fed to the sweep, subgroup by grade, secondary held-out set, benchmark table, the served review policy and the flag/attention study behind it, the lesion U-Net test numbers, what was measured and not shipped, what is stated plainly |
 
 ## Repository
 
 ```
 backend/venus/      stage0_gate stage1_segment stage2_grade stage3_explain stage4_simulate stage5_schedule
                     nets (shared network definitions) report pipeline (screen_image) config
-backend/main.py     FastAPI: /screen /screenings /report /simulate /sweep /intake /appointments /worklist
+backend/main.py     FastAPI: /screen /screenings /report /simulate /sweep /intake /appointments /worklist /validation-extras
 backend/data/       sources cache_stage0 rehash build_manifests  + manifests/ (committed, fingerprinted)
 backend/training/   train_grader train_lesion_unet train_quality
 backend/eval/       calibrate (locks the operating point) score_grader flag_rate timing export_models write_docs

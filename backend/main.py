@@ -37,7 +37,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from backend.venus import __version__, pipeline, stage0_gate, stage1_segment, stage2_grade, stage4_simulate, stage5_schedule
-from backend.venus.config import (ALLOWED_IMAGE_TYPES, MAX_UPLOAD_MB, MODEL_VERSION, PROJECT_ROOT, REPORT_DIR, SAMPLES_DIR,
+from backend.venus.config import (ALLOWED_IMAGE_TYPES, CONFIG_DIR, MAX_UPLOAD_MB, MODEL_VERSION, PROJECT_ROOT, REPORT_DIR, SAMPLES_DIR,
                                   OperatingPointError, operating_point)
 
 app = FastAPI(title="Venus AI", version=__version__,
@@ -107,6 +107,25 @@ async def get_operating_point() -> dict:
         return operating_point()
     except OperatingPointError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+
+@app.get("/validation-extras")
+async def get_validation_extras() -> dict:
+    """The validation-sample analyses that sit beside the operating point:
+    the served human-review policy, the flag-rate / attention study it was
+    chosen from, the lesion U-Net's once-scored test numbers, and the
+    experiments that were measured and not shipped. All read from the JSON
+    the evaluation scripts wrote; nothing is computed here."""
+    out = {}
+    for key, name in (("review_policy", "review_policy.json"), ("validation_flags", "validation_flags.json"),
+                      ("lesion_thresholds", "lesion_thresholds.json"), ("ensemble_check", "ensemble_check.json")):
+        path = CONFIG_DIR / name
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as handle:
+                out[key] = json.load(handle)
+    if "validation_flags" in out:
+        out["validation_flags"].pop("rows", None)
+    return out
 
 
 # ------------------------------------------------------------ screening --

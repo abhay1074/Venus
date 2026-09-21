@@ -27,6 +27,11 @@ export async function getOperatingPoint() {
   return data;
 }
 
+export async function getValidationExtras() {
+  const { data } = await client.get("/validation-extras");
+  return data;
+}
+
 export async function screenImage(file, intake, tta = false) {
   const form = new FormData();
   form.append("file", file);
