@@ -80,4 +80,17 @@ fails += check(pp.referableMissedByAi == 0 && pp.unnecessaryReferrals == 0, 'sim
 few = base; few.ophthalmologists = 2; many = base; many.ophthalmologists = 8;
 rf = simulateDistrict(few); rm = simulateDistrict(many);
 fails += check(rm.waitCaptureToResultDays.p95 <= rf.waitCaptureToResultDays.p95 && rm.ophthalmologistUtilisation <= 1, 'sim: more doctors, shorter waits');
+
+% colour normalisation: the FOV's LAB statistics land on the DDR reference
+if exist('rgb2lab', 'file') == 2 || exist('rgb2lab', 'builtin') == 5
+    [yy, xx] = meshgrid(1:128, 1:128); fovMask = (xx - 64).^2 + (yy - 64).^2 <= 60^2;
+    reddish = uint8(cat(3, 200 * ones(128), 60 * ones(128), 40 * ones(128)));
+    normed = drscreen.colourNormalise(reddish + uint8(20 * rand(128, 128, 3)), fovMask);
+    labN = rgb2lab(normed); ref = jsondecode(fileread(fullfile(drscreen.repoRoot(), 'backend', 'config', 'unet_colour_reference.json')));
+    Lch = labN(:, :, 1);
+    fails += check(abs(mean(Lch(fovMask)) - ref.lab_mean(1) * 100 / 255) < 3 && all(all(normed(~repmat(fovMask, [1 1 3])) == 0)), 'colourNormalise: FOV L mean matches reference, outside FOV black');
+else
+    disp('colourNormalise: rgb2lab not available in this Octave (image package); skipped');
+end
+
 printf('%d failures\n', fails);

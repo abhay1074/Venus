@@ -1,11 +1,17 @@
-function s1 = segment(image, mask, models)
+function s1 = segment(image, mask, models, original, raw)
 %SEGMENT  Stage 1: optic disc, fovea, vessels, lesions, ETDRS quadrants.
 %   s1 = drscreen.segment(image, mask, models)
-%   image  : 512x512x3 uint8 working frame from drscreen.gate
-%   mask   : 512x512 logical FOV
-%   models : struct from drscreen.loadModels; if models.unet is non-empty the
-%            lesion U-Net is used (method 'unet'), else the classical
-%            detectors (method 'classical'). Mirrors stage1_segment.py.
+%   s1 = drscreen.segment(image, mask, models, original, raw)
+%   image    : 512x512x3 uint8 working frame from drscreen.gate (enhanced when usable)
+%   mask     : 512x512 logical FOV
+%   models   : struct from drscreen.loadModels; if models.unet is non-empty the
+%              lesion U-Net is used (method 'unet'), else the classical
+%              detectors (method 'classical'). Mirrors stage1_segment.py.
+%   original : the un-enhanced 512 frame the U-Net sees (default: image),
+%              colour-normalised to the DDR statistics first
+%   raw      : the uploaded image as read; when models.unetHires is present its
+%              classes (config/lesion_thresholds_1024.json "serves") are read at
+%              the larger frame from a fresh FOV normalisation of `raw`
 %
 %   Output fields: method, opticDisc (centre [x y], radius), fovea (centre,
 %   confidence), vessels (fraction), lesions.(MA|HE|EX|SE) (count,
@@ -13,13 +19,19 @@ function s1 = segment(image, mask, models)
 %   of logical 512x512), elapsedMs.
 
     t0 = tic;
+    if nargin < 4 || isempty(original), original = image; end
+    if nargin < 5, raw = []; end
     fovArea = max(nnz(mask), 1);
     od = opticDisc(image, mask);
     fov = fovea(image, mask, od);
     ves = vessels(image, mask);
     if isfield(models, 'unet') && ~isempty(models.unet)
         method = 'unet';
-        L = unetLesions(image, mask, od.mask, models);
+        L = unetLesions(original, mask, od.mask, models);
+        if isfield(models, 'unetHires') && ~isempty(models.unetHires) && ~isempty(raw)
+            L = hiresLesions(L, raw, od.mask, models);
+            method = sprintf('unet (%s at %d px)', strjoin(models.unetHiresServes, '/'), models.unetHiresSize);
+        end
     else
         method = 'classical';
         [L.MA, L.HE] = redLesions(image, mask, ves.mask, od.mask);
@@ -186,7 +198,8 @@ function [EX, SE] = brightLesions(image, mask, odMask, vesselMask)
 end
 
 function L = unetLesions(image, mask, odMask, models)
-    probs = predict(models.unet, single(image));      % 512x512x4, MA HE EX SE
+    rgb = drscreen.colourNormalise(image, mask);
+    probs = predict(models.unet, single(rgb));        % 512x512x4, MA HE EX SE
     inner = imerode(mask, strel('disk', 6));
     odWide = imdilate(odMask, strel('disk', 6));
     keys = {'MA', 'HE', 'EX', 'SE'}; minArea = [4 15 5 60];
@@ -194,6 +207,33 @@ function L = unetLesions(image, mask, odMask, models)
         bw = probs(:, :, i) >= models.unetThresholds.(keys{i}) & inner;
         if i >= 3, bw(odWide) = false; end
         L.(keys{i}) = bwareaopen(bw, minArea(i));
+    end
+end
+
+function L = hiresLesions(L, raw, odMask, models)
+%HIRESLESIONS  Classes served by the larger-frame network, thresholded and
+%   cleaned at its own resolution (a 1-2 px microaneurysm would not survive
+%   averaging to 512), then brought back to the working frame so that any
+%   blob keeps at least one pixel. Mirrors the hires branch of
+%   stage1_segment.unet_lesions.
+    n = models.unetHiresSize;
+    if size(raw, 3) == 1, raw = repmat(raw, [1 1 3]); end
+    [hiImage, hiMask] = drscreen.normaliseFov(raw, n);
+    rgb = drscreen.colourNormalise(hiImage, hiMask);
+    probs = predict(models.unetHires, single(rgb));
+    scale = n / size(odMask, 1);
+    inner = imerode(hiMask, strel('disk', round(6 * scale)));
+    odWide = imdilate(imresize(odMask, [n n], 'nearest'), strel('disk', round(6 * scale)));
+    keys = {'MA', 'HE', 'EX', 'SE'}; minArea = [4 15 5 60];
+    minAreaHires = struct('MA', 6);      % 10th percentile of ground-truth MA area at 1024 px (DDR valid)
+    for i = 1:4
+        k = keys{i};
+        if ~any(strcmp(models.unetHiresServes, k)), continue; end
+        bw = probs(:, :, i) >= models.unetHiresThresholds.(k) & inner;
+        if i >= 3, bw(odWide) = false; end
+        if isfield(minAreaHires, k), m = minAreaHires.(k); else, m = minArea(i) * scale * scale; end
+        bw = bwareaopen(bw, m);
+        L.(k) = imresize(double(bw), 1 / scale, 'box') > 0;
     end
 end
 

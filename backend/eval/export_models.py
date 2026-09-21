@@ -10,6 +10,7 @@ checkpoint present in backend/weights:
     modality_gate  EfficientNet-B0 at 224 -> 5-way softmax
     quality_cnn    EfficientNet-B0 at 256 -> 3-way softmax
     lesion_unet    U-Net at 512 -> 4 sigmoid channels
+    lesion_unet_1024  the same U-Net at 1024, served for microaneurysms only
 
 The exported graphs take raw 0-255 float inputs exactly as the Python
 serving path feeds them, so MATLAB's `predict` on the imported dlnetwork
@@ -32,7 +33,7 @@ os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
 
 from backend.venus import nets
 from backend.venus.config import (GATE_WEIGHTS, GRADER_V2_WEIGHTS, MODEL_VERSION, PROJECT_ROOT, QUALITY_WEIGHTS,
-                                  UNET_WEIGHTS)
+                                  UNET_HIRES_WEIGHTS, UNET_WEIGHTS)
 
 EXPORT_DIR = PROJECT_ROOT / "models" / "export"
 SPECS = [
@@ -40,6 +41,7 @@ SPECS = [
     ("modality_gate", GATE_WEIGHTS, nets.modality_gate, (224, 224, 3)),
     ("quality_cnn", QUALITY_WEIGHTS, nets.quality_cnn, (256, 256, 3)),
     ("lesion_unet", UNET_WEIGHTS, nets.lesion_unet, (512, 512, 3)),
+    ("lesion_unet_1024", UNET_HIRES_WEIGHTS, lambda: nets.lesion_unet(size=1024), (1024, 1024, 3)),
 ]
 
 

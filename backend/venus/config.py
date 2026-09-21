@@ -35,6 +35,11 @@ GATE_WEIGHTS = WEIGHTS_DIR / "eye_modality_gate.weights.h5"
 QUALITY_WEIGHTS = WEIGHTS_DIR / "quality_cnn.weights.h5"
 UNET_WEIGHTS = WEIGHTS_DIR / "lesion_unet.weights.h5"
 LESION_THRESHOLDS_PATH = CONFIG_DIR / "lesion_thresholds.json"
+# Optional second lesion network at a larger frame, used only for the lesion
+# classes its thresholds file lists under "serves" (microaneurysms: 1-3 px
+# at 512). Absent files simply mean the 512 px network reads every class.
+UNET_HIRES_WEIGHTS = WEIGHTS_DIR / "lesion_unet_1024.weights.h5"
+LESION_THRESHOLDS_HIRES_PATH = CONFIG_DIR / "lesion_thresholds_1024.json"
 REVIEW_POLICY_PATH = CONFIG_DIR / "review_policy.json"
 GRADER_TAG = "grader_v2" if GRADER_V2_WEIGHTS.exists() else "legacy_v1"
 GRADER_WEIGHTS = GRADER_V2_WEIGHTS if GRADER_TAG == "grader_v2" else GRADER_V1_WEIGHTS

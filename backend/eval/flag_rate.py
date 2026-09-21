@@ -48,11 +48,23 @@ def main(argv=None) -> int:
     df = pd.read_csv(MANIFEST_DIR / f"{args.manifest}.csv")
     per_grade = max(args.n // 5, 1)
     sample = pd.concat([g.sample(min(per_grade, len(g)), random_state=42) for _, g in df.groupby("grade")])
+    # The served path receives the raw upload (the 1024 px lesion network
+    # needs the real detail), so read the raw file when the dataset is on disk
+    # and fall back to the 512 px cache otherwise.
+    try:
+        from backend.data import sources
+        raw_paths = sources.all_grading().set_index("image_id")["path"]
+        sample["raw_path"] = sample["image_id"].map(raw_paths)
+    except Exception as exc:  # noqa: BLE001
+        print(f"raw dataset not available ({exc}); using the 512 px cache", file=sys.stderr)
+        sample["raw_path"] = None
     point = operating_point()
     stage0_gate.load_gate(); stage0_gate.load_quality(); stage2_grade.load_grader(); stage1_segment.load_unet()
     rows, started = [], time.perf_counter()
     for i, row in enumerate(sample.itertuples(), 1):
-        image = cv2.imread(row.cache_path)
+        image = cv2.imread(row.raw_path) if isinstance(row.raw_path, str) and os.path.exists(row.raw_path) else None
+        if image is None:
+            image = cv2.imread(row.cache_path)
         if image is None:
             continue
         s0 = stage0_gate.run(image)
@@ -100,6 +112,7 @@ def main(argv=None) -> int:
         "retake_rate": round(1 - len(g) / max(len(rows), 1), 4),
         "quality_labels": {k: int(v) for k, v in pd.Series([r["quality"] for r in rows]).value_counts().items()},
         "lesion_method": g[0]["lesion_method"] if g else None,
+        "image_source": "raw dataset files" if sample["raw_path"].notna().any() else "512 px Stage 0 cache",
         "flag_rate": round(float(flags.mean()), 4),
         "flag_reasons": reasons,
         "flag_precision_for_cnn_errors": round(float((~correct[flags]).mean()), 4) if flags.any() else None,

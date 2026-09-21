@@ -29,7 +29,8 @@ from backend.venus.imaging import clahe, disk
 import json
 import threading
 
-from backend.venus.config import CONFIG_DIR, LESION_THRESHOLDS_PATH, UNET_WEIGHTS
+from backend.venus.config import (CONFIG_DIR, LESION_THRESHOLDS_HIRES_PATH, LESION_THRESHOLDS_PATH, UNET_HIRES_WEIGHTS,
+                                  UNET_WEIGHTS)
 
 COLOUR_REFERENCE_PATH = CONFIG_DIR / "unet_colour_reference.json"
 _colour_reference: dict | None = None
@@ -37,6 +38,11 @@ _colour_reference: dict | None = None
 _unet = None
 _unet_thresholds: dict | None = None
 _unet_frame_size = 512
+_hires = None                      # second network, larger frame, some classes only
+_hires_thresholds: dict | None = None
+_hires_frame_size = 1024
+_hires_serves: list[str] = []
+_hires_note: str | None = None
 _unet_lock = threading.Lock()
 _unet_error: str | None = None
 
@@ -49,6 +55,10 @@ LESION_NAMES = {
 }
 # Minimum component area (px at 512) per lesion type; below this it is noise.
 MIN_AREA = {"MA": 4, "HE": 15, "EX": 5, "SE": 60}
+# At 1024 px, ground-truth microaneurysms on DDR valid have a median area of
+# 17 px and a 10th percentile of ~6 px (2,555 components); 6 px keeps the
+# small ones the larger frame exists for while dropping single-pixel speckle.
+MIN_AREA_HIRES = {"MA": 6}
 # Red-lesion size split: components at or above this area are hemorrhages.
 MA_MAX_AREA = 40
 
@@ -320,6 +330,7 @@ def load_unet():
             model = nets.lesion_unet(size=_unet_frame_size)
             model.load_weights(UNET_WEIGHTS)
             _unet_thresholds = thresholds["thresholds"]
+            _load_hires(nets)
             _unet = model
         except Exception as exc:  # pragma: no cover
             _unet_error = f"{type(exc).__name__}: {exc}"
@@ -327,9 +338,44 @@ def load_unet():
     return _unet
 
 
+def _load_hires(nets) -> None:
+    """The optional larger-frame network; a failure here leaves the 512 px
+    network reading every class and says so in the status."""
+    global _hires, _hires_thresholds, _hires_frame_size, _hires_serves, _hires_note
+    if not (UNET_HIRES_WEIGHTS.exists() and LESION_THRESHOLDS_HIRES_PATH.exists()):
+        _hires_note = "no larger-frame lesion network; the 512 px network reads every class"
+        return
+    try:
+        with open(LESION_THRESHOLDS_HIRES_PATH, "r", encoding="utf-8") as handle:
+            spec = json.load(handle)
+        serves = [k for k in spec.get("serves", []) if k in LESION_TYPES]
+        if not serves:
+            _hires_note = "larger-frame network present but serves no class"
+            return
+        model = nets.lesion_unet(size=int(spec.get("frame_size", 1024)))
+        model.load_weights(UNET_HIRES_WEIGHTS)
+        _hires_frame_size = int(spec.get("frame_size", 1024))
+        _hires_thresholds = {k: float(spec["thresholds"][k]) for k in serves}
+        _hires_serves = serves
+        _hires = model
+        _hires_note = f"{', '.join(serves)} read at {_hires_frame_size} px ({spec.get('tag', 'hires')})"
+    except Exception as exc:  # pragma: no cover
+        _hires_note = f"larger-frame network not loaded: {type(exc).__name__}: {exc}"
+
+
 def unet_status() -> dict:
     return {"loaded": _unet is not None, "error": _unet_error, "thresholds": _unet_thresholds,
-            "frame_size": _unet_frame_size if _unet is not None else None}
+            "frame_size": _unet_frame_size if _unet is not None else None,
+            "hires": {"loaded": _hires is not None, "frame_size": _hires_frame_size if _hires is not None else None,
+                      "serves": list(_hires_serves), "thresholds": _hires_thresholds, "note": _hires_note}}
+
+
+def lesion_method() -> str:
+    if _unet is None:
+        return "classical"
+    if _hires is None:
+        return "unet"
+    return f"unet ({'/'.join(_hires_serves)} at {_hires_frame_size} px)"
 
 
 def colour_normalise(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
@@ -366,10 +412,13 @@ def unet_lesions(image: np.ndarray, mask: np.ndarray, od_mask: np.ndarray, raw: 
     A network trained on larger frames (microaneurysms are 1-3 px at 512)
     gets the same FOV normalisation of the raw upload at its own size and its
     probabilities are averaged back down to the 512 working frame, so every
-    overlay and count stays in working coordinates.
+    overlay and count stays in working coordinates. When the optional
+    larger-frame network is loaded, the classes it serves take their
+    probability channel and threshold from it.
     Returns {key: (mask, components)}."""
     model = load_unet()
     size = image.shape[0]
+    thresholds = dict(_unet_thresholds)
     if _unet_frame_size != size and raw is not None:
         from backend.venus.stage0_gate import normalise_fov
         hi_image, hi_mask, _ = normalise_fov(raw, _unet_frame_size)
@@ -387,16 +436,41 @@ def unet_lesions(image: np.ndarray, mask: np.ndarray, od_mask: np.ndarray, raw: 
             mask = cv2.resize(mask, (size, size), interpolation=cv2.INTER_NEAREST)
     inner = cv2.erode(mask, disk(6))
     od_wide = cv2.dilate(od_mask, disk(6))
-    out = {}
-    for c, key in enumerate(LESION_TYPES):
-        binary = ((probs[:, :, c] >= float(_unet_thresholds[key])) & (inner > 0)).astype(np.uint8) * 255
+
+    def extract(prob, key, threshold, inner_mask, od_mask_wide, scale):
+        binary = ((prob >= threshold) & (inner_mask > 0)).astype(np.uint8) * 255
         if key in ("EX", "SE"):
-            binary[od_wide > 0] = 0          # the disc rim is the classic exudate false positive
-        labels, comps = _components(binary, MIN_AREA[key])
-        keep = np.zeros_like(mask)
+            binary[od_mask_wide > 0] = 0     # the disc rim is the classic exudate false positive
+        labels, comps = _components(binary, MIN_AREA_HIRES.get(key, MIN_AREA[key] * scale * scale) if scale > 1 else MIN_AREA[key])
+        keep = np.zeros(binary.shape, np.uint8)
         for comp in comps:
             keep[labels == comp["label"]] = 255
-        out[key] = (keep, comps)
+        return keep, comps
+
+    out = {}
+    for c, key in enumerate(LESION_TYPES):
+        out[key] = extract(probs[:, :, c], key, float(thresholds[key]), inner, od_wide, 1)
+
+    if _hires is not None and raw is not None:
+        # Served classes are thresholded and counted at the network's own
+        # resolution (a 1-2 px microaneurysm would not survive averaging to
+        # 512), then mask and centroids come back to the working frame.
+        from backend.venus.stage0_gate import normalise_fov
+        hi_image, hi_mask, _ = normalise_fov(raw, _hires_frame_size)
+        hi_rgb = cv2.cvtColor(colour_normalise(hi_image, hi_mask), cv2.COLOR_BGR2RGB).astype(np.float32)
+        hi_probs = _hires.predict(hi_rgb[None, ...], verbose=0)[0]
+        scale = _hires_frame_size // size
+        hi_inner = cv2.erode(hi_mask, disk(6 * scale))
+        hi_od = cv2.dilate(cv2.resize(od_mask, (_hires_frame_size, _hires_frame_size), interpolation=cv2.INTER_NEAREST), disk(6 * scale))
+        for key in _hires_serves:
+            c = LESION_TYPES.index(key)
+            keep, comps = extract(hi_probs[:, :, c], key, _hires_thresholds[key], hi_inner, hi_od, scale)
+            keep = (cv2.resize(keep, (size, size), interpolation=cv2.INTER_AREA) > 0).astype(np.uint8) * 255
+            for comp in comps:
+                comp["centroid"] = [comp["centroid"][0] // scale, comp["centroid"][1] // scale]
+                comp["bbox"] = [v // scale for v in comp["bbox"]]
+                comp["area"] = max(comp["area"] // (scale * scale), 1)
+            out[key] = (keep, comps)
     return out
 
 
@@ -432,7 +506,7 @@ def run(image: np.ndarray, mask: np.ndarray, original: np.ndarray | None = None,
     fov = fovea(image, mask, od)
     ves = vessels(image, mask)
     if load_unet() is not None:
-        method = "unet"
+        method = lesion_method() if raw is not None else "unet"
         found = unet_lesions(original, mask, od["mask"], raw=raw)
         ma_mask, ma = found["MA"]; he_mask, he = found["HE"]; ex_mask, ex = found["EX"]; se_mask, se = found["SE"]
     else:

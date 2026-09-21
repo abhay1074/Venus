@@ -11,7 +11,9 @@ function models = loadModels(modelDir)
 %   are cached as .mat next to the export so later loads take a second.
 %
 %   Fields: grader, gate, quality ([] if absent), unet ([] if absent),
-%   unetThresholds (from config/lesion_thresholds.json), point.
+%   unetThresholds (from config/lesion_thresholds.json), unetHires ([] if
+%   absent; the 1024 px network with unetHiresThresholds / unetHiresServes /
+%   unetHiresSize from config/lesion_thresholds_1024.json), point, policy.
 
     if nargin < 1, modelDir = fullfile(drscreen.repoRoot(), 'models', 'export'); end
     models.point = drscreen.operatingPoint();
@@ -26,6 +28,19 @@ function models = loadModels(modelDir)
         models.unetThresholds = jsondecode(fileread(thrPath)).thresholds;
     else
         models.unet = [];
+    end
+    % Optional larger-frame lesion network for the classes its spec lists.
+    models.unetHires = []; models.unetHiresThresholds = []; models.unetHiresServes = {}; models.unetHiresSize = 1024;
+    hiPath = fullfile(drscreen.repoRoot(), 'backend', 'config', 'lesion_thresholds_1024.json');
+    if ~isempty(models.unet) && isfile(hiPath)
+        spec = jsondecode(fileread(hiPath));
+        net = importOne(fullfile(modelDir, 'lesion_unet_1024'), false);
+        if ~isempty(net) && isfield(spec, 'serves') && ~isempty(spec.serves)
+            models.unetHires = net;
+            models.unetHiresThresholds = spec.thresholds;
+            models.unetHiresServes = cellstr(spec.serves);
+            models.unetHiresSize = spec.frame_size;
+        end
     end
 end
 

@@ -29,7 +29,7 @@ function result = screenImage(imagePath, models, opts)
             'recommendation', recommendation('P0'), 'timingMs', struct('stage0', s0.elapsedMs, 'total', round(1000 * toc(tAll))));
         return;
     end
-    s1 = drscreen.segment(s0.image, s0.mask, models);
+    s1 = drscreen.segment(s0.image, s0.mask, models, s0.original, image);
     t2 = tic;
     cnn = drscreen.gradeCNN(s0, models, point, tta);
     rule = drscreen.gradeRule(s1, cnn.nvProbability);
