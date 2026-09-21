@@ -95,14 +95,16 @@ backend/venus/      stage0_gate stage1_segment stage2_grade stage3_explain stage
 backend/main.py     FastAPI: /screen /screenings /report /simulate /sweep /intake /appointments /worklist /validation-extras
 backend/data/       sources cache_stage0 rehash build_manifests  + manifests/ (committed, fingerprinted)
 backend/training/   train_grader train_lesion_unet train_quality
-backend/eval/       calibrate (locks the operating point) score_grader flag_rate timing export_models write_docs
+backend/eval/       calibrate (locks the operating point) score_grader score_external flag_rate review_policy
+                    compare_graders timing export_models write_docs figures (docs/figures from the same JSON)
 backend/tests/      one TestCase per stage + end to end (29 tests; weight-dependent ones skip without weights)
 frontend/           React + Vite + Tailwind + Recharts
 matlab/             +drscreen (all stages), simulink (MATLAB DES + SimEvents builder + parsim sweep), app, tests
 samples/            demo images with provenance and licences
 scripts/            setup.ps1 serve.ps1 serve-gpu.sh wsl-gpu.sh train-all.sh pull-models.sh finalise-models.sh
                     build-offline-bundle.ps1 preflight.py
-docs/               ARCHITECTURE.md (as built, section by section) VALIDATION.md (generated) MATLAB_MAPPING.md DEMO.md
+docs/               ARCHITECTURE.md (as built, section by section) VALIDATION.md (generated) figures/ (generated)
+                    MATLAB_MAPPING.md DEMO.md
 cloud.md            the work diary; CLAUDE.md the notes for whoever continues
 ```
 

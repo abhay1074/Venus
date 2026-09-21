@@ -41,7 +41,9 @@ Click **Normal right eye**: not referable, P = 0.00, no lesions, P4 routine.
 ## 3. The review queue (30 s)
 
 Flagged first, both grades side by side, why each was flagged. The flag rate measured on
-validation images is the workload the simulation absorbs.
+validation images (25 %, under a review rule chosen on validation: abstain band in logit
+space, attention floor 0.20) is the workload the simulation absorbs; 29 % of flagged calls
+are CNN errors against 13 % of unflagged ones — the queue is where the errors are.
 
 ## 4. The evidence (1 min) — Validation
 
@@ -52,11 +54,15 @@ validation images is the workload the simulation absorbs.
 
 **AUC 0.975 [0.970, 0.979] · sensitivity 0.947 · specificity 0.889 · PPV 0.65 at 18 %
 prevalence · ECE 0.042.** All four problem-statement targets met, with confidence intervals.
-Beside it, the within-source held-out set (AUC 0.954) and the five-grade metrics for contrast.
+Beside it, Messidor-2 scored once at the same threshold (AUC 0.963, sensitivity 0.980,
+specificity 0.645 — discrimination transfers, calibration shifts, stated as such), the
+within-source held-out set (AUC 0.954), the five-grade metrics for contrast, and two cards of
+things that were **measured and not shipped** (a second seed / TTA: +0.003 AUC; a 1024 px
+lesion network: better microaneurysm pixels, nothing better downstream, +0.9 s).
 
 ## 5. The district (2 min) — District
 
-**Run one year, AI vs no-AI** at 3 ophthalmologists (~1 s for 2 × 100,000 patients), then the
+**Run one year, AI vs no-AI** at 3 ophthalmologists (~1 s for 2 × 100,000 patients; the slide figures in `docs/figures/` are drawn from the same JSON by `backend.eval.figures`), then the
 **Pareto front**: 144 full-year runs over cameras × doctors × operating point, with the four
 slide numbers under editable constraints (missed ≤ 20 % of referable cases, p95 wait ≤ 7 days).
 
@@ -77,11 +83,17 @@ when it measured, with the fingerprint of the data it measured on; the docs are 
 from those files. The external test was scored once; a second scoring refuses.
 
 **"Why is the U-Net's MA score low?"** Microaneurysms are 2–4 px at 512; the DDR paper's own
-MA AUPR is ~0.11, ours 0.08. HE and EX (0.45, 0.48) match or beat it. The rule grader is a
-consistency check, and disagreement goes to a human — that is its job.
+MA AUPR is ~0.11, ours 0.08. HE and EX (0.45, 0.48) match or beat it. We trained a 1024 px
+network that lifts MA to 0.10, then measured it on the served path: the rule grader did not
+move, the attention flag got less precise, and it costs 0.9 s per image — so it is not shipped,
+and that measurement is on the Validation screen. The rule grader is a consistency check, and
+disagreement goes to a human — that is its job.
 
 **"MATLAB?"** `matlab/` is a line-for-line port: same structs, same config files, same tests.
-It parses and its logic passes its cases under Octave; the toolbox parts are verified in MATLAB.
+Under Octave it verifies the calibration fingerprint and reproduces the Python sweep's numbers
+(doctor hours 2,947 vs 2,903; programme sensitivity 0.814 vs 0.814); the SimEvents model's
+doctor pool is a `matlab.DiscreteEventSystem` with the daily hour budget; the toolbox parts are
+verified in MATLAB.
 
 **"Does it work offline?"** Yes: models, SQLite records and PDF reports are local; the API
 serves the built front end itself; `scripts/build-offline-bundle.ps1` makes the PHC folder.
