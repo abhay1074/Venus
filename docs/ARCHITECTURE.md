@@ -24,7 +24,7 @@ Design principles as implemented:
 |---|---|
 | 3.1 the model picks the district's staffing | `stage4_simulate.params_from` reads sens/spec from `operating_point.json`; `sweep()` returns the Pareto front and the four slide numbers; the front end shows them |
 | 3.2 two graders that must agree | `stage2_grade.rule_grade` + `fuse`; disagreement ≥ 2 levels, referable-without-lesions and the abstain band flag for review; `/screenings` reports the measured flag rate, which `/simulate` uses once ≥ 10 screenings exist |
-| 3.3 attention-agreement score | `stage3_explain.attention_agreement`: share of Grad-CAM mass inside a lesion neighbourhood sized to one CAM cell, with the chance level and lift reported; flags when low and no better than chance on a referable call |
+| 3.3 attention-agreement score | `stage3_explain.attention_agreement`: share of Grad-CAM mass inside a lesion neighbourhood sized to one CAM cell, with the chance level and lift reported; flags a referable call below the floor chosen on validation (`config/review_policy.json`, 0.20: the highest cut at which ≥ 60 % of flagged calls are CNN errors) |
 | 3.4 rigour as engineering | `eval/calibrate.py`: patient-disjoint split, Platt scaling, threshold locked at 90 % sensitivity, test half scored once (`config/external_test.lock`), fingerprint verified in `config.operating_point()` on every start |
 
 ## §4 Stage 0 — `stage0_gate.py`
@@ -61,6 +61,14 @@ Two paths, and every result says which one produced the evidence (`stage1.method
   positive-weighted BCE, dihedral + photometric augmentation. Per-class thresholds chosen on
   the DDR valid split (max pixel F1); the DDR test split scored once (AUPR, Dice). The same
   rim / disc post-processing and component floors as the classical path apply.
+  A second copy of the architecture, trained on 512 px lesion-biased random crops of 1024 px
+  frames (`--size 1024 --patch 512`), reads the classes listed in
+  `config/lesion_thresholds_1024.json` — microaneurysms, which are 1–3 px at 512 — from a
+  fresh FOV normalisation of the raw upload; it is thresholded and counted at its own
+  resolution (minimum area 6 px, the 10th percentile of ground-truth MA area on DDR valid)
+  and the mask comes back to the 512 working frame. The class assignment was chosen on DDR
+  valid (MA pixel AUPR 0.205 vs 0.160; HE/EX +6–10 %, SE −24 %, so those stay with the 512 px
+  network), and `stage1.method` reads `unet (MA at 1024 px)`. Cost: ~1 s CPU per image.
 - **`classical`** otherwise — the architecture's no-GPU fallbacks below.
 
 | structure | method |
@@ -98,7 +106,9 @@ faint macular exudates that actually decide a grade fall under it. Median/MAD do
   one noisy blob cannot set a grade, and a trace listing what was counted, what fell below
   threshold, and that beading/IRMA are not detected.
 - Fusion: CNN primary; flags on ≥ 2-level disagreement, referable-without-lesions, and the
-  ±0.05 abstain band; the attention flag joins in `pipeline.py`.
+  abstain band — ±0.35 in logit space around the locked threshold once the validation-chosen
+  `config/review_policy.json` exists (the architecture's ±0.05 in probability is asymmetric at
+  a threshold near 0.1), else ±0.05; the attention flag joins in `pipeline.py`.
 - §6.4 calibration and operating point: `eval/calibrate.py` (see docs/VALIDATION.md).
 
 ## §7 Stage 3 — `stage3_explain.py`, `report.py`

@@ -42,18 +42,18 @@ is generated from the same files with the CIs, the protocol and the caveats.
 | PPV / NPV at 18 % Indian prevalence · ECE | 0.651 / 0.987 · 0.042 | same |
 | Messidor-2 (adjudicated labels, third source), scored once at the same threshold | AUC **0.963**, sens **0.980**, spec 0.645 (its own ROC: 0.90 sens at 0.90 spec) | 1,744 images, 874 patients |
 | Held-out EyePACS patients (within-source) | AUC 0.954, sens 0.937, spec 0.754 | 2,758 images |
-| Lesion U-Net, pixel AUPR / Dice (DDR test, 225 images, once) | HE 0.45 / 0.47 · EX 0.48 / 0.49 · SE 0.26 / 0.31 · MA 0.08 / 0.17 | thresholds chosen on DDR valid |
+| Lesion U-Nets, pixel AUPR / Dice (DDR test, 225 images, once) | HE 0.45 / 0.47 · EX 0.48 / 0.49 · SE 0.26 / 0.31 (512 px network) · **MA 0.10 / 0.23** (1024 px network, served for MA only; was 0.08 / 0.17) | thresholds chosen on DDR valid; class assignment chosen on DDR valid |
 | Quality CNN, ungradable-detection AUC | **0.992** (held-out patients); 99.9 % of DDR's ungradable class caught | EyeQ labels |
 | Attention agreement, referable calls (median) | **0.54** when the CNN is right vs **0.27** when it is wrong | 487 validation images |
 | Human-review flag rate (validation-chosen policy) · retake rate | 27.7 % · 2.2 % | same; 31.9 % of flagged calls are CNN errors vs 11.4 % of unflagged |
-| End-to-end time, laptop CPU, all three networks | **median 1.7 s, p95 1.7 s** | 50 images |
+| End-to-end time, laptop CPU, all four networks | **median 2.6 s, p95 2.9 s** | 50 images |
 | District: ophthalmologists for ≥ 80 % programme sensitivity, p95 wait ≤ 7 days | **2 with AI vs 7 without**, ₹0.69 Cr vs ₹1.72 Cr / year | 144 full-year runs |
 
 ## Quick start (Windows, CPU)
 
 ```powershell
 # checkpoints (not committed): backend\weights\grader_v2.weights.h5, eye_modality_gate.weights.h5,
-#   lesion_unet.weights.h5, quality_cnn.weights.h5  (wsl bash scripts/pull-models.sh after training)
+#   lesion_unet.weights.h5, lesion_unet_1024.weights.h5, quality_cnn.weights.h5  (wsl bash scripts/pull-models.sh)
 powershell -ExecutionPolicy Bypass -File scripts\setup.ps1     # venv, deps, npm, tests
 powershell -ExecutionPolicy Bypass -File scripts\serve.ps1     # API :8000, web :5173
 python scripts\preflight.py                                     # everything the demo depends on
@@ -71,6 +71,7 @@ wsl bash scripts/wsl-gpu.sh backend.data.cache_stage0        # Stage 0 once over
 wsl bash scripts/wsl-gpu.sh backend.data.rehash              # 256-bit hashes + nearest-neighbour distances
 wsl bash scripts/wsl-gpu.sh backend.data.build_manifests     # dedup, patient splits, frozen test, fingerprints
 wsl bash scripts/train-all.sh                                # grader -> U-Net -> quality -> calibrate -> flag rate -> export -> docs
+wsl bash scripts/train-night.sh / train-day2.sh              # second round: 1024 px patch U-Net (MA), grader seed 7 (ensemble check)
 ```
 
 Raw datasets are read from `VENUS_DATA_ROOT` (APTOS 2019, EyePACS 2015, DDR; ~66 GB, public,

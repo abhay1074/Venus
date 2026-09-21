@@ -1,6 +1,6 @@
 # Validation report — Venus AI, model `venus-dr-2.0.0` (grader `grader_v2`)
 
-Generated 2026-09-21 07:02 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
+Generated 2026-09-21 09:26 UTC by `backend/eval/write_docs.py` from the JSON artefacts the code wrote when it measured; nothing here is typed by hand. The Validation screen in the app renders the same files.
 
 ## Data and splits
 
@@ -74,12 +74,14 @@ AUC of the referable decision. Averaging two seeds adds about the same as test-t
 
 ## Lesion segmentation (DDR test split, scored once)
 
-| lesion | AUPR | Dice at threshold | threshold (DDR valid, max F1) |
-|---|---|---|---|
-| MA | 0.079 | 0.166 | 0.53 |
-| HE | 0.449 | 0.465 | 0.89 |
-| EX | 0.477 | 0.486 | 0.92 |
-| SE | 0.262 | 0.308 | 0.47 |
+| lesion | read by | AUPR | Dice at threshold | threshold (DDR valid, max F1) |
+|---|---|---|---|---|
+| MA | 1024 px network | 0.099 | 0.232 | 0.05 |
+| HE | 512 px network | 0.449 | 0.465 | 0.89 |
+| EX | 512 px network | 0.477 | 0.486 | 0.92 |
+| SE | 512 px network | 0.262 | 0.308 | 0.47 |
+
+Two networks read the image: the 512 px U-Net for every class and, for MA, the same architecture trained on 512 px lesion-biased crops of 1024 px frames (160 epochs, 88.3 min). Trained to read microaneurysms (1-3 px at 512). On DDR valid it improves MA pixel AUPR by 28% over the 512 px network (0.205 vs 0.160), HE/EX by 6-10%, and loses SE by 24%; it is served for MA only, where the gain justifies a second network per image. The other classes stay with the 512 px network. Test numbers per class are the ones each network recorded when it was scored once; nothing was re-scored for this choice. Its DDR-valid AUPR per class: MA 0.205, HE 0.568, EX 0.536, SE 0.478; its test numbers for the classes it does not serve: HE 0.417, EX 0.475, SE 0.203. Minimum component area for MA at 1024 px: 6 px (10th percentile of ground-truth MA component area at 1024 px on DDR valid (median 17 px)).
 
 ## Image quality classifier
 
@@ -96,7 +98,7 @@ EfficientNet-B0 at 256, 3-class softmax, EyeQ train labels on EyePACS images, sp
 
 ## Timing (requirement: < 30 s per image)
 
-50 images, TTA off, AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD (16 threads, no GPU): **median 1.7 s, p95 1.7 s**, max 3.0 s → requirement met at p95. Per stage (median): S0 167 ms, S1 691 ms, S2 178 ms, S3 324 ms (Grad-CAM 118 ms), report 295 ms.
+50 images, TTA off, AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD (16 threads, no GPU): **median 2.6 s, p95 2.9 s**, max 5.0 s → requirement met at p95. Per stage (median): S0 185 ms, S1 1686 ms, S2 150 ms, S3 264 ms (Grad-CAM 103 ms), report 301 ms.
 
 On the RTX 5060 (WSL): median 3.4 s, p95 4.1 s — inference is not the cost on either machine; Stage 1 landmarks and the overlay encoding are. (Measured before the PNG-encoding change that took the CPU median from 4.2 s to 1.7 s.)
 

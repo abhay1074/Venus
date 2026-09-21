@@ -118,10 +118,21 @@ def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_car
                   "ensemble adds nothing); five-grade exact accuracy moves by about one point. That is below what the district numbers would notice and would double "
                   "the grader's inference cost on a CPU, so the served grader stays a single network without TTA, and the external test's one scoring stands.", ""]
     if lesion:
-        lines += ["## Lesion segmentation (DDR test split, scored once)", "", "| lesion | AUPR | Dice at threshold | threshold (DDR valid, max F1) |", "|---|---|---|---|"]
+        hires = load(CONFIG_DIR / "lesion_thresholds_1024.json")
+        serves = set(hires.get("serves", [])) if hires else set()
+        lines += ["## Lesion segmentation (DDR test split, scored once)", "", "| lesion | read by | AUPR | Dice at threshold | threshold (DDR valid, max F1) |", "|---|---|---|---|---|"]
         for k in ("MA", "HE", "EX", "SE"):
-            lines.append(f"| {k} | {f3(lesion['test_aupr'].get(k))} | {f3(lesion['test_dice'].get(k))} | {lesion['thresholds'].get(k)} |")
+            src = hires if k in serves else lesion
+            by = f"{hires['frame_size']} px network" if k in serves else "512 px network"
+            lines.append(f"| {k} | {by} | {f3(src['test_aupr'].get(k))} | {f3(src['test_dice'].get(k))} | {src['thresholds'].get(k)} |")
         lines.append("")
+        if hires:
+            va = hires.get("valid_aupr", {})
+            lines += [f"Two networks read the image: the 512 px U-Net for every class and, for {', '.join(sorted(serves))}, the same architecture trained on "
+                      f"512 px lesion-biased crops of {hires['frame_size']} px frames ({hires['epochs']} epochs, {hires['total_minutes']} min). {hires['why_these_classes']} "
+                      f"Its DDR-valid AUPR per class: " + ", ".join(f"{k} {f3(va.get(k))}" for k in ("MA", "HE", "EX", "SE")) + f"; its test numbers for the classes it does not serve: "
+                      + ", ".join(f"{k} {f3(hires['test_aupr'].get(k))}" for k in ("MA", "HE", "EX", "SE") if k not in serves)
+                      + f". Minimum component area for MA at {hires['frame_size']} px: {hires['min_area_px']['MA']} px ({hires['min_area_px']['note']}).", ""]
     if quality_card:
         q = quality_card["test_heldout_patients"]; d = quality_card.get("ddr_ungradable_external_check")
         lines += ["## Image quality classifier", "", f"{quality_card['architecture']}, {quality_card['labels']}: held-out-patient accuracy {pct(q['accuracy'])}, "
