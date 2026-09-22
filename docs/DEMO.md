@@ -23,6 +23,20 @@ python scripts\checksums.py          # prints ok / CORRUPT per file
 powershell -ExecutionPolicy Bypass -File scripts\serve.ps1
 ```
 
+### Limits the API enforces (so nothing surprises you on stage)
+
+| limit | value | what happens | change with |
+|---|---|---|---|
+| Upload size | **12 MB** | HTTP 413 before the body is buffered | `VENUS_MAX_UPLOAD_MB` |
+| Accepted types | JPEG, PNG, WEBP | HTTP 415 | — |
+| Screens per client | **30/min, burst 10** | HTTP 429 with `Retry-After` | `VENUS_SCREEN_RATE_PER_MIN`, `..._BURST` (0 disables) |
+| Network exposure | loopback only | — | `--bind-all` or `VENUS_BIND_ALL=true`, which prints a warning: the API has no authentication |
+
+A phone photograph of a fundus screen is 3–8 MB, so the 12 MB cap is roughly double what a
+demo upload needs. The rate limit is generous for a human at a camera and immediate for a
+stuck retry loop; it exists because a screen costs ~1.5 s of the one CPU the operator is
+waiting on.
+
 `grader_v2.weights.h5` and `eye_modality_gate.weights.h5` are required. Without
 `quality_cnn.weights.h5` or `lesion_unet.weights.h5` the pipeline still runs — the hand-crafted
 quality limits and the classical lesion detectors take over, and every result says which path

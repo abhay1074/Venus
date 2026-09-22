@@ -56,6 +56,12 @@ WORK_SIZE = 512
 GRADER_SIZE = 380
 
 MAX_UPLOAD_MB = int(os.getenv("VENUS_MAX_UPLOAD_MB", "12"))
+# Per-client screening budget. A screen costs ~1.5 s of CPU and the laptop has
+# one; a stuck retry loop or a curious browser tab must not starve the operator
+# standing at the camera. Generous for a human (one every ~2 s sustained),
+# immediate for a loop. Set VENUS_SCREEN_RATE_PER_MIN=0 to disable.
+SCREEN_RATE_PER_MIN = int(os.getenv("VENUS_SCREEN_RATE_PER_MIN", "30"))
+SCREEN_RATE_BURST = int(os.getenv("VENUS_SCREEN_RATE_BURST", "10"))
 ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp"}
 
 ICDR_LABELS = {

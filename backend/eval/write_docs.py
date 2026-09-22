@@ -227,6 +227,165 @@ def card_md(name: str, card: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+# ------------------------------------------------------------ model card --
+
+DISCLAIMER = ("Venus AI is a triage aid for referable diabetic retinopathy. A clinician reviews "
+              "every case. It is not a diagnosis and it is not a cleared medical device.")
+
+
+def model_card_md(op, lesion, quality_card, grader_card, flags, policy, site, timing, manifests) -> str:
+    """docs/MODEL_CARD.md, generated from the same JSON as VALIDATION.md."""
+    t = op["external_test"]; at = t["at_locked_threshold"]; ci = t["ci95_bootstrap_2000"]
+    lines = [f"# Model card — {op['model_version']}", "",
+             f"**{DISCLAIMER}**", "",
+             f"Generated from the operating point written {op['written_at'][:16].replace('T', ' ')} UTC by "
+             "`backend/eval/write_docs.py`. Every number below is read from the JSON the evaluation code wrote; "
+             "`docs/VALIDATION.md` has the full protocol and the caveats.", "",
+             "## What it is", "",
+             f"A {grader_card['backbone'] if grader_card else 'convolutional'} classifier with an ordinal head "
+             "(four cumulative sigmoids, P(grade >= k) for ICDR 1-4), calibrated by Platt scaling and thresholded at a "
+             "referable decision (ICDR >= 2), plus a lesion U-Net and an ICDR rule grader whose disagreement with the "
+             "classifier sends the case to a human. Model version "
+             f"`{op['model_version']}`, grader `{op['grader_tag']}`, calibration fingerprint "
+             f"`{op['calibration_fingerprint'][:16]}...`.", "",
+             "## Intended use", "",
+             "- **Triage of referable diabetic retinopathy** (ICDR >= 2) from a colour fundus photograph, in a "
+             "district screening programme where a clinician reads every flagged case.",
+             "- Ordering a queue: the priority tier and the appointment it books are the product, not a diagnosis.",
+             "- Estimating programme staffing from *measured* accuracy (the Stage 4 simulation).",
+             "- Research, teaching and demonstration.", "",
+             "## Out-of-scope use", "",
+             "- **Any use without a clinician reading the case.** The system is not a reader.",
+             "- Diagnosis, treatment selection, or a claim that an eye is healthy. A non-referable result is "
+             "*not* a statement that there is no disease.",
+             "- Grading mild DR (ICDR 1) as an outcome: the threshold, the confidence intervals and the simulation "
+             "all describe the referable decision. Five-grade numbers are reported for contrast only.",
+             "- Detecting anything other than DR — other retinal disease is neither trained for nor measured.",
+             "- Neovascularization as a localised finding: P(grade >= 4) is a classifier probability, never a segmentation.",
+             "- Commercial use of the released checkpoints (see `NOTICE`: the training data permits non-commercial "
+             "academic use only).",
+             "- Regulatory submission. This is not a cleared or CE-marked device and has had no clinical trial.", "",
+             "## Measured performance", "",
+             "Referable DR (ICDR >= 2). Each row names the set it was measured on; 95 % CIs are 2,000-resample bootstrap.", "",
+             "| metric | value | 95% CI | measured on |", "|---|---|---|---|"]
+    ext_desc = f"{t['description']} — n = {t['n']:,}, {t['n_referable']} referable"
+    lines += [f"| AUC | {f3(t['auc'])} | {ci['auc']} | {ext_desc} |",
+              f"| Sensitivity at the locked threshold | {f3(at['sensitivity'])} | {ci['sensitivity']} | same |",
+              f"| Specificity at the locked threshold | {f3(at['specificity'])} | {ci['specificity']} | same |",
+              f"| PPV at 18 % prevalence | {f3(at['ppv_at_indian_prevalence'])} | {ci.get('ppv_at_indian_prevalence', '—')} | same |",
+              f"| NPV at 18 % prevalence | {f3(at['npv_at_indian_prevalence'])} | — | same |",
+              f"| Expected calibration error | {f3(t['ece'])} | — | same |"]
+    sec = op.get("secondary_heldout")
+    if sec:
+        s_at = sec["at_locked_threshold"]
+        lines.append(f"| AUC (within-source held-out patients) | {f3(sec['auc'])} | {sec['ci95_bootstrap_2000']['auc']} | "
+                     f"{sec['description']} — n = {sec['n']:,} |")
+        lines.append(f"| Sensitivity / specificity there | {f3(s_at['sensitivity'])} / {f3(s_at['specificity'])} | — | same |")
+    for name, e in (op.get("additional_external_tests") or {}).items():
+        e_at = e["at_locked_threshold"]
+        short = name.replace("external_test_", "")
+        lines.append(f"| AUC ({short}, scored once at the same threshold) | {f3(e['auc'])} | {e['ci95_bootstrap_2000']['auc']} | "
+                     f"n = {e['n']:,}, {e.get('n_patients', '?')} patients |")
+        lines.append(f"| Sensitivity / specificity ({short}) | {f3(e_at['sensitivity'])} / {f3(e_at['specificity'])} | — | same |")
+    if timing:
+        w = timing["per_stage"]["wall_ms"]
+        lines.append(f"| End-to-end time per image | {w['median_ms'] / 1000:.1f} s median, {w['p95_ms'] / 1000:.1f} s p95 | — | "
+                     f"{timing['n_images']} images, {timing['machine']['cores']} CPU threads, no GPU |")
+    lines.append("")
+    tg = op.get("targets", {})
+    lines += [f"The problem statement's targets are sensitivity > {tg.get('sensitivity')}, specificity > {tg.get('specificity')}, "
+              f"AUC > {tg.get('auc')}, ECE <= {tg.get('ece')}; on the primary external test this build meets "
+              f"{sum(1 for k in ('sensitivity_met', 'specificity_met', 'auc_met', 'ece_met') if tg.get(k))} of 4.", ""]
+
+    lines += ["## Component parts, measured separately", ""]
+    if lesion:
+        lines += ["Lesion segmentation, DDR test split scored once (pixel AUPR / Dice at the threshold chosen on DDR valid):", "",
+                  "| lesion | AUPR | Dice |", "|---|---|---|"]
+        for k, label in (("MA", "microaneurysms"), ("HE", "hemorrhages"), ("EX", "hard exudates"), ("SE", "soft exudates")):
+            lines.append(f"| {k} — {label} | {f3(lesion['test_aupr'].get(k))} | {f3(lesion['test_dice'].get(k))} |")
+        lines.append("")
+    if quality_card:
+        q = quality_card["test_heldout_patients"]
+        lines += [f"Image-quality classifier: ungradable-detection AUC {f3(q['ungradable_detection_auc'])} on held-out patients. "
+                  "It decides good vs usable (whether to enhance); only the hand-crafted hard limits refuse an image.", ""]
+    if flags and policy:
+        a = flags["attention_agreement"]
+        lines += [f"Human review: the served policy flags {pct(policy['resulting_flag_rate'])} of gradable images; "
+                  f"{pct(policy['error_rate_flagged'])} of flagged calls are classifier errors against "
+                  f"{pct(policy['error_rate_unflagged'])} of unflagged ones, catching "
+                  f"{pct(policy['share_of_cnn_errors_flagged'])} of them. Attention agreement on referable calls: "
+                  f"median {a['correct'].get('median')} when the classifier is right vs {a['incorrect'].get('median')} "
+                  f"when it is wrong ({flags['n_gradable']} validation images).", ""]
+
+    lines += ["## Populations and settings NOT measured", "",
+              "This is the most important section of this card.", ""]
+    sources = []
+    if manifests:
+        sources = sorted({d for m in manifests.get("manifests", {}).values() for d in (m.get("datasets") or {})})
+    lines += [f"- **No Indian data of any kind.** Training, calibration and test sets are "
+              f"{', '.join(sources) if sources else 'APTOS, EyePACS, DDR and Messidor-2'} — US, Chinese and French "
+              "acquisition. The PPV above is recomputed at an assumed 18 % Indian prevalence; that assumption is not "
+              "validated here.",
+              "- **No portable or smartphone-camera images.** Every image is from a tabletop fundus camera. The "
+              "intended deployment is portable cameras at primary health centres, and that shift is unmeasured.",
+              "- **No measured subgroup performance by age, sex, ethnicity or comorbidity.** The datasets do not carry "
+              "these labels, so no fairness claim is made in either direction.",
+              "- **No cataract, small-pupil or media-opacity cohort**, which is what a real screening queue in a "
+              "district contains, and what the quality gate would have to hold up against.",
+              "- **No prospective use.** Every number is retrospective on stored images. Nobody has been screened by "
+              "this system.",
+              "- **No inter-reader comparison.** The system has not been compared against the ophthalmologists it "
+              "would triage for.", ""]
+
+    lines += ["## Known weaknesses", ""]
+    if lesion:
+        lines.append(f"- **Microaneurysm segmentation is weak: AUPR {f3(lesion['test_aupr'].get('MA'))}, "
+                     f"Dice {f3(lesion['test_dice'].get('MA'))}.** They are 1-3 px at the 512 px working resolution. "
+                     "A microaneurysm-only finding is ICDR grade 1, below the referable threshold this system is "
+                     "accepted for, so the weakness sits under the decision rather than inside it — but any claim "
+                     "about lesion-level evidence must be read with this number in view.")
+    for name, e in (op.get("additional_external_tests") or {}).items():
+        e_at = e["at_locked_threshold"]
+        if e_at["specificity"] < at["specificity"] - 0.1:
+            lines.append(f"- **Calibration does not transfer across sources.** On {name.replace('external_test_', '')} the "
+                         f"locked threshold over-refers: specificity {f3(e_at['specificity'])} at sensitivity "
+                         f"{f3(e_at['sensitivity'])}, against {f3(at['specificity'])} on the primary test, while "
+                         f"discrimination holds (AUC {f3(e['auc'])}). Ranking transfers; the operating point does not.")
+    if site:
+        f_ = site["site_calibration_full_half"]
+        by = site.get("site_calibration_by_sample_size", {})
+        small = next((v for k, v in sorted(by.items(), key=lambda kv: int(kv[0])) if v), None)
+        lines.append(f"  A site calibration set fixes it, and the cost is measured: re-fitting on the site's own "
+                     f"labelled images restores sensitivity {f3(f_['sensitivity']['mean'])} / specificity "
+                     f"{f3(f_['specificity']['mean'])} (ECE {f3(f_['ece']['mean'])})"
+                     + (f", and {small['n']} labelled images are already enough "
+                        f"({f3(small['sensitivity']['mean'])} / {f3(small['specificity']['mean'])})." if small else "."))
+    lines += ["- **A non-referable result is not a negative diagnosis.** At the locked threshold the system misses "
+              f"{pct(1 - at['sensitivity'])} of referable cases on the primary external test.",
+              "- **The rule grader does not detect venous beading or IRMA**, so its severe-NPDR criterion is "
+              "incomplete and it is a consistency check, not a second reader.", ""]
+
+    lines += ["## How the operating point was set", "",
+              f"- Threshold chosen at {int(100 * (op['targets']['sensitivity'] if op.get('targets') else 0.9))} % sensitivity on "
+              f"{op['source']['description']} (n = {op['source']['n_calibration']:,}, "
+              f"{op['source'].get('n_patients_calibration', '?')} patients), then **locked**: "
+              f"{op['thresholds']['referable']}.",
+              f"- Platt scaling fitted on the same set: ECE {f3(op['calibration']['ece_raw'])} -> "
+              f"{f3(op['calibration']['ece_calibrated'])}.",
+              "- The external test was scored **once** under this model version (`config/external_test.lock`); a second "
+              "scoring refuses without an explicit override that is then recorded in the output.",
+              "- The serving code verifies the calibration manifest's SHA-256 at start-up and refuses to run if it "
+              "does not match the operating point, so a threshold can never be served against data nobody can vouch for.", "",
+              "## Provenance and licence", "",
+              "- Datasets, their terms and the required citations: `NOTICE`. The checkpoints are released for "
+              "non-commercial research and education because the training data permits only that.",
+              "- Privacy, what is stored and the DPDP gaps: `docs/PRIVACY.md`.",
+              "- Full protocol, reliability diagram, subgroup contrast and the experiments that were measured and not "
+              "shipped: `docs/VALIDATION.md`.", "",
+              f"**{DISCLAIMER}**", ""]
+    return "\n".join(lines)
+
+
 def main() -> int:
     op = load(CONFIG_DIR / "operating_point.json")
     if op is None:
@@ -245,6 +404,9 @@ def main() -> int:
     DOCS.mkdir(exist_ok=True)
     (DOCS / "VALIDATION.md").write_text(validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_card, flags, ensemble, policy), encoding="utf-8")
     print(f"wrote {DOCS / 'VALIDATION.md'}")
+    site = load(CONFIG_DIR / "site_calibration_messidor2.json")
+    (DOCS / "MODEL_CARD.md").write_text(model_card_md(op, lesion, quality_card, grader_card, flags, policy, site, timing, manifests), encoding="utf-8")
+    print(f"wrote {DOCS / 'MODEL_CARD.md'}")
     CARDS.mkdir(parents=True, exist_ok=True)
     for name, card in (("grader_v2", grader_card), ("lesion_unet", unet_card), ("quality_cnn", quality_card)):
         if card:

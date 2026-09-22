@@ -1,0 +1,86 @@
+Venus AI — explainable diabetic-retinopathy screening for district programmes
+Copyright 2026 Venus AI contributors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+================================================================================
+WHAT APACHE-2.0 COVERS, AND WHAT IT DOES NOT
+================================================================================
+
+Apache-2.0 covers the SOURCE CODE in this repository: backend/, frontend/,
+matlab/, scripts/, docs/ and the demo images in samples/ (each of which carries
+its own CC0 / CC BY / public-domain provenance in samples/README.md).
+
+It does NOT cover two things that are derived from third-party datasets:
+
+1. THE TRAINED CHECKPOINTS (backend/weights/*.weights.h5, distributed as
+   release assets, and the SavedModel exports under models/export/).
+2. THE DATASET MANIFESTS (backend/data/manifests/*.csv), which list image
+   identifiers, reader grades, patient groupings and perceptual hashes taken
+   from the datasets below. They contain no images.
+
+Both are made available for NON-COMMERCIAL RESEARCH AND EDUCATIONAL USE ONLY,
+because they are derived from data whose terms carry that restriction. Anyone
+intending commercial use must obtain their own rights from the dataset owners
+and retrain. This is a restriction we inherit and pass on; it is not one we
+chose, and it is not a restriction on the code.
+
+No fundus images from any of these datasets are redistributed in this
+repository or in its release assets.
+
+================================================================================
+DATASETS USED, AND THEIR TERMS
+================================================================================
+
+APTOS 2019 Blindness Detection (Asia Pacific Tele-Ophthalmology Society, via
+Kaggle) — used for training.
+    Kaggle competition data: competition use and non-commercial & academic
+    research. NON-COMMERCIAL.
+    https://www.kaggle.com/competitions/aptos2019-blindness-detection
+
+EyePACS / Diabetic Retinopathy Detection (EyePACS LLC and the California
+Healthcare Foundation, via Kaggle, 2015) — used for training, for the
+patient-disjoint calibration set that the locked threshold was chosen on, and
+for the secondary held-out set.
+    Kaggle competition data, provided for the competition and for non-commercial
+    academic research. NON-COMMERCIAL.
+    https://www.kaggle.com/competitions/diabetic-retinopathy-detection
+
+DDR (Li, Gao, Wang, Guo, Liu, Kang; Information Sciences 501:511-522, 2019) —
+used for the primary external test set and for lesion segmentation.
+    MIT License (see https://github.com/nkicsl/DDR-dataset). PERMISSIVE: this
+    dataset alone imposes no non-commercial restriction.
+
+Messidor-2 (ADCIS; Decenciere et al. 2014) with the adjudicated grades of
+Krause et al. 2018 — used once as an additional external test set and for the
+site-calibration study.
+    "Can be used, free of charge, for research and educational purposes. Copy,
+    redistribution, and any unauthorized commercial use are prohibited."
+    NON-COMMERCIAL, NO REDISTRIBUTION. Kindly provided by the Messidor program
+    partners. Required citations:
+      Decenciere et al., "Feedback on a publicly distributed database: the
+      Messidor database", Image Analysis & Stereology 33(3):231-234, 2014.
+      Abramoff et al., "Automated analysis of retinal images for detection of
+      referable diabetic retinopathy", JAMA Ophthalmology 131(3):351-357, 2013.
+    https://www.adcis.net/en/third-party/messidor2/
+
+EyeQ (Fu et al. 2019) — image-quality labels over EyePACS images, used to train
+the quality classifier. Research use; inherits the EyePACS terms above.
+    https://github.com/HzFu/EyeQ
+
+Not used by this project, despite appearing in the DR literature: IDRiD and
+DRIVE. No code path reads them.
+
+================================================================================
+THIRD-PARTY SOFTWARE
+================================================================================
+
+Python and JavaScript dependencies are listed in backend/requirements.txt and
+frontend/package.json and remain under their own licences (TensorFlow, FastAPI,
+OpenCV, scikit-image, scikit-learn, ReportLab, React, Vite, Tailwind, Recharts
+and others). The EfficientNet backbones are initialised from ImageNet weights
+distributed with Keras (Apache-2.0).
+
+MATLAB, Simulink and their toolboxes are commercial products of The MathWorks,
+Inc.; matlab/ contains only our own .m source and requires a MathWorks licence
+to run.

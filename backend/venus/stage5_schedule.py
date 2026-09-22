@@ -320,6 +320,13 @@ def save_screening(result: dict, patient_id: str | None = None) -> None:
              result["timing_ms"]["total"]))
 
 
+def screening_exists(session_id: str) -> bool:
+    """Was this session screened by this deployment? Lets the API tell a report
+    that was never written (full disk -> 507) from one that never existed (404)."""
+    with _lock, db() as conn:
+        return conn.execute("SELECT 1 FROM screenings WHERE session_id=? LIMIT 1", (session_id,)).fetchone() is not None
+
+
 def list_screenings(limit: int = 200) -> list[dict]:
     with _lock, db() as conn:
         rows = conn.execute("SELECT session_id, patient_id, captured_at, accepted, grade, referable, p_referable, flag, tier, quality, elapsed_ms, result_json "

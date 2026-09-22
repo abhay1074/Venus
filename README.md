@@ -148,4 +148,18 @@ cloud.md            the work diary; CLAUDE.md the notes for whoever continues
   the MATLAB DES misses 254 and Python's cached sweep agrees within sampling error. The PDF report
   comes from MATLAB Report Generator. GNU Octave still runs the pure-logic smoke in CI.
 
-Screening aid, not a diagnosis. Every image is read by an eye-care professional.
+## Licence
+
+Code (`backend/`, `frontend/`, `matlab/`, `scripts/`, `docs/`, `samples/`): **Apache-2.0**,
+see [LICENSE](LICENSE).
+
+The **trained checkpoints and the dataset manifests are not** under Apache-2.0. They are
+derived from APTOS 2019 and EyePACS, whose terms permit non-commercial academic use only, so
+they are released for **non-commercial research and education**; commercial use requires your
+own rights from the dataset owners and a retrain. [NOTICE](NOTICE) records every dataset, its
+terms and the required Messidor-2 citations. No fundus images from any dataset are
+redistributed here.
+
+Venus AI is a triage aid for referable diabetic retinopathy. A clinician reviews every case.
+It is not a diagnosis and it is not a cleared medical device. See
+[docs/MODEL_CARD.md](docs/MODEL_CARD.md) and [docs/PRIVACY.md](docs/PRIVACY.md).

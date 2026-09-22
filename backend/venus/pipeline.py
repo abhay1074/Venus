@@ -12,6 +12,7 @@ A rejected image returns early with the operator-facing reason and a P0
 
 from __future__ import annotations
 
+import logging
 import time
 import uuid
 from datetime import datetime, timezone
@@ -20,6 +21,8 @@ from backend.venus import report as report_module
 from backend.venus import stage0_gate, stage1_segment, stage2_grade, stage3_explain, stage5_schedule
 from backend.venus.config import operating_point
 from backend.venus.imaging import decode_image, to_png_base64
+
+logger = logging.getLogger(__name__)
 
 RECOMMENDATIONS = {
     "P0": "Image not gradable. Retake on the same visit following the reason shown to the operator.",
@@ -121,7 +124,16 @@ def screen_image(payload: bytes, intake: dict | None = None, tta: bool = False,
         },
     }
     if write_report:
-        result["report"] = report_module.write_report(result)
+        # A full disk or an unwritable reports directory must not destroy a
+        # finished clinical result: the grade and its evidence are returned
+        # either way, with report=None and a stated reason the caller can show.
+        # /report/<id>.pdf then answers 507 rather than a bare 404.
+        try:
+            result["report"] = report_module.write_report(result)
+        except OSError as exc:
+            result["report"] = None
+            result["report_error"] = f"the report could not be written ({exc.strerror or exc}); the result above is complete and was still recorded"
+            logger.error("report write failed for %s: %s", session_id, exc)
         result["timing_ms"]["report"] = int((time.perf_counter() - started) * 1000) - total
     if persist:
         stage5_schedule.init_db()

@@ -22,6 +22,11 @@ from reportlab.pdfgen import canvas
 
 from backend.venus.config import ICDR_LABELS, REPORT_DIR
 
+# The one sentence that must appear wherever a grade is shown; docs/MODEL_CARD.md
+# opens and closes with it and backend/tests asserts it reaches the PDF.
+DISCLAIMER = ("Venus AI is a triage aid for referable diabetic retinopathy. A clinician reviews every case. "
+              "It is not a diagnosis and it is not a cleared medical device.")
+
 NAVY = colors.HexColor("#102A43")
 TEAL = colors.HexColor("#0F766E")
 ROSE = colors.HexColor("#BE123C")
@@ -125,7 +130,7 @@ def write_pdf(result: dict, path: Path) -> Path:
         + ", ".join(f"G{i} {p:.2f}" for i, p in enumerate(cnn["grade_probabilities"])),
         f"Rule grader: grade {rule['grade']} ({rule['grade_label']})",
     ] + [f"• {t}" for t in rule["trace"]] + [
-        f"Lesions (classical detectors): MA {s1['lesions']['MA']['count']}, HE {s1['lesions']['HE']['count']} "
+        f"Lesions ({s1['method']}): MA {s1['lesions']['MA']['count']}, HE {s1['lesions']['HE']['count']} "
         f"(quadrants {s1['hemorrhages_per_quadrant']}), EX {s1['lesions']['EX']['count']}, SE {s1['lesions']['SE']['count']}",
         f"PDR evidence: NV probability {cnn['nv_probability']:.2f} (classifier, not localised)",
     ]
@@ -156,12 +161,14 @@ def write_pdf(result: dict, path: Path) -> Path:
         c.drawString(margin, y, piece)
         y -= 3.8 * mm
 
-    # Footer
+    # Footer: the same sentence docs/MODEL_CARD.md opens and closes with, beside
+    # the version and fingerprint that make this page traceable to its threshold.
     c.setFont("Helvetica", 7)
     c.setFillColor(GREY)
-    c.drawString(margin, margin - 4 * mm,
+    c.drawString(margin, margin - 1 * mm, DISCLAIMER)
+    c.drawString(margin, margin - 4.5 * mm,
                  f"Model {result['model_version']}   ·   calibration fingerprint {result['calibration_fingerprint'][:16]}…   ·   "
-                 "Screening aid, not a diagnosis. Every image is read by an eye-care professional.")
+                 "Every image is read by an eye-care professional.")
     c.showPage()
     c.save()
     return path

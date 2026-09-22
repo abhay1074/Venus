@@ -8,6 +8,10 @@ COPY backend/requirements.txt backend/requirements.txt
 RUN pip install --no-cache-dir -r backend/requirements.txt
 COPY backend backend
 COPY samples samples
-ENV TF_CPP_MIN_LOG_LEVEL=3 PYTHONIOENCODING=utf-8 VENUS_SWEEP_ON_START=true
+# 0.0.0.0 is required inside a container (a loopback bind is unreachable from
+# the host); backend/serve.py refuses it unless this is set, so this line is
+# the explicit opt-in. Publish the port only to a trusted network: the API
+# has no authentication (docs/PRIVACY.md).
+ENV TF_CPP_MIN_LOG_LEVEL=3 PYTHONIOENCODING=utf-8 VENUS_SWEEP_ON_START=true VENUS_BIND_ALL=true
 EXPOSE 8000
-CMD ["python", "-m", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "backend.serve", "--port", "8000"]

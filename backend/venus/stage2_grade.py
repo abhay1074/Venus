@@ -135,7 +135,10 @@ def calibrate(raw: float, point: dict) -> float:
 def cnn_grade(image_bgr: np.ndarray, tta: bool = False, stage0_image: np.ndarray | None = None) -> dict:
     model = load_grader()
     if model is None:
-        raise RuntimeError(f"CNN grader unavailable: {_load_error}")
+        # Reaches the operator as a 503 with this text: name the fix, not just
+        # the exception (a truncated checkpoint is the common cause).
+        raise RuntimeError(f"The CNN grader could not be loaded, so no grade can be produced: {_load_error}. "
+                           f"Check the checkpoint with: python scripts/checksums.py")
     x = grader_input(image_bgr, stage0_image)
     batch = _tta_views(x) if tta else x[None, ...]
     out = model.predict(batch, verbose=0)

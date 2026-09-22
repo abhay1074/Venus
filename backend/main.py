@@ -25,12 +25,13 @@ was made with.
 from __future__ import annotations
 
 import json
+import re
 import os
 import time
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -38,7 +39,8 @@ from pydantic import BaseModel
 
 from backend.venus import __version__, pipeline, stage0_gate, stage1_segment, stage2_grade, stage4_simulate, stage5_schedule
 from backend.venus.config import (ALLOWED_IMAGE_TYPES, CONFIG_DIR, MAX_UPLOAD_MB, MODEL_VERSION, PROJECT_ROOT, REPORT_DIR, SAMPLES_DIR,
-                                  OperatingPointError, operating_point)
+                                  SCREEN_RATE_BURST, SCREEN_RATE_PER_MIN, OperatingPointError, operating_point)
+from backend.venus.ratelimit import RateLimiter
 
 app = FastAPI(title="Venus AI", version=__version__,
               description="Explainable diabetic-retinopathy screening for district programmes (SIH26038).")
@@ -49,6 +51,10 @@ app.add_middleware(
 )
 
 _startup: dict = {}
+
+# Session ids are minted by pipeline.screen_image as VS- + 10 hex characters.
+# Report lookups match this exactly: a path fragment never reaches the filesystem.
+SESSION_ID_RE = re.compile(r"VS-[0-9A-F]{10}")
 
 
 @app.on_event("startup")
@@ -145,19 +151,55 @@ async def get_validation_extras() -> dict:
 
 # ------------------------------------------------------------ screening --
 
+MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
+screen_limiter = RateLimiter(SCREEN_RATE_PER_MIN, SCREEN_RATE_BURST)
+
+
+def _enforce_rate_limit(request: Request) -> None:
+    """One screen costs ~1.5 s of the single CPU the operator is waiting on."""
+    client = request.client.host if request.client else "unknown"
+    wait = screen_limiter.check(client)
+    if wait:
+        raise HTTPException(status_code=429, detail=f"Too many screening requests from this client. Retry in {wait:.0f}s.",
+                            headers={"Retry-After": str(max(int(wait), 1))})
+
+
+async def _read_capped(upload: UploadFile, request: Request) -> bytes:
+    """Read the upload without ever buffering more than the cap.
+
+    The declared Content-Length is refused first, so a 5 GB upload costs one
+    response rather than 5 GB of a shared laptop's RAM; a lying or absent
+    header is caught by reading in chunks and stopping one byte over."""
+    declared = request.headers.get("content-length")
+    if declared and declared.isdigit() and int(declared) > MAX_UPLOAD_BYTES + _MULTIPART_SLACK:
+        raise HTTPException(status_code=413, detail=f"The upload exceeds the {MAX_UPLOAD_MB} MB limit.")
+    chunks, size = [], 0
+    while chunk := await upload.read(1 << 20):
+        size += len(chunk)
+        if size > MAX_UPLOAD_BYTES:
+            raise HTTPException(status_code=413, detail=f"The image exceeds the {MAX_UPLOAD_MB} MB limit.")
+        chunks.append(chunk)
+    return b"".join(chunks)
+
+
+# Multipart framing (boundaries, headers) rides along with the file in
+# Content-Length; allow a little room so a file just under the cap is not
+# refused for its envelope.
+_MULTIPART_SLACK = 64 * 1024
+
+
 def _validate_upload(upload: UploadFile, payload: bytes) -> None:
     if upload.content_type not in ALLOWED_IMAGE_TYPES:
         raise HTTPException(status_code=415, detail="Upload a JPEG, PNG or WEBP fundus photograph.")
     if not payload:
         raise HTTPException(status_code=400, detail="The uploaded file is empty.")
-    if len(payload) > MAX_UPLOAD_MB * 1024 * 1024:
-        raise HTTPException(status_code=413, detail=f"The image exceeds the {MAX_UPLOAD_MB} MB limit.")
 
 
 @app.post("/screen")
-async def screen(file: UploadFile = File(...), intake: Optional[str] = Form(default=None),
+async def screen(request: Request, file: UploadFile = File(...), intake: Optional[str] = Form(default=None),
                  tta: bool = Form(default=False)) -> dict:
-    payload = await file.read()
+    _enforce_rate_limit(request)
+    payload = await _read_capped(file, request)
     _validate_upload(file, payload)
     intake_dict = None
     if intake:
@@ -188,19 +230,35 @@ async def screening(session_id: str) -> dict:
     return json.load(open(path, encoding="utf-8"))
 
 
+def _report_path(session_id: str, suffix: str) -> Path:
+    """Resolve a report file for a session id this process issued.
+
+    The id is matched against the format pipeline.screen_image mints and is
+    never joined as a path fragment, so '..', an absolute path or a glob can
+    never leave REPORT_DIR. A known session whose file is missing means the
+    write failed (full or unwritable disk) and is answered 507, not 404, so
+    the operator is told the difference."""
+    if not SESSION_ID_RE.fullmatch(session_id):
+        raise HTTPException(status_code=404, detail="no report for this session")
+    path = REPORT_DIR / f"{session_id}{suffix}"
+    if not path.exists():
+        if stage5_schedule.screening_exists(session_id):
+            raise HTTPException(status_code=507, detail="This case was screened but its report could not be written "
+                                                        "(the reports directory was unwritable or the disk was full). "
+                                                        "The result is still in the review queue.")
+        raise HTTPException(status_code=404, detail="no report for this session")
+    return path
+
+
 @app.get("/report/{session_id}.pdf")
 async def report_pdf(session_id: str):
-    path = REPORT_DIR / f"{session_id}.pdf"
-    if not path.exists():
-        raise HTTPException(status_code=404, detail="no report for this session")
+    path = _report_path(session_id, ".pdf")
     return FileResponse(path, media_type="application/pdf", filename=f"venus-{session_id}.pdf")
 
 
 @app.get("/report/{session_id}.json")
 async def report_json(session_id: str):
-    path = REPORT_DIR / f"{session_id}.json"
-    if not path.exists():
-        raise HTTPException(status_code=404, detail="no report for this session")
+    path = _report_path(session_id, ".json")
     return FileResponse(path, media_type="application/json")
 
 
