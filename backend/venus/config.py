@@ -68,11 +68,17 @@ ICDR_LABELS = {
 
 
 def sha256_of_file(path: Path) -> str:
-    digest = hashlib.sha256()
+    """SHA-256 of a text artefact's content with line endings normalised to LF.
+
+    The manifests are fingerprinted so serving refuses a threshold chosen on
+    data nobody can vouch for; a Windows checkout with autocrlf must not trip
+    that check (it did, on a fresh clone), so CRLF is folded to LF before
+    hashing. Every LF file hashes exactly as before. matlab/+drscreen/sha256File
+    does the same. The file is read whole (manifests are a few MB at most) so a
+    CRLF pair can never be split across chunks."""
     with open(path, "rb") as handle:
-        for chunk in iter(lambda: handle.read(1 << 20), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+        content = handle.read()
+    return hashlib.sha256(content.replace(b"\r\n", b"\n")).hexdigest()
 
 
 @lru_cache(maxsize=1)
