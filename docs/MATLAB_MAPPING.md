@@ -21,10 +21,13 @@ Designer screens and the Simulink model read the same fields.
 | `backend/main.py` + `frontend/` | `app/DRScreen.mlapp` (App Designer, four screens) and optionally MATLAB Production Server `screenImage(bytes) -> json` | `uifigure`, `uiimage`, `uitable`, `uiaxes`; `productionServerCompiler` |
 | `backend/tests/test_stages.py` | `tests/` one `TestCase` per stage | `matlab.unittest` |
 
-**Weights.** The Keras checkpoints (EfficientNet-B4 grader, EfficientNet-B0 gate) import
-into MATLAB with `importNetworkFromTensorFlow` after `model.export("saved_model")` in
-TF 2.21; the ordinal head and the Platt parameters are unchanged, so the locked operating
-point transfers as is.
+**Weights** (as verified in R2026a). After `model.export("saved_model")` in TF 2.21, the
+EfficientNet-B3 grader, the EfficientNet-B0 modality gate and the EfficientNet-B0 quality CNN
+import with `importNetworkFromTensorFlow` (Deep Learning Toolbox Converter for TensorFlow
+Models). The lesion U-Net does **not**: the converter has no `Conv2DBackpropInput`, so
+`drscreen.buildUnet` builds it natively from the Keras `.h5` and loads the trained weights
+positionally — its output matches Python to 1e-5. The ordinal head and the Platt parameters
+are unchanged either way, so the locked operating point transfers as is.
 
 **What stays identical across both implementations**: the stage boundaries, the result
 struct (`stage0 … stage5`, `timing_ms`, `model_version`, `calibration_fingerprint`), the

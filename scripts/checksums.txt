@@ -1,0 +1,9 @@
+# SHA-256 of the trained checkpoints (raw bytes). Regenerate with:
+#   python scripts/checksums.py --write
+# Verify with:  python scripts/checksums.py   (or: sha256sum -c scripts/checksums.txt)
+fc3abd15e3a05a212d16ebd0ea54866d0386d37a9a435dc5c1613d0b535ba1d7  grader_v2.weights.h5
+7871549b225f86ca5b8c254349b3a86bf17bff0112c51fb308d08c3cffa6d0b4  eye_modality_gate.weights.h5
+2a8d74e9380d5f6efbb5c6119f6a0107ff60db711606c5d4d330f8b98fc2369b  quality_cnn.weights.h5
+2b826ed8989e6fe74c8809a8a5533dbb1890100f13023395a2627d7e35b9888b  lesion_unet.weights.h5
+45bcda978ab9b9fcf8d54ddf4534020ecfe3893dd4a416d87ccbea7f507f8dc3  eye_best.weights.h5
+9e2e799cf6ede7b6e8b74a934a502508720c69571fce26e593868380c6f6001b  lesion_unet_1024.weights.h5

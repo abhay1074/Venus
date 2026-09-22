@@ -1,9 +1,10 @@
 # Venus AI — MATLAB implementation
 
 The pipeline the problem statement asks for, in MATLAB, with the same stage boundaries, struct
-fields, configuration files and numbers as the Python reference under `backend/`. Written
-against R2024b; the models are the ones trained here (Python/TensorFlow on the GPU) and
-imported with `importNetworkFromTensorFlow`.
+fields, configuration files and numbers as the Python reference under `backend/`. Verified in
+**MATLAB R2026a on Windows** (see "What is verified" below); the models are the ones trained
+here (Python/TensorFlow on the GPU), imported with `importNetworkFromTensorFlow` except the
+lesion U-Net, which is built natively from its Keras checkpoint.
 
 ```
 matlab/
@@ -40,14 +41,32 @@ Report Generator; Parallel Computing is optional (parsim/parfor in the sweep).
    sweep = runSweep(); paretoPlot(sweep);    % the Pareto front and the four slide numbers
    ```
 
-## What is verified and what to expect on first run
+## What is verified, and what is not
 
-Everything under `+drscreen`, `simulink/simulateDistrict.m`, `runSweep.m`, `paretoPlot.m`,
-`tests/` and `app/` is plain MATLAB written against documented APIs, with unit tests that
-mirror the Python ones (same synthetic cases, same expected values). They were written on a
-machine without MATLAB, so the first run is the first execution: run `runTests` first and
-fix anything it reports — the logic is a line-for-line port of code that passes its 29
-Python tests.
+**Verified by running it in MATLAB R2026a on Windows** (Simulink, SimEvents, Deep Learning,
+Image Processing, Computer Vision, Statistics and Machine Learning, MATLAB Report Generator,
+Parallel Computing, and the *Deep Learning Toolbox Converter for TensorFlow Models* support
+package):
+
+- `runTests` — **22 of 22 test cases pass**, including `tests/CrossCheckTest.m`, which checks
+  this port against the Python reference rather than against itself.
+- `drscreen.loadModels`, `drscreen.screenImage` end to end on every shipped sample, with the
+  Grad-CAM overlays and the Report Generator PDF.
+- `buildDistrictModel` → `district_screening.slx`, simulated for a full year, and
+  `runSweep(struct('useSimulink', true))` through `parsim`.
+- `app/DRScreenApp.m` driven programmatically: screen an image, switch overlays, run a
+  district year, export the tabs (`docs/figures/matlab_app_*.png`).
+
+**Not verified, and honest about it:**
+
+- Only R2026a, only Windows. Every `set_param` in `buildDistrictModel` is wrapped so a block
+  parameter renamed in another release prints one line instead of aborting the build.
+- The `struct('plainServer', true)` variant of `buildDistrictModel` (plain Entity Server, no
+  daily hour budget) is kept for comparison but has not been built since the R2026a fixes.
+- `runSweep(struct('useSimulink', true))` was run over a reduced grid (12 configurations), not
+  the full 144-run sweep; the default `useSimulink=false` path runs the full sweep.
+- The app's interactive callbacks that open OS dialogs or external viewers — `uigetfile` in
+  `pickImage`, `openReport`, `openSimulink` — were not exercised; the functions they call were.
 
 `buildDistrictModel.m` builds the SimEvents diagram with `add_block`/`set_param` — **verified
 in R2026a** (library `sldelib`; the entity type is a bus object `PatientBus` recreated by the

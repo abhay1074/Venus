@@ -4,6 +4,31 @@ Before you start: `scripts\serve.ps1`, then `python scripts\preflight.py` must p
 `all checks passed`. The first request after start-up is already warm. Numbers quoted below
 are from `docs/VALIDATION.md`; if that file has been regenerated since, use its values.
 
+### If the checkpoints will not download
+
+The ~1 GB of `.weights.h5` files are not in git. `scripts\setup.ps1` and
+`wsl bash scripts/pull-models.sh` both verify them against `scripts\checksums.txt` and stop
+with the expected-vs-actual hash if a file is corrupt. If the download fails on the demo
+machine — no network, blocked host, half-finished transfer — recover from USB:
+
+```powershell
+# 1. copy the five .weights.h5 files from the USB stick into the repo
+Copy-Item E:\venus-weights\*.weights.h5 backend\weights\
+
+# 2. verify them, and nothing else (takes ~20 s for 1 GB)
+python scripts\checksums.py          # prints ok / CORRUPT per file
+#    exit 0 = all good, 1 = a file is corrupt, 2 = a required checkpoint is missing
+
+# 3. start as usual
+powershell -ExecutionPolicy Bypass -File scripts\serve.ps1
+```
+
+`grader_v2.weights.h5` and `eye_modality_gate.weights.h5` are required. Without
+`quality_cnn.weights.h5` or `lesion_unet.weights.h5` the pipeline still runs — the hand-crafted
+quality limits and the classical lesion detectors take over, and every result says which path
+ran (`stage1.method`, `/health`). The offline bundle
+(`scripts\build-offline-bundle.ps1`) already contains all of them.
+
 ## 1. The gate (45 s) — Screen
 
 Click **Not a fundus (dermoscopy)** → Screen. Refused before any DR model runs.

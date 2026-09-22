@@ -4,14 +4,28 @@ Turns the Stage 0 working image into lesion maps and landmarks. Two consumers:
 the rule grader in Stage 2 (counts per lesion type, hemorrhages per ETDRS
 quadrant, P(NV)) and the overlays in Stage 3.
 
-This build uses the classical, no-GPU path the architecture names as the
-fallback for every structure: brightest-blob optic disc, geometric fovea prior,
-Frangi vesselness for vessels, and morphological top-hat / black-hat lesion
-detection. No pixel-level lesion network is included — the only public
-pixel-labelled DR set (IDRiD) has 81 images and a U-Net trained on it is not
-something this build can validate — so every output carries method="classical"
-and the report states it. Neovascularization is never segmented; Stage 2 uses
-the grader's P(grade >= 4) as PDR evidence and says "classifier, not localised".
+Landmarks always come from the classical, no-GPU path the architecture names:
+brightest-blob optic disc, geometric fovea prior, Frangi vesselness for vessels.
+
+Lesions have two paths, and every result carries `method` saying which ran:
+
+- "unet" when `backend/weights/lesion_unet.weights.h5` and
+  `config/lesion_thresholds.json` are present. A U-Net (4 levels, 32 base
+  filters, 512x512, four sigmoid channels MA/HE/EX/SE) trained on the DDR
+  lesion-segmentation set (383 train / 149 valid / 225 test), applied to the
+  un-enhanced frame after LAB colour normalisation to the DDR statistics, with
+  per-class thresholds chosen on the DDR valid split (max pixel F1) and the
+  test split scored once — see docs/VALIDATION.md. The same rim/disc
+  post-processing and component-area floors as the classical path apply.
+  `config.LESION_THRESHOLDS_HIRES_PATH` can add a second network at a larger
+  frame for the classes it names; no such file ships (see
+  config/experiments/lesion_unet_1024.json for the measurement behind that).
+- "classical" otherwise: morphological black-hat (red lesions) and top-hat
+  (bright lesions) with robust MAD thresholds, so the pipeline still produces
+  lesion evidence on a machine with no checkpoints.
+
+Neovascularization is never segmented; Stage 2 uses the grader's
+P(grade >= 4) as PDR evidence and says "classifier, not localised".
 
 All coordinates are in the 512x512 working frame.
 """
