@@ -1,0 +1,123 @@
+{
+  "written_at": "2026-09-22T10:02:07.612507+00:00",
+  "samples": {
+    "normal_right_eye.jpg": {
+      "accepted": true,
+      "stop_reason": null,
+      "tier": "P4",
+      "quality": "good",
+      "cnn_grade": 0,
+      "rule_grade": 0,
+      "p_referable": 0.0007,
+      "referable": false,
+      "flag": false,
+      "attention": 0.0,
+      "lesions": {
+        "MA": 1,
+        "HE": 0,
+        "EX": 0,
+        "SE": 0
+      }
+    },
+    "npdr_hemorrhages_nei.jpg": {
+      "accepted": true,
+      "stop_reason": null,
+      "tier": "P2",
+      "quality": "usable",
+      "cnn_grade": 3,
+      "rule_grade": 2,
+      "p_referable": 0.943,
+      "referable": true,
+      "flag": false,
+      "attention": 0.507,
+      "lesions": {
+        "MA": 24,
+        "HE": 11,
+        "EX": 0,
+        "SE": 0
+      }
+    },
+    "pdr_proliferative_nei.jpg": {
+      "accepted": true,
+      "stop_reason": null,
+      "tier": "P1",
+      "quality": "usable",
+      "cnn_grade": 4,
+      "rule_grade": 4,
+      "p_referable": 0.9999,
+      "referable": true,
+      "flag": true,
+      "attention": 0.111,
+      "lesions": {
+        "MA": 13,
+        "HE": 7,
+        "EX": 3,
+        "SE": 1
+      }
+    },
+    "dr_exudates.png": {
+      "accepted": true,
+      "stop_reason": null,
+      "tier": "P2",
+      "quality": "usable",
+      "cnn_grade": 2,
+      "rule_grade": 2,
+      "p_referable": 0.8925,
+      "referable": true,
+      "flag": false,
+      "attention": 0.595,
+      "lesions": {
+        "MA": 6,
+        "HE": 4,
+        "EX": 12,
+        "SE": 0
+      }
+    },
+    "demo_fundus.jpeg": {
+      "accepted": true,
+      "stop_reason": null,
+      "tier": "P4",
+      "quality": "usable",
+      "cnn_grade": 0,
+      "rule_grade": 0,
+      "p_referable": 0.0204,
+      "referable": false,
+      "flag": false,
+      "attention": 0.0,
+      "lesions": {
+        "MA": 0,
+        "HE": 1,
+        "EX": 0,
+        "SE": 0
+      }
+    },
+    "usable_dark_vignetted.jpg": {
+      "accepted": true,
+      "stop_reason": null,
+      "tier": "P4",
+      "quality": "usable",
+      "cnn_grade": 0,
+      "rule_grade": 0,
+      "p_referable": 0.0016,
+      "referable": false,
+      "flag": false,
+      "attention": null,
+      "lesions": {
+        "MA": 0,
+        "HE": 0,
+        "EX": 0,
+        "SE": 0
+      }
+    },
+    "retake_blurred.jpg": {
+      "accepted": false,
+      "stop_reason": "Image too blurry \u2014 hold still and refocus",
+      "tier": "P0"
+    },
+    "not_fundus_dermoscopy.jpg": {
+      "accepted": false,
+      "stop_reason": "This does not look like a fundus (retinal) photograph. Nothing was analysed.",
+      "tier": "P0"
+    }
+  }
+}

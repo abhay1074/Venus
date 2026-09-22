@@ -18,18 +18,21 @@ function s0 = gate(imageRGB, models)
     [image, mask, geometry] = drscreen.normaliseFov(imageRGB, 512);
     features = drscreen.qualityFeatures(image, mask, geometry);
     [label, score, reason, notes] = drscreen.qualityLabel(features);
-    cnn = [];
+    cnn = []; cnnWarning = '';
     if isfield(models, 'quality') && ~isempty(models.quality)
-        probs = predict(models.quality, single(imresize(image, [256 256])));
-        cnn = struct('good', probs(1), 'usable', probs(2), 'reject', probs(3));
-        classes = {'good', 'usable', 'reject'};
-        [~, idx] = max(probs);
+        probs = drscreen.predictNet(models.quality, imresize(image, [256 256], 'box'));         % cv2.INTER_AREA
+        cnn = struct('good', double(probs(1)), 'usable', double(probs(2)), 'reject', double(probs(3)));
         if ~strcmp(label, 'reject')
-            label = classes{idx}; reason = '';
-            if strcmp(label, 'reject')
-                reason = 'Image quality too low to grade (learned quality classifier) - retake';
+            % As in stage0_gate.run: letting the EyeQ-trained CNN reject refused
+            % 46 % of validation images (78 % of PDR), so it decides good vs
+            % usable (whether to enhance) and its reject probability is a
+            % warning; only the handcrafted hard limits reject.
+            if cnn.good >= cnn.usable && cnn.reject < 0.5, label = 'good'; else, label = 'usable'; end
+            if cnn.reject >= 0.5
+                cnnWarning = sprintf('learned quality classifier: low quality (P = %.2f); enhanced and graded, read with care', cnn.reject);
+                notes{end+1} = 'learned classifier: low quality';
             end
-            score = probs(1) + 0.5 * probs(2);
+            score = round((cnn.good + 0.5 * cnn.usable) * 1000) / 1000;
         end
     end
     enhanced = strcmp(label, 'usable');
@@ -40,7 +43,7 @@ function s0 = gate(imageRGB, models)
     end
     working(repmat(~mask, [1 1 3])) = 0;
     quality = struct('label', label, 'score', score, 'features', features, 'enhanced', enhanced, ...
-        'notes', {notes}, 'retakeReason', reason, 'cnnProbabilities', cnn);
+        'notes', {notes}, 'retakeReason', reason, 'cnnProbabilities', cnn, 'cnnWarning', cnnWarning);
     s0 = struct('accepted', ~strcmp(label, 'reject'), 'stopReason', reason, 'modality', modality, ...
         'quality', quality, 'fov', geometry, 'image', working, 'mask', mask, 'original', image, ...
         'elapsedMs', round(1000 * toc(t0)));
@@ -54,7 +57,7 @@ function modality = modalityCheck(imageRGB, models)
             'reason', 'The modality gate could not be loaded, so the image cannot be verified as a fundus photograph.');
         return;
     end
-    probs = predict(models.gate, single(imresize(imageRGB, [224 224])));
+    probs = drscreen.predictNet(models.gate, imresize(imageRGB, [224 224], 'bilinear', 'Antialiasing', false));   % cv2.resize default
     p = double(probs(1));
     accepted = p >= threshold;
     reason = '';

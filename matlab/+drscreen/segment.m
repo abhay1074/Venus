@@ -199,7 +199,7 @@ end
 
 function L = unetLesions(image, mask, odMask, models)
     rgb = drscreen.colourNormalise(image, mask);
-    probs = predict(models.unet, single(rgb));        % 512x512x4, MA HE EX SE
+    probs = drscreen.predictNet(models.unet, rgb);   % 512x512x4, MA HE EX SE
     inner = imerode(mask, strel('disk', 6));
     odWide = imdilate(odMask, strel('disk', 6));
     keys = {'MA', 'HE', 'EX', 'SE'}; minArea = [4 15 5 60];
@@ -220,7 +220,7 @@ function L = hiresLesions(L, raw, odMask, models)
     if size(raw, 3) == 1, raw = repmat(raw, [1 1 3]); end
     [hiImage, hiMask] = drscreen.normaliseFov(raw, n);
     rgb = drscreen.colourNormalise(hiImage, hiMask);
-    probs = predict(models.unetHires, single(rgb));
+    probs = drscreen.predictNet(models.unetHires, rgb);
     scale = n / size(odMask, 1);
     inner = imerode(hiMask, strel('disk', round(6 * scale)));
     odWide = imdilate(imresize(odMask, [n n], 'nearest'), strel('disk', round(6 * scale)));

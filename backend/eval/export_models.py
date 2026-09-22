@@ -84,6 +84,25 @@ def main(argv=None) -> int:
                     entry["onnx_sha256"] = hashlib.sha256(onnx_path.read_bytes()).hexdigest()
             except ImportError:
                 entry["onnx"] = "tf2onnx not installed"
+        if name == "grader_v2":
+            # Grad-CAM in MATLAB: the importer folds the network into one
+            # opaque layer, so the feature maps (top_activation) are exported
+            # as their own model and the dense head's weights as JSON; with a
+            # GAP + sigmoid head, Grad-CAM is exactly ReLU(sum_c w_kc A_c).
+            feats = keras.Model(model.inputs, model.get_layer("top_activation").output, name="grader_v2_features")
+            fout = EXPORT_DIR / "grader_v2_features"
+            if fout.exists():
+                shutil.rmtree(fout)
+            feats.export(str(fout), format="tf_saved_model")
+            kernel, bias = model.get_layer("dr_ordinal_thresholds").get_weights()
+            head = {"cam_layer": "top_activation", "feature_shape": list(feats.output_shape[1:]),
+                    "dense_kernel": kernel.tolist(), "dense_bias": bias.tolist(),
+                    "note": "Grad-CAM for head k = ReLU(sum_c dense_kernel[c,k] * A_c), normalised to max 1 (the sigmoid slope is a positive scalar)"}
+            with open(EXPORT_DIR / "grader_v2_head.json", "w", encoding="utf-8") as handle:
+                json.dump(head, handle)
+            entry["features_saved_model"] = fout.name
+            entry["head_weights"] = "grader_v2_head.json"
+            print(f"exported grader_v2_features -> {fout} (+ head weights)")
         manifest["models"][name] = entry
         print(f"exported {name} -> {out}")
     with open(EXPORT_DIR / "manifest.json", "w", encoding="utf-8") as handle:

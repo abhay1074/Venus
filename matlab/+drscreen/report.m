@@ -11,8 +11,15 @@ function paths = report(result, outDir)
     if ~isfolder(outDir), mkdir(outDir); end
     pdfPath = fullfile(outDir, [result.sessionId '.pdf']);
     d = Document(fullfile(outDir, result.sessionId), 'pdf');
-    d.PageLayout = PDFPageLayout(); d.PageLayout.PageMargins.Left = '14mm'; d.PageLayout.PageMargins.Right = '14mm';
     open(d);
+    % Page margins live on the current page layout once the document is open
+    % (R2026a: Document has no PageLayout property; CurrentPageLayout does).
+    try
+        layout = d.CurrentPageLayout;
+        layout.PageMargins.Left = '14mm'; layout.PageMargins.Right = '14mm';
+        layout.PageMargins.Top = '12mm'; layout.PageMargins.Bottom = '12mm';
+    catch
+    end
 
     h = Heading1('Venus AI - Diabetic Retinopathy Screening Report'); h.Color = '#102A43'; append(d, h);
     q = result.stage0.quality;

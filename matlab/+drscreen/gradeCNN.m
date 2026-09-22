@@ -20,9 +20,11 @@ function cnn = gradeCNN(s0, models, point, tta)
     else
         views = x;
     end
-    out = predict(models.grader, views);
-    if ~isa(out, 'double') && ~isa(out, 'single'), out = extractdata(out); end
-    ordinal = double(mean(reshape(out, 4, []), 2)).';
+    out = zeros(4, size(views, 4));
+    for v = 1:size(views, 4)
+        out(:, v) = double(drscreen.predictNet(models.grader, views(:, :, :, v)));
+    end
+    ordinal = mean(out, 2).';
     grade = sum(ordinal >= 0.5);
     labels = drscreen.icdrLabels();
     raw = ordinal(2);

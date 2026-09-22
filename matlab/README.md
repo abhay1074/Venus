@@ -72,10 +72,20 @@ Under GNU Octave (`octave_smoke.m`) the port also verifies the calibration finge
 parameters (2 ophthalmologists with AI: doctor hours 2,947 vs 2,903, programme sensitivity
 0.814 vs 0.814 — different RNG streams, same model).
 
-`drscreen.loadModels` imports the SavedModel folders and caches each as `.mat`. If a layer
-is unsupported by `importNetworkFromTensorFlow` in your release, the `.onnx` export of the same
-model is tried next (`importNetworkFromONNX`); EfficientNet and the U-Net use only standard
-layers (conv, depthwise conv, batch norm, swish, squeeze-excite multiply, transposed conv).
+`drscreen.loadModels` — **verified in R2026a** with the *Deep Learning Toolbox Converter for
+TensorFlow Models* support package — imports the grader, gate, quality CNN and the grader's
+feature model (`grader_v2_features`, inputs → `top_activation`) from `models/export`, caching each
+as `.mat` next to the export (first import ~70 s, cached load ~9 s; the importer's generated
+`+<model>` packages land there too). A Keras 3 SavedModel arrives as one opaque call layer that
+takes an unformatted batch-first array: `drscreen.predictNet` handles that. The U-Net is not
+imported — the importer has no transposed convolution — but built natively by
+`drscreen.buildUnet` from the Keras `.h5` checkpoint. Grad-CAM is the closed form for a
+GAP + sigmoid head, `ReLU(Σ_c w_kc A_c)` on the feature maps with the dense weights from
+`grader_v2_head.json`. `tests/CrossCheckTest.m` proves all of it against Python on identical
+inputs: gate / quality / grader outputs within 2e-6, U-Net within 1e-5, Grad-CAM maps within
+2e-5, and end-to-end decisions on every shipped sample (accepted, referable, review flag, tier,
+CNN grade; P(referable) within 0.05 — the tolerance image primitives such as `imresize` and the
+bilateral filter leave). A full screen with the PDF report takes ~10 s on the CPU.
 If `models/export/lesion_unet_1024` and a `config/lesion_thresholds_1024.json` exist, the 1024 px
 U-Net reads the classes that file lists from a fresh FOV normalisation of the uploaded image, exactly
 as the Python path does; the shipped configuration has no such file (the experiment is recorded in

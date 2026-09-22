@@ -19,9 +19,24 @@ function models = loadModels(modelDir)
     models.point = drscreen.operatingPoint();
     models.policy = drscreen.reviewPolicy();
     models.grader = importOne(fullfile(modelDir, 'grader_v2'), true);
+    % Grad-CAM: the importer folds the grader into one opaque layer, so the
+    % feature maps come from their own export (inputs -> top_activation) and
+    % the dense head's weights from grader_v2_head.json (see explain.m).
+    models.graderFeatures = importOne(fullfile(modelDir, 'grader_v2_features'), false);
+    headPath = fullfile(modelDir, 'grader_v2_head.json');
+    models.graderHead = [];
+    if isfile(headPath), models.graderHead = jsondecode(fileread(headPath)); end
     models.gate = importOne(fullfile(modelDir, 'modality_gate'), true);
     models.quality = importOne(fullfile(modelDir, 'quality_cnn'), false);
-    models.unet = importOne(fullfile(modelDir, 'lesion_unet'), false);
+    % The U-Net is built natively from the Keras checkpoint (buildUnet: the
+    % TensorFlow importer has no transposed convolution); the SavedModel is
+    % the fallback when the checkpoint is absent.
+    weightsDir = fullfile(drscreen.repoRoot(), 'backend', 'weights');
+    if isfile(fullfile(weightsDir, 'lesion_unet.weights.h5'))
+        models.unet = cachedNative(fullfile(modelDir, 'lesion_unet'), @() drscreen.buildUnet(fullfile(weightsDir, 'lesion_unet.weights.h5'), 512));
+    else
+        models.unet = importOne(fullfile(modelDir, 'lesion_unet'), false);
+    end
     models.unetThresholds = [];
     thrPath = fullfile(drscreen.repoRoot(), 'backend', 'config', 'lesion_thresholds.json');
     if ~isempty(models.unet) && isfile(thrPath)
@@ -34,7 +49,11 @@ function models = loadModels(modelDir)
     hiPath = fullfile(drscreen.repoRoot(), 'backend', 'config', 'lesion_thresholds_1024.json');
     if ~isempty(models.unet) && isfile(hiPath)
         spec = jsondecode(fileread(hiPath));
-        net = importOne(fullfile(modelDir, 'lesion_unet_1024'), false);
+        if isfile(fullfile(weightsDir, 'lesion_unet_1024.weights.h5'))
+            net = cachedNative(fullfile(modelDir, 'lesion_unet_1024'), @() drscreen.buildUnet(fullfile(weightsDir, 'lesion_unet_1024.weights.h5'), spec.frame_size));
+        else
+            net = importOne(fullfile(modelDir, 'lesion_unet_1024'), false);
+        end
         if ~isempty(net) && isfield(spec, 'serves') && ~isempty(spec.serves)
             models.unetHires = net;
             models.unetHiresThresholds = spec.thresholds;
@@ -44,14 +63,32 @@ function models = loadModels(modelDir)
     end
 end
 
+function net = cachedNative(folder, builder)
+    % Build once, cache next to the export like the imported networks.
+    cache = [folder '.mat'];
+    if isfile(cache)
+        s = load(cache, 'net'); net = s.net; return;
+    end
+    net = builder();
+    if ~isfolder(fileparts(cache)), mkdir(fileparts(cache)); end
+    save(cache, 'net');
+end
+
 function net = importOne(folder, required)
+    % The importer writes a +<model> package of generated layer code into the
+    % current folder, and the cached .mat needs that package on the path: both
+    % live next to the export (models/export, not committed), never in matlab/.
+    exportDir = fileparts(folder);
+    addpath(exportDir);
     cache = [folder '.mat'];
     if isfile(cache)
         s = load(cache, 'net'); net = s.net; return;
     end
     net = [];
     if isfolder(folder)
+        previous = cd(exportDir); restore = onCleanup(@() cd(previous));
         net = importNetworkFromTensorFlow(folder);
+        clear restore
     elseif isfile([folder '.onnx'])
         net = importNetworkFromONNX([folder '.onnx']);
     elseif required

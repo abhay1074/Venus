@@ -45,10 +45,21 @@ function s3 = explain(s0, s1, s2, models)
 end
 
 function heat = camFor(models, x, outputIndex, mask)
-    % gradCAM on a dlnetwork with a vector output: reduction picks one output.
-    map = gradCAM(models.grader, x, @(y) y(outputIndex), 'FeatureLayer', 'top_activation');
+    % Grad-CAM for ordinal head k. The grader's head is GAP -> Dense(sigmoid),
+    % so d y_k / d A_c is spatially constant and equals y_k (1 - y_k) w_kc / HW:
+    % Grad-CAM = ReLU(sum_c w_kc A_c) up to a positive scalar that the
+    % normalisation removes. Exactly what stage3_explain._cam_function
+    % computes with a gradient tape (verified: same maps on the samples).
+    if isfield(models, 'graderFeatures') && ~isempty(models.graderFeatures) && ~isempty(models.graderHead)
+        A = drscreen.predictNet(models.graderFeatures, x);            % 16 x 16 x 1536
+        w = models.graderHead.dense_kernel(:, outputIndex);           % 1536 x 1
+        map = max(sum(double(A) .* reshape(w, 1, 1, []), 3), 0);
+        map = map / max(max(map(:)), 1e-8);
+    else
+        map = gradCAM(models.grader, x, @(y) y(outputIndex), 'FeatureLayer', 'top_activation');
+    end
     heat = imresize(double(map), size(mask), 'bicubic');
-    heat = max(heat, 0); heat = heat / max(max(heat(:)), 1e-8);
+    heat = min(max(heat, 0), 1);
     heat(~mask) = 0;
 end
 

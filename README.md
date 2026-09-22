@@ -140,12 +140,12 @@ cloud.md            the work diary; CLAUDE.md the notes for whoever continues
 - **Neovascularization is a classifier probability** (P(grade ≥ 4)), never a segmentation.
 - **Mild DR is not a claim.** The referable decision (grade ≥ 2) is what the threshold, the CIs
   and the simulation describe; five-grade metrics are shown for contrast.
-- **The MATLAB port was written without MATLAB.** Every file parses and the pure logic passes its
-  cases under GNU Octave (`matlab/octave_smoke.m`): the calibration fingerprint verifies, the
-  district DES reproduces Python's sweep numbers within sampling error (doctor hours 2,947 vs
-  2,903; programme sensitivity 0.814 vs 0.814), the graders, fusion, review policy and tiers match
-  case by case. The toolbox-dependent parts (network import, Grad-CAM, Report Generator, SimEvents
-  block parameters, the `DoctorPoolDES` block) are verified on first run in MATLAB, as
-  `matlab/README.md` describes.
+- **The MATLAB port is verified against the Python reference in MATLAB R2026a.** 22 test cases
+  (`matlab/runTests.m`): the imported networks reproduce Python's outputs on identical inputs to
+  2e-6, the natively built U-Net to 1e-5, Grad-CAM to 2e-5, and every shipped sample gets the same
+  decisions end to end (accepted, referable, review flag, tier, grade; P(referable) within 0.05);
+  the SimEvents model simulates a full year in 16 s and misses 255 referable cases at the AI where
+  the MATLAB DES misses 254 and Python's cached sweep agrees within sampling error. The PDF report
+  comes from MATLAB Report Generator. GNU Octave still runs the pure-logic smoke in CI.
 
 Screening aid, not a diagnosis. Every image is read by an eye-care professional.

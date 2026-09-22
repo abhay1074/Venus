@@ -50,7 +50,9 @@ architecture document section by section; `docs/VALIDATION.md` is generated, nev
   thresholds deliberately, then re-run flag_rate → review_policy → write_docs.
 - Human-review rules live in `config/review_policy.json` (chosen on validation by
   `backend.eval.review_policy`); stage2/stage3/stage4 read it through `config.review_policy()`.
-- Tests: `python -m pytest backend/tests -q` (29; weight-dependent ones skip without weights).
+- Tests: `python -m pytest backend/tests -q` (38; weight-dependent ones skip without weights);
+  MATLAB `cd matlab; runTests` (22 incl. CrossCheckTest against `tests/reference/*`, regenerate those
+  with `backend.eval.matlab_reference` and the small .mat dumps if the models change).
 - Commit messages end with the Co-Authored-By line used in the history; push to
   github.com/abhay1074/Venus `main`.
 
