@@ -23,8 +23,11 @@ os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "3")
 
 ROOT = Path(__file__).resolve().parents[2]
 SAMPLES = ROOT / "samples"
-HAS_WEIGHTS = (ROOT / "backend/weights/eye_best.weights.h5").exists() and \
-    (ROOT / "backend/weights/eye_modality_gate.weights.h5").exists()
+# Ask config where the weights actually are (VENUS_WEIGHTS_DIR moves them), so
+# the skip tracks the served path and a weights-less run can be reproduced.
+from backend.venus.config import GATE_WEIGHTS, GRADER_WEIGHTS  # noqa: E402
+
+HAS_WEIGHTS = GRADER_WEIGHTS.exists() and GATE_WEIGHTS.exists()
 needs_weights = pytest.mark.skipif(not HAS_WEIGHTS, reason="trained weights not present")
 
 

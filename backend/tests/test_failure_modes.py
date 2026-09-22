@@ -26,7 +26,11 @@ os.environ.setdefault("VENUS_SWEEP_ON_START", "false")
 
 ROOT = Path(__file__).resolve().parents[2]
 SAMPLES = ROOT / "samples"
-HAS_WEIGHTS = (ROOT / "backend/weights/grader_v2.weights.h5").exists()
+# Ask config where the weights actually are (VENUS_WEIGHTS_DIR moves them), so
+# the skip tracks the served path and a weights-less run can be reproduced.
+from backend.venus.config import GATE_WEIGHTS, GRADER_WEIGHTS  # noqa: E402
+
+HAS_WEIGHTS = GRADER_WEIGHTS.exists() and GATE_WEIGHTS.exists()
 needs_weights = pytest.mark.skipif(not HAS_WEIGHTS, reason="trained weights not present")
 
 
@@ -97,23 +101,50 @@ class TestBadUploads:
 
 
 class TestMissingCheckpoints:
-    def test_missing_grader_reports_degraded_and_503(self, client, monkeypatch, fundus):
-        """A checkpoint that is absent or truncated: /health says degraded with
-        the reason, /screen answers 503 naming the fix, and neither returns a
-        stack trace."""
+    def test_health_reports_degraded_with_a_reason(self, client, monkeypatch):
+        """A checkpoint that is absent or truncated must show up in /health as
+        `degraded` with the loader's reason, not as a healthy service."""
         from backend.venus import stage2_grade
         monkeypatch.setattr(stage2_grade, "_model", None)
         monkeypatch.setattr(stage2_grade, "_load_error", "OSError: truncated file")
         monkeypatch.setattr(stage2_grade, "load_grader", lambda: None)
-
         health = client.get("/health").json()
         assert health["status"] == "degraded"
         assert health["grader"]["loaded"] is False
+        assert "truncated" in health["grader"]["error"]
 
+    @needs_weights
+    def test_truncated_grader_gives_503_naming_the_fix(self, client, monkeypatch, fundus):
+        """With the gate loaded, a broken grader is reached and must answer 503
+        pointing at the checksum tool — never a stack trace.
+
+        Needs weights because without them the modality gate refuses the image
+        first (see the next test); that is correct, but it tests a different path."""
+        from backend.venus import stage2_grade
+        monkeypatch.setattr(stage2_grade, "_model", None)
+        monkeypatch.setattr(stage2_grade, "_load_error", "OSError: truncated file")
+        monkeypatch.setattr(stage2_grade, "load_grader", lambda: None)
         r = upload(client, fundus)
         assert r.status_code == 503, r.text
         detail = r.json()["detail"]
         assert "checksums.py" in detail and "Traceback" not in detail
+
+    def test_without_any_checkpoint_the_gate_refuses_cleanly(self, client, monkeypatch, fundus):
+        """The no-weights case a fresh clone hits: the modality gate cannot
+        vouch for the image, so Stage 0 refuses it with an operator-facing
+        reason and tier P0. A 200 carrying `accepted: false` is the right
+        answer here — nothing diagnostic ran and nothing crashed."""
+        from backend.venus import stage0_gate
+        monkeypatch.setattr(stage0_gate, "_gate_model", None, raising=False)
+        monkeypatch.setattr(stage0_gate, "_gate_error", "missing modality gate weights", raising=False)
+        monkeypatch.setattr(stage0_gate, "load_gate", lambda: None)
+        r = upload(client, fundus)
+        assert r.status_code == 200, r.text
+        body = r.json()
+        assert body["accepted"] is False
+        assert body["stage5"]["tier"] == "P0"
+        assert "fundus" in body["stop_reason"] and "Traceback" not in r.text
+        assert body.get("stage2") is None, "nothing diagnostic may run once the gate has refused"
 
 
 class TestReportWriteFailure:
