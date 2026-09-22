@@ -85,7 +85,7 @@ GAP + sigmoid head, `ReLU(Σ_c w_kc A_c)` on the feature maps with the dense wei
 inputs: gate / quality / grader outputs within 2e-6, U-Net within 1e-5, Grad-CAM maps within
 2e-5, and end-to-end decisions on every shipped sample (accepted, referable, review flag, tier,
 CNN grade; P(referable) within 0.05 — the tolerance image primitives such as `imresize` and the
-bilateral filter leave). A full screen with the PDF report takes ~10 s on the CPU.
+bilateral filter leave). A full screen with the PDF report takes ~10 s on the CPU. The desktop app (`app/DRScreenApp.m`: Capture, Result, Review queue, District tabs) runs on the same functions — `docs/figures/matlab_app_result.png` and `matlab_app_district.png` are its exported screens.
 If `models/export/lesion_unet_1024` and a `config/lesion_thresholds_1024.json` exist, the 1024 px
 U-Net reads the classes that file lists from a fresh FOV normalisation of the uploaded image, exactly
 as the Python path does; the shipped configuration has no such file (the experiment is recorded in
