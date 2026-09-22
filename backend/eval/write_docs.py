@@ -120,6 +120,52 @@ def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_car
                   f"{grader_card['schedule']}, {grader_card['precision']}, XLA {grader_card['xla']}. Augmentation: {grader_card['augmentation']}. Loss: {grader_card['loss']}. "
                   f"Train n = {grader_card['train_n']:,}, val n = {grader_card['val_n']:,}; best validation referable-AUC {grader_card['best_val_referable_auc']} "
                   f"(epoch {max(h, key=lambda r: r['referable_auc'] or 0)['epoch']}); {grader_card['total_minutes']} min on an RTX 5060 laptop GPU.", ""]
+    ma = load(CONFIG_DIR / "experiments" / "ma_improvement.json")
+    if ma and lesion:
+        r = ma["results"]; d = ma["ma_delta_vs_served"]
+        names = {"plain_512": "the served 512 px network", "tta_512": "512 px + dihedral test-time augmentation",
+                 "plain_1024": "the 1024 px network (not shipped)", "tta_1024": "1024 px + test-time augmentation",
+                 "ensemble_at_512": "mean of 512 px and 1024 px maps, at 512"}
+        lines += ["## The weakest number: microaneurysm segmentation", "",
+                  f"MA pixel AUPR on the DDR test split is **{f3(lesion['test_aupr'].get('MA'))}** (Dice "
+                  f"{f3(lesion['test_dice'].get('MA'))}), far below HE {f3(lesion['test_aupr'].get('HE'))} and EX "
+                  f"{f3(lesion['test_aupr'].get('EX'))}. It is the weakest component in the build and it is worth being "
+                  "precise about why, what was tried, and why the served path did not change.", "",
+                  "**What was tried.** " + ma["question"] + " " + ma["split"] + ":", "",
+                  "| variant | MA AUPR | vs served |", "|---|---|---|"]
+        for key, label in names.items():
+            if key in r and r[key].get("MA") is not None:
+                lines.append(f"| {label} | {f3(r[key]['MA'])} | {d.get(key, 0):+.4f} |")
+        lines += ["",
+                  ma.get("baseline_note", ""), "",
+                  "**What that says.** Test-time augmentation, the cheapest option, gains nothing at all "
+                  f"({d.get('tta_512', 0):+.4f}): averaging dihedral views does not recover a lesion that is 1-3 px "
+                  "across at this resolution. Averaging the 512 px and 1024 px maps is actively worse "
+                  f"({d.get('ensemble_at_512', 0):+.4f}), because down-sampling the 1024 px map to the working frame "
+                  "flattens exactly the small isolated peaks that a microaneurysm is. Only genuine resolution helps, "
+                  f"and it helps clearly ({d.get('plain_1024', 0):+.4f}, or {d.get('tta_1024', 0):+.4f} with augmentation "
+                  "on top).", "",
+                  "**Why the served path still does not change.** Three reasons, in order of weight.", "",
+                  "1. *It does not change a decision.* The 1024 px network was not only measured on pixels: it was run "
+                  "through the served path on the validation sample (the section above). The rule grader did not move, "
+                  "the attention flag became less precise, the review policy caught fewer of the classifier's errors, "
+                  "and a screen cost +0.9 s. A better pixel score that makes the downstream product slightly worse is "
+                  "not an improvement.",
+                  "2. *MA-only findings sit below the decision this system is accepted for.* Microaneurysms alone are "
+                  "ICDR grade 1. The threshold, the confidence intervals, the review policy and the district "
+                  "simulation all describe the referable decision at ICDR >= 2, which is driven by hemorrhages and "
+                  "exudates - the two classes the U-Net reads best. The MA count appears in the rule-grader trace as "
+                  "evidence a clinician can check, not as the thing that sets the grade.",
+                  "3. *An improvement measured on valid cannot be advertised on test.* The DDR test split was scored "
+                  "once for the model version that is served. Re-scoring it to publish a better number for a variant "
+                  "chosen on valid is precisely the loop this protocol exists to prevent, so the number above stands "
+                  f"at {f3(lesion['test_aupr'].get('MA'))} and the 1024 px variant keeps its own once-scored "
+                  f"{f3((load(CONFIG_DIR / 'experiments' / 'lesion_unet_1024.json') or {}).get('test_aupr', {}).get('MA'))}.", "",
+                  "**Stated plainly.** MA segmentation at 512 px is near the resolution limit and this build does not "
+                  "solve it. Anyone reading the lesion overlay should read the MA layer as a weak hint and the HE/EX "
+                  "layers as evidence. The code to serve a higher-resolution network for one class is present and "
+                  "tested (`config/lesion_thresholds_1024.json` re-enables it); what is missing is a reason, and a "
+                  "demonstration that it makes some decision better.", ""]
     unet_exp = load(CONFIG_DIR / "experiments" / "lesion_unet_1024.json")
     if unet_exp and not unet_exp.get("decision", {}).get("shipped", True):
         d = unet_exp["decision"]; w = d["validation_with_1024_for_MA"]; o = d["validation_512_only"]

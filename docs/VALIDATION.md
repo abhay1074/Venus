@@ -75,6 +75,32 @@ Brackets are the 5th–95th percentile over the repeats. Discrimination transfer
 
 EfficientNet-B3 at 512 px, ordinal, 4 cumulative sigmoids; 15 epochs, batch 8, AdamW, cosine decay, mixed_float16, float32 head, XLA True. Augmentation: dihedral, zoom 0.9-1.0, brightness/contrast/saturation ±20%. Loss: weighted BCE on cumulative targets, threshold weights [1,2,1,1], pos_weight [2.28, 3.13, 6.0, 6.0]. Train n = 39,147, val n = 3,403; best validation referable-AUC 0.9636 (epoch 8); 137.7 min on an RTX 5060 laptop GPU.
 
+## The weakest number: microaneurysm segmentation
+
+MA pixel AUPR on the DDR test split is **0.079** (Dice 0.166), far below HE 0.449 and EX 0.477. It is the weakest component in the build and it is worth being precise about why, what was tried, and why the served path did not change.
+
+**What was tried.** Can microaneurysm pixel AUPR be improved cheaply, measured on the DDR valid split only? DDR valid (the DDR test split was not touched):
+
+| variant | MA AUPR | vs served |
+|---|---|---|
+| the served 512 px network | 0.156 | +0.0000 |
+| 512 px + dihedral test-time augmentation | 0.156 | -0.0002 |
+| the 1024 px network (not shipped) | 0.205 | +0.0490 |
+| 1024 px + test-time augmentation | 0.222 | +0.0657 |
+| mean of 512 px and 1024 px maps, at 512 | 0.119 | -0.0365 |
+
+All five variants were measured in float32 in one run, which is what the CPU serving path uses; the training-time evaluation recorded 0.1604 for the same weights because it ran in mixed float16 on the GPU. The comparison between rows is internally consistent, which is what the decision rests on.
+
+**What that says.** Test-time augmentation, the cheapest option, gains nothing at all (-0.0002): averaging dihedral views does not recover a lesion that is 1-3 px across at this resolution. Averaging the 512 px and 1024 px maps is actively worse (-0.0365), because down-sampling the 1024 px map to the working frame flattens exactly the small isolated peaks that a microaneurysm is. Only genuine resolution helps, and it helps clearly (+0.0490, or +0.0657 with augmentation on top).
+
+**Why the served path still does not change.** Three reasons, in order of weight.
+
+1. *It does not change a decision.* The 1024 px network was not only measured on pixels: it was run through the served path on the validation sample (the section above). The rule grader did not move, the attention flag became less precise, the review policy caught fewer of the classifier's errors, and a screen cost +0.9 s. A better pixel score that makes the downstream product slightly worse is not an improvement.
+2. *MA-only findings sit below the decision this system is accepted for.* Microaneurysms alone are ICDR grade 1. The threshold, the confidence intervals, the review policy and the district simulation all describe the referable decision at ICDR >= 2, which is driven by hemorrhages and exudates - the two classes the U-Net reads best. The MA count appears in the rule-grader trace as evidence a clinician can check, not as the thing that sets the grade.
+3. *An improvement measured on valid cannot be advertised on test.* The DDR test split was scored once for the model version that is served. Re-scoring it to publish a better number for a variant chosen on valid is precisely the loop this protocol exists to prevent, so the number above stands at 0.079 and the 1024 px variant keeps its own once-scored 0.099.
+
+**Stated plainly.** MA segmentation at 512 px is near the resolution limit and this build does not solve it. Anyone reading the lesion overlay should read the MA layer as a weak hint and the HE/EX layers as evidence. The code to serve a higher-resolution network for one class is present and tested (`config/lesion_thresholds_1024.json` re-enables it); what is missing is a reason, and a demonstration that it makes some decision better.
+
 ## Things tried and not shipped: a 1024 px lesion network for microaneurysms
 
 U-Net, 4 levels, 32 base filters, 1024x1024 frames, trained on 512 px lesion-biased crops (4 per image per epoch), 4 sigmoid channels (160 epochs, 88.3 min), DDR test scored once: MA AUPR 0.099, HE AUPR 0.417, EX AUPR 0.475, SE AUPR 0.203 (the served 512 px network: see the table below). Served for MA only on the same 497 raw validation images:

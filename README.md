@@ -43,7 +43,7 @@ is generated from the same files with the CIs, the protocol and the caveats.
 | Messidor-2 (adjudicated labels, third source), scored once at the same threshold | AUC **0.963**, sens **0.980**, spec 0.645 (its own ROC: 0.90 sens at 0.90 spec) | 1,744 images, 874 patients |
 | Held-out EyePACS patients (within-source) | AUC 0.954, sens 0.937, spec 0.754 | 2,758 images |
 | **What a site calibration set buys** (Messidor-2, patient-disjoint halves, 20 repeats) | locked point: sens 0.981 / spec 0.644 / ECE 0.079 → re-fitted on **400 labelled site images: sens 0.89 [0.84, 0.93] / spec 0.90 [0.86, 0.95] / ECE 0.023** | `backend/eval/site_calibration.py`; served point unchanged |
-| Lesion U-Net, pixel AUPR / Dice (DDR test, 225 images, once) | HE 0.45 / 0.47 · EX 0.48 / 0.49 · SE 0.26 / 0.31 · MA 0.08 / 0.17 | thresholds chosen on DDR valid; a 1024 px network lifts MA to 0.10 / 0.23 but changes nothing downstream at +0.9 s per image — measured, not shipped |
+| Lesion U-Net, pixel AUPR / Dice (DDR test, 225 images, once) | HE 0.45 / 0.47 · EX 0.48 / 0.49 · SE 0.26 / 0.31 · MA 0.08 / 0.17 | thresholds chosen on DDR valid. MA is the weakest number in the build; four ways to improve it were measured on DDR valid and none changes a decision — `docs/VALIDATION.md`, *The weakest number* |
 | Quality CNN, ungradable-detection AUC | **0.992** (held-out patients); 99.9 % of DDR's ungradable class caught | EyeQ labels |
 | Attention agreement, referable calls (median) | **0.54** when the CNN is right vs **0.27** when it is wrong | 487 validation images |
 | Human-review flag rate (validation-chosen policy) · retake rate | 25.2 % · 0.2 % | 497 raw validation images through the served path; 28.8 % of flagged calls are CNN errors vs 13.4 % of unflagged |
@@ -136,6 +136,7 @@ cloud.md            the work diary; CLAUDE.md the notes for whoever continues
   site-specific calibration set is a prerequisite for deployment, and this is the measurement
   behind that statement — and `backend/eval/site_calibration.py` measures what the prerequisite
   costs: re-fitting on ~400 labelled images from the site restores 0.89 / 0.90 with ECE 0.02.
+  `python scripts/site-calibration-demo.py` shows that before-and-after live in two seconds.
   Performance on Indian portable-camera images is unmeasured until such a set exists.
 - **Neovascularization is a classifier probability** (P(grade ≥ 4)), never a segmentation.
 - **Mild DR is not a claim.** The referable decision (grade ≥ 2) is what the threshold, the CIs

@@ -1,0 +1,47 @@
+{
+  "written_at": "2026-09-22T13:17:03.022095+00:00",
+  "question": "Can microaneurysm pixel AUPR be improved cheaply, measured on the DDR valid split only?",
+  "split": "DDR valid (the DDR test split was not touched)",
+  "metric": "pixel AUPR over every pixel of the split, per lesion class",
+  "results": {
+    "plain_512": {
+      "MA": 0.1558,
+      "HE": 0.534,
+      "EX": 0.4828,
+      "SE": 0.6269
+    },
+    "tta_512": {
+      "MA": 0.1556,
+      "HE": 0.5565,
+      "EX": 0.4859,
+      "SE": 0.6501
+    },
+    "plain_1024": {
+      "MA": 0.2048,
+      "HE": 0.5684,
+      "EX": 0.5358,
+      "SE": 0.4782
+    },
+    "tta_1024": {
+      "MA": 0.2215,
+      "HE": 0.587,
+      "EX": 0.5432,
+      "SE": 0.5094
+    },
+    "ensemble_at_512": {
+      "MA": 0.1193,
+      "HE": 0.4596,
+      "EX": 0.4361,
+      "SE": 0.5174
+    }
+  },
+  "ma_delta_vs_served": {
+    "plain_512": 0.0,
+    "tta_512": -0.0002,
+    "plain_1024": 0.049,
+    "tta_1024": 0.0657,
+    "ensemble_at_512": -0.0365
+  },
+  "note": "Any change adopted from this table would still carry the test number recorded for the model version that was scored once; the DDR test split is not re-scored to advertise an improvement.",
+  "baseline_note": "All five variants were measured in float32 in one run, which is what the CPU serving path uses; the training-time evaluation recorded 0.1604 for the same weights because it ran in mixed float16 on the GPU. The comparison between rows is internally consistent, which is what the decision rests on."
+}

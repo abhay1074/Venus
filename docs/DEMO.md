@@ -103,6 +103,44 @@ within-source held-out set (AUC 0.954), the five-grade metrics for contrast, and
 things that were **measured and not shipped** (a second seed / TTA: +0.003 AUC; a 1024 px
 lesion network: better microaneurysm pixels, nothing better downstream, +0.9 s).
 
+### 4b. "Will it work on our cameras?" — the answer, run live (90 s)
+
+The specificity gap on Messidor-2 is the sharpest question in the deck, so answer it with a
+computation rather than a paragraph. In a terminal beside the browser:
+
+```powershell
+python scripts\site-calibration-demo.py
+```
+
+It prints in about two seconds:
+
+```
+                                              sensitivity  specificity     ECE
+BEFORE  locked EyePACS threshold                    0.982        0.642   0.080
+AFTER   re-fitted on 400 site images                0.898        0.895   0.023
+        re-fitted on the full half                  0.893        0.898   0.022
+
+Discrimination never moved: AUC 0.963 before, 0.963 after
+Unnecessary referrals avoided, per 1,000 screened: 207
+```
+
+Say, while it runs:
+
+> "A threshold chosen in one country does not transfer to another. On Messidor-2 ours
+> over-refers — 64 % specificity against 89 % on the primary test — and hiding that would be
+> the easy thing to do. Instead we measured what fixing it costs. **Four hundred labelled
+> images from the site**, one afternoon for a reader, and the operating point comes back to
+> 0.90 / 0.90. The AUC never moved: the model ranked these eyes correctly all along, it was
+> the threshold that was in the wrong place. That is 207 unnecessary referrals avoided per
+> thousand people screened."
+
+What is precomputed: the grader's raw score for each of the 1,744 Messidor-2 images — minutes
+of CPU, the one-time cost a real site pays. What is live: the patient-disjoint split, the
+Platt fit, the threshold, and both evaluations, twenty times over. The site fit is scored only
+on patients it was not fitted on, and neither the locked operating point nor any frozen test
+set is touched. `scripts\site-calibrate.sh` is the same procedure on a real site's folder of
+images; `site_mock-messidor` in the repo is a worked example of its output.
+
 ## 5. The district (2 min) — District
 
 **Run one year, AI vs no-AI** at 3 ophthalmologists (~1 s for 2 × 100,000 patients; the slide figures in `docs/figures/` are drawn from the same JSON by `backend.eval.figures`), then the
