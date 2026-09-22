@@ -17,11 +17,14 @@ sentence the PHC operator sees. Nothing diagnostic ran; tier P0, retake on the s
 
 ## 2. The result (2 min) — Screen
 
-Click **Proliferative DR (NEI)** → Screen (~4 s).
+Click **Proliferative DR (NEI)** → Screen (~1.5 s on the laptop CPU).
 
 Point at, in order:
-1. **Referable DR · P = 1.00**, ICDR grade 4, **P(NV) = 1.00** — proliferative evidence as a
-   classifier probability, stated as "not localised".
+1. **Referable DR — human review · P = 1.00**, ICDR grade 4, **P(NV) = 1.00** — proliferative
+   evidence as a classifier probability, stated as "not localised". It is flagged for review
+   because the attention agreement is 0.11 (below the 0.20 floor chosen on validation): the
+   heatmap sits on the neovascular fronds, which are not a segmented lesion class — exactly
+   the case a reviewer should see, and the flag says why.
 2. **CNN grade 4, rule grade 4** — two independent graders that agree. Open the rule trace:
    the U-Net found 13 microaneurysms, 7 hemorrhages, 3 exudates; the ICDR line that fired is
    printed. A clinician can check it against the textbook.
@@ -33,7 +36,8 @@ Point at, in order:
 Click **NPDR, washed-out (NEI)**: CNN grade 3, P = 0.94; the U-Net counts 24 MA and 11 HE;
 attention agreement 0.51 (lift 2.1) — the network looked at the lesions, and that is a
 number. Click **DR with macular exudates**: 12 exudates found, grades agree, attention lift 4.4.
-Click **Normal right eye**: not referable, P = 0.00, no lesions, P4 routine.
+Click **Normal right eye**: not referable, P = 0.00, one microaneurysm candidate below the
+rule grader's evidence floor (grade 0), P4 routine.
 
 > "Explainability that changes a decision, not one that decorates it: when the graders or the
 > heatmap disagree, a person sees the case, with the evidence attached."
