@@ -209,6 +209,33 @@ def validation_md(op, timing, sweep, manifests, lesion, quality_card, grader_car
                       f"Its DDR-valid AUPR per class: " + ", ".join(f"{k} {f3(va.get(k))}" for k in ("MA", "HE", "EX", "SE")) + f"; its test numbers for the classes it does not serve: "
                       + ", ".join(f"{k} {f3(hires['test_aupr'].get(k))}" for k in ("MA", "HE", "EX", "SE") if k not in serves)
                       + f". Minimum component area for MA at {hires['frame_size']} px: {hires['min_area_px']['MA']} px ({hires['min_area_px']['note']}).", ""]
+    lm = load(CONFIG_DIR / "experiments" / "landmark_check.json")
+    if lm:
+        h = lm["held_out_half"]
+        names = {"old": "brightest blob on the enhanced frame (served before this check)",
+                 "original": "un-enhanced frame, grey/white pixels excluded",
+                 "flatfield": "the same, flat-fielded at sigma = FOV/4 (**served**)"}
+        names.update({k: f"flat-field + {k.split('_w')[1]} x vessel density" for k in h if k.startswith("combined_w")})
+        lines += ["## Landmarks: optic disc and fovea, against clinician marks", "",
+                  "The optic disc anchors Stage 1: the fovea is placed 2-3 disc diameters from it, the ETDRS hemorrhage "
+                  "quadrants of the 4-2-1 rule are drawn around that fovea, and exudates on the disc rim are discarded. "
+                  f"{lm['question']} Ground truth: {lm['ground_truth']}. {lm['n_images']:,} annotated images, split "
+                  f"{lm['split']}; numbers below are the held-out half (n = {lm['n_held_out']}).", "",
+                  "| optic-disc detector | fovea within 0.5 DD | within 1 DD | median error | disc at a plausible 1.5-3.5 DD from the fovea |",
+                  "|---|---|---|---|---|"]
+        for key, label in names.items():
+            if key in h:
+                m = h[key]
+                lines.append(f"| {label} | {pct(m['fovea_within_0.5dd'])} | {pct(m['fovea_within_1dd'])} | "
+                             f"{m['fovea_median_err_dd']:.2f} DD | {pct(m['disc_plausible_1.5_to_3.5dd'])} |")
+        lines += ["", "DD = the annotated optic-disc diameter of that image. The old detector searched the enhanced frame, "
+                  "whose illumination correction (sigma ~ 17 px) is smaller than a disc (~70 px), so the disc stopped being "
+                  "the brightest region; it also accepted a white image label as a disc. Adding vessel density to the "
+                  "score was tried and makes things worse as its weight grows: the Frangi map responds to choroidal "
+                  "texture and glare edges as well as to the vessel trunks. The flat-field detector was chosen on the "
+                  "design half and the held-out half confirms it. Known hard case: neovascularization at the disc hides "
+                  "its brightness, and a bright fibrous patch elsewhere can win (the shipped PDR sample is one). "
+                  f"{lm['note']}", ""]
     if quality_card:
         q = quality_card["test_heldout_patients"]; d = quality_card.get("ddr_ungradable_external_check")
         lines += ["## Image quality classifier", "", f"{quality_card['architecture']}, {quality_card['labels']}: held-out-patient accuracy {pct(q['accuracy'])}, "

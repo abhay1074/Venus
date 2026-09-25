@@ -22,7 +22,7 @@ function s1 = segment(image, mask, models, original, raw)
     if nargin < 4 || isempty(original), original = image; end
     if nargin < 5, raw = []; end
     fovArea = max(nnz(mask), 1);
-    od = opticDisc(image, mask);
+    od = opticDisc(original, mask);                  % un-enhanced frame (see opticDisc)
     fov = fovea(image, mask, od);
     ves = vessels(image, mask);
     if isfield(models, 'unet') && ~isempty(models.unet)
@@ -57,10 +57,26 @@ end
 
 % ---------------------------------------------------------------- optic disc
 function od = opticDisc(image, mask)
-    lum = 0.5 * double(image(:, :, 2)) + 0.5 * double(image(:, :, 1));
+%OPTICDISC  Brightest chromatic blob after flat-fielding (stage1_segment.optic_disc).
+%   `image` is the UN-enhanced frame: enhancement divides out illumination at
+%   ~17 px, smaller than a disc. Flat-field at sigma = FOV/4 removes vignetting
+%   instead, and grey/white pixels (image labels, text, glare) are excluded.
+%   Measured against clinician fovea marks on 1,008 MESSIDOR images:
+%   backend/config/experiments/landmark_check.json.
+    rgb = double(image);
+    top = max(rgb, [], 3); bottom = min(rgb, [], 3);
+    achromatic = (top - bottom) ./ max(top, 1) < 0.12 & top > 60 & mask;
+    achromatic = imdilate(achromatic, strel('disk', 6));
+    lum = 0.5 * rgb(:, :, 2) + 0.5 * rgb(:, :, 1);
+    lum(achromatic) = 0;
+    inside = double(mask);
+    fovD = 2 * sqrt(max(nnz(mask), 1) / pi);
+    illumination = imgaussfilt(lum .* inside, fovD / 4) ./ max(imgaussfilt(inside, fovD / 4), 1e-3);
+    lum = lum ./ max(illumination, 8);
     smooth = imgaussfilt(lum, 12);
     inner = imerode(mask, strel('disk', 10));
     smooth(~inner) = -1;
+    smooth(achromatic) = -1;
     [~, idx] = max(smooth(:));
     [cy, cx] = ind2sub(size(smooth), idx);
     fovDiameter = 2 * sqrt(nnz(mask) / pi);
@@ -69,6 +85,7 @@ function od = opticDisc(image, mask)
     [yy, xx] = ndgrid(1:size(mask, 1), 1:size(mask, 2));
     local = hypot(xx - cx, yy - cy) <= 2.2 * radius;
     gray = double(rgb2gray(image));
+    gray(achromatic) = 0;
     thresh = prctile(gray(local & mask), 90);
     bright = imclose((gray >= thresh) & local, strel('disk', 4));
     cc = bwconncomp(bright);

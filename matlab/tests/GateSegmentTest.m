@@ -48,5 +48,20 @@ classdef GateSegmentTest < matlab.unittest.TestCase
             t.verifyGreaterThanOrEqual(s1.vessels.fraction, 0.02); t.verifyLessThanOrEqual(s1.vessels.fraction, 0.15);
             t.verifyEqual(s1.lesions.HE.count, 0); t.verifyLessThanOrEqual(s1.lesions.MA.count, 2);
         end
+
+        function opticDiscIsNotAnImageLabel(t)
+            % Same regression cases as backend/tests/test_stages.py: the disc
+            % once landed on the white "A" printed in dr_exudates.png, and on a
+            % random patch of a dark capture after enhancement flattened it.
+            cases = {'dr_exudates.png', [139 222]; 'usable_dark_vignetted.jpg', [420 253]; ...
+                     'npdr_hemorrhages_nei.jpg', [40 216]; 'normal_right_eye.jpg', [424 253]};
+            for i = 1:size(cases, 1)
+                raw = imread(fullfile(drscreen.repoRoot(), 'samples', cases{i, 1}));
+                [image, mask] = drscreen.normaliseFov(raw, 512);
+                s1 = drscreen.segment(image, mask, struct(), image);
+                d = norm(double(s1.opticDisc.centre) - cases{i, 2});
+                t.verifyLessThan(d, 1.5 * s1.opticDisc.radius, sprintf('%s: disc at %s', cases{i, 1}, mat2str(s1.opticDisc.centre)));
+            end
+        end
     end
 end

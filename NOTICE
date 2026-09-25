@@ -68,6 +68,15 @@ EyeQ (Fu et al. 2019) — image-quality labels over EyePACS images, used to trai
 the quality classifier. Research use; inherits the EyePACS terms above.
     https://github.com/HzFu/EyeQ
 
+MESSIDOR fovea-centre annotations (University of Huelva; Gegundez-Arias,
+Marin, Bravo, Suero, "Locating the fovea center position in digital fundus
+images using thresholding and feature extraction techniques", Computerized
+Medical Imaging and Graphics 37(5-6):386-393, 2013) — used only to measure the
+optic-disc and fovea localisation (backend/eval/landmark_check.py). The
+annotations are not redistributed: the committed result holds our per-image
+errors, not their coordinates.
+    https://www.uhu.es/retinopathy/
+
 Not used by this project, despite appearing in the DR literature: IDRiD and
 DRIVE. No code path reads them.
 

@@ -74,7 +74,7 @@ Two paths, and every result says which one produced the evidence (`stage1.method
 
 | structure | method |
 |---|---|
-| optic disc | brightest smoothed blob (search up to 10 px from the rim, so a disc at the edge of a clipped field is found) refined by a local bright-region fit |
+| optic disc | brightest smoothed blob on the **un-enhanced** frame after flat-fielding at sigma = FOV/4, with grey/white pixels (image labels, text, glare) excluded; search up to 10 px from the rim, so a disc at the edge of a clipped field is found; refined by a local bright-region fit. Measured against clinician fovea marks on 1,008 MESSIDOR images: fovea within one disc diameter on 99.8 % of the held-out half, against 83.7 % for the earlier enhanced-frame detector (docs/VALIDATION.md, *Landmarks*) |
 | fovea | darkest smoothed spot in a 1.8–3.2 DD horizontal annulus, rim excluded, with a centre prior |
 | vessels | Frangi vesselness, σ 1–4.5, 88th-percentile threshold, specks removed |
 | MA / HE | black-hat of CLAHE green, **median + 8·MAD** threshold, dilated vessels and disc excluded, split by area (< 40 px = MA) and moment-based elongation; HE additionally rejected when > 35 % on the vessel map |

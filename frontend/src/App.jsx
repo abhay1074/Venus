@@ -109,7 +109,9 @@ export default function App() {
       </main>
 
       <footer className="mx-auto max-w-7xl px-4 py-6 text-xs text-slate-500 sm:px-6">
-        Screening aid, not a diagnosis. Every image is read by an eye-care professional. Model {health.model_version || "—"}
+        {/* Same sentence as the PDF footer and docs/MODEL_CARD.md. */}
+        <span className="font-medium text-slate-600">Venus AI is a triage aid for referable diabetic retinopathy. A clinician reviews every case. It is not a diagnosis and it is not a cleared medical device.</span>
+        <br />Model {health.model_version || "—"}
         {health.operating_point?.fingerprint ? ` · calibration ${health.operating_point.fingerprint.slice(0, 12)}…` : ""}
         {health.lesion_unet?.loaded ? ` · lesions: U-Net 512 px${health.lesion_unet.hires?.loaded ? ` + ${health.lesion_unet.hires.serves.join("/")} at ${health.lesion_unet.hires.frame_size} px` : ""}` : health.online ? " · lesions: classical detectors" : ""}
         {health.quality_cnn?.loaded ? " · quality CNN on" : ""}

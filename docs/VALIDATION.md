@@ -137,6 +137,21 @@ AUC of the referable decision. Averaging two seeds adds about the same as test-t
 | EX | 512 px network | 0.477 | 0.486 | 0.92 |
 | SE | 512 px network | 0.262 | 0.308 | 0.47 |
 
+## Landmarks: optic disc and fovea, against clinician marks
+
+The optic disc anchors Stage 1: the fovea is placed 2-3 disc diameters from it, the ETDRS hemorrhage quadrants of the 4-2-1 rule are drawn around that fovea, and exudates on the disc rim are discarded. Which optic-disc detector places the disc - and so the fovea - where a clinician marked the fovea? Ground truth: University of Huelva MESSIDOR annotations: clinician-marked fovea centre and standard optic-disc diameter (Gegundez-Arias et al.), https://www.uhu.es/retinopathy/. 1,008 annotated images, split md5(file stem) mod 2; the vessel weight w is chosen on the design half only; numbers below are the held-out half (n = 502).
+
+| optic-disc detector | fovea within 0.5 DD | within 1 DD | median error | disc at a plausible 1.5-3.5 DD from the fovea |
+|---|---|---|---|---|
+| brightest blob on the enhanced frame (served before this check) | 78.9% | 83.7% | 0.05 DD | 90.8% |
+| un-enhanced frame, grey/white pixels excluded | 98.2% | 99.6% | 0.04 DD | 99.6% |
+| the same, flat-fielded at sigma = FOV/4 (**served**) | 98.4% | 99.8% | 0.04 DD | 99.6% |
+| flat-field + 0.5 x vessel density | 97.4% | 99.4% | 0.04 DD | 100.0% |
+| flat-field + 1.0 x vessel density | 93.8% | 96.6% | 0.04 DD | 99.8% |
+| flat-field + 2.0 x vessel density | 81.7% | 88.4% | 0.05 DD | 99.8% |
+
+DD = the annotated optic-disc diameter of that image. The old detector searched the enhanced frame, whose illumination correction (sigma ~ 17 px) is smaller than a disc (~70 px), so the disc stopped being the brightest region; it also accepted a white image label as a disc. Adding vessel density to the score was tried and makes things worse as its weight grows: the Frangi map responds to choroidal texture and glare edges as well as to the vessel trunks. The flat-field detector was chosen on the design half and the held-out half confirms it. Known hard case: neovascularization at the disc hides its brightness, and a bright fibrous patch elsewhere can win (the shipped PDR sample is one). Messidor-2 is a frozen external test set for the grader; no grading metric is recomputed here and the landmark stage enters none of the recorded external-test numbers.
+
 ## Image quality classifier
 
 EfficientNet-B0 at 256, 3-class softmax, EyeQ train labels on EyePACS images, split by patient 70/10/20: held-out-patient accuracy 92.8%, ungradable-detection AUC **0.992** (target > 0.95), good-vs-rest AUC 0.994. Out-of-source check on DDR's ungradable class (n = 1142): 99.9% labelled reject, 100.0% not labelled good.
@@ -145,14 +160,14 @@ EfficientNet-B0 at 256, 3-class softmax, EyeQ train labels on EyePACS images, sp
 
 498 grade-stratified validation images through the served path (lesions by unet), 497 gradable (retake rate 0.2%; quality labels {'usable': 476, 'good': 21, 'reject': 1}).
 
-- **Human-review flag rate 23.9%** under the architecture's default rules (±0.05 probability band, attention < 0.15 with lift < 1.5) — reasons: disagreement 80, abstain 29, attention 23, no_lesion 12. CNN referable-error rate among flagged images 26.9% vs 14.3% among unflagged (referable accuracy overall 82.7%).
-- **Attention agreement** on referable CNN calls: correct calls median 0.56 (IQR 0.37–0.71, n = 249) vs incorrect calls median 0.293 (IQR 0.181–0.4695, n = 74). Where the network's attention sits on the detected lesions, it is more often right: the score is a review signal, not a decoration.
-- **Review policy chosen on the same sample** (`config/review_policy.json`, served): abstain band ±0.35 in logit space around the locked threshold, attention floor 0.2 (the highest cut at which ≥ 60 % of the flagged referable calls are CNN errors). Resulting **flag rate 25.1%** (reasons: disagreement 80, no_lesion 12, abstain 29, attention 30); CNN error rate 28.8% among flagged vs 13.4% unflagged; 41.9% of the CNN's referable errors land in the review queue. This is the rate the district simulation uses.
-- **Rule grader alone** (ICDR table on the lesion counts): referable sensitivity 92.2%, specificity 50.0%; exact grade 47.9%, within one grade 84.5%; agrees with the CNN within one grade on 83.9% of images. It is a consistency check that a clinician can verify by hand, not a second classifier.
+- **Human-review flag rate 24.9%** under the architecture's default rules (±0.05 probability band, attention < 0.15 with lift < 1.5) — reasons: disagreement 81, abstain 29, attention 29, no_lesion 11. CNN referable-error rate among flagged images 29.0% vs 13.4% among unflagged (referable accuracy overall 82.7%).
+- **Attention agreement** on referable CNN calls: correct calls median 0.561 (IQR 0.372–0.708, n = 249) vs incorrect calls median 0.294 (IQR 0.1835–0.443, n = 75). Where the network's attention sits on the detected lesions, it is more often right: the score is a review signal, not a decoration.
+- **Review policy chosen on the same sample** (`config/review_policy.json`, served): abstain band ±0.35 in logit space around the locked threshold, attention floor 0.2 (the highest cut at which ≥ 60 % of the flagged referable calls are CNN errors). Resulting **flag rate 24.9%** (reasons: disagreement 81, no_lesion 11, abstain 29, attention 29); CNN error rate 29.0% among flagged vs 13.4% unflagged; 41.9% of the CNN's referable errors land in the review queue. This is the rate the district simulation uses.
+- **Rule grader alone** (ICDR table on the lesion counts): referable sensitivity 92.6%, specificity 49.6%; exact grade 48.1%, within one grade 84.5%; agrees with the CNN within one grade on 83.7% of images. It is a consistency check that a clinician can verify by hand, not a second classifier.
 
 ## Timing (requirement: < 30 s per image)
 
-50 images, TTA off, AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD (16 threads, no GPU): **median 1.5 s, p95 1.7 s**, max 2.8 s → requirement met at p95. Per stage (median): S0 176 ms, S1 634 ms, S2 150 ms, S3 261 ms (Grad-CAM 103 ms), report 290 ms.
+50 images, TTA off, AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD (16 threads, no GPU): **median 1.6 s, p95 1.7 s**, max 3.3 s → requirement met at p95. Per stage (median): S0 169 ms, S1 777 ms, S2 149 ms, S3 259 ms (Grad-CAM 99 ms), report 261 ms.
 
 On the RTX 5060 (WSL): median 3.4 s, p95 4.1 s — inference is not the cost on either machine; Stage 1 landmarks and the overlay encoding are. (Measured before the PNG-encoding change that took the CPU median from 4.2 s to 1.7 s.)
 

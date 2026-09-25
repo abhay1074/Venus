@@ -79,16 +79,57 @@ MA_MAX_AREA = 40
 
 # ------------------------------------------------------------ optic disc --
 
-def optic_disc(image: np.ndarray, mask: np.ndarray) -> dict:
-    """Brightest smooth blob in the luminance, away from the FOV rim."""
+# Retina, including the palest optic disc, is chromatic; printed labels, text
+# and specular glare are not. Measured chroma, (max-min)/max over a 20 px patch:
+# discs 0.30-0.63 on the shipped samples, a white image label 0.00.
+ACHROMATIC_CHROMA = 0.12
+
+
+def optic_disc(image: np.ndarray, mask: np.ndarray, original: np.ndarray | None = None) -> dict:
+    """Brightest smooth chromatic blob after flat-fielding, away from the FOV rim.
+
+    Three corrections to a brightest-blob detector, each measured
+    (config/experiments/landmark_check.json, clinician-marked fovea centres on
+    1,008 MESSIDOR images, design / held-out halves):
+
+    - Located on `original`, the un-enhanced frame. Stage 0's enhancement
+      divides out illumination at sigma = width/30 (~17 px), smaller than a
+      disc (~70 px across), so on enhanced frames - 96 % of real images - the
+      disc was no longer the brightest region.
+    - Flat-fielded at sigma = FOV/4 instead: that removes vignetting and uneven
+      exposure, which is much larger than a disc, while the disc stays a
+      local peak.
+    - Achromatic pixels excluded: image labels, text and glare are grey or
+      white, and a white "A" in a corner is brighter than any disc.
+
+    Held out: fovea within one disc diameter of the clinician's mark on 99.8 %
+    of images, against 83.7 % for the previous detector. Known hard case:
+    neovascularization at the disc hides its brightness, and a bright fibrous
+    patch elsewhere can win.
+    """
+    src = image if original is None else original
     h, w = mask.shape
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY).astype(np.float32)
+    gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY).astype(np.float32)
+    channels = src.astype(np.float32)
+    top, bottom = channels.max(axis=2), channels.min(axis=2)
+    achromatic = ((top - bottom) / np.maximum(top, 1.0) < ACHROMATIC_CHROMA) & (top > 60) & (mask > 0)
+    achromatic = cv2.dilate(achromatic.astype(np.uint8) * 255, disk(6)) > 0
     # The disc is bright in all channels; the red channel saturates on it so
     # the mean of green and red works better than either alone.
-    lum = 0.5 * image[:, :, 1].astype(np.float32) + 0.5 * image[:, :, 2].astype(np.float32)
+    lum = 0.5 * channels[:, :, 1] + 0.5 * channels[:, :, 2]
+    lum[achromatic] = 0.0                 # no bleed of a label's brightness into its neighbours
+    # Flat-field by normalised convolution inside the FOV (the black surround
+    # must not drag the illumination estimate down along the rim).
+    inside = (mask > 0).astype(np.float32)
+    fov_d = 2 * np.sqrt(max(inside.sum(), 1.0) / np.pi)
+    illumination = (cv2.GaussianBlur(lum * inside, (0, 0), fov_d / 4)
+                    / np.maximum(cv2.GaussianBlur(inside, (0, 0), fov_d / 4), 1e-3))
+    lum = lum / np.maximum(illumination, 8.0)
     smooth = cv2.GaussianBlur(lum, (0, 0), 12)
     inner = cv2.erode(mask, disk(10))
     smooth[inner == 0] = -1
+    smooth[achromatic] = -1
+    gray[achromatic] = 0.0
     cy, cx = np.unravel_index(int(np.argmax(smooth)), smooth.shape)
     # Radius: a disc spans roughly a sixth to a seventh of the FOV diameter.
     fov_diameter = 2 * np.sqrt(cv2.countNonZero(mask) / np.pi)
@@ -516,7 +557,7 @@ def run(image: np.ndarray, mask: np.ndarray, original: np.ndarray | None = None,
     started = time.perf_counter()
     original = image if original is None else original
     fov_area = max(cv2.countNonZero(mask), 1)
-    od = optic_disc(image, mask)
+    od = optic_disc(image, mask, original=original)
     fov = fovea(image, mask, od)
     ves = vessels(image, mask)
     if load_unet() is not None:

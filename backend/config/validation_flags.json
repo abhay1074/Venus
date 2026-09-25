@@ -1,7 +1,7 @@
 {
  "model_version": "venus-dr-2.0.0",
  "grader": "grader_v2",
- "written_at": "2026-09-21T09:45:57.157760+00:00",
+ "written_at": "2026-09-25T10:53:41.884842+00:00",
  "manifest": "val",
  "n_sampled": 498,
  "n_gradable": 497,
@@ -13,44 +13,44 @@
  },
  "lesion_method": "unet",
  "image_source": "raw dataset files",
- "flag_rate": 0.2394,
+ "flag_rate": 0.2495,
  "flag_reasons": {
-  "disagreement": 80,
+  "disagreement": 81,
   "abstain": 29,
-  "attention": 23,
-  "no_lesion": 12
+  "attention": 29,
+  "no_lesion": 11
  },
- "flag_precision_for_cnn_errors": 0.2689,
+ "flag_precision_for_cnn_errors": 0.2903,
  "cnn_error_rate_flagged_vs_unflagged": {
-  "flagged": 0.2689,
-  "unflagged": 0.1429
+  "flagged": 0.2903,
+  "unflagged": 0.134
  },
  "referable_accuracy_cnn": 0.827,
  "attention_agreement": {
   "note": "referable CNN calls only, where the heatmap is meaningful",
   "correct": {
    "n": 249,
-   "mean": 0.5371,
-   "median": 0.56,
-   "p25": 0.37,
-   "p75": 0.71
+   "mean": 0.5384,
+   "median": 0.561,
+   "p25": 0.372,
+   "p75": 0.708
   },
   "incorrect": {
-   "n": 74,
-   "mean": 0.3278,
-   "median": 0.293,
-   "p25": 0.181,
-   "p75": 0.4695
+   "n": 75,
+   "mean": 0.327,
+   "median": 0.294,
+   "p25": 0.1835,
+   "p75": 0.443
   }
  },
  "rule_grader_alone": {
-  "referable_sensitivity": 0.9222,
-  "referable_specificity": 0.5,
-  "exact_grade_agreement_with_truth": 0.4789,
+  "referable_sensitivity": 0.9261,
+  "referable_specificity": 0.4958,
+  "exact_grade_agreement_with_truth": 0.4809,
   "within_one_of_truth": 0.8451,
-  "agreement_with_cnn_within_one": 0.839
+  "agreement_with_cnn_within_one": 0.837
  },
- "seconds_per_image": 1.099,
+ "seconds_per_image": 1.254,
  "rows": [
   {
    "image_id": "eyepacs/2243_right",
@@ -112,7 +112,7 @@
     "MA": 17,
     "HE": 3,
     "EX": 0,
-    "SE": 1
+    "SE": 2
    },
    "flag": true,
    "reasons": [
@@ -174,7 +174,7 @@
    "accepted": true,
    "quality": "good",
    "cnn_grade": 0,
-   "p_referable": 0.0242,
+   "p_referable": 0.0241,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -195,7 +195,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0151,
+   "p_referable": 0.0152,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -237,7 +237,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.1034,
+   "p_referable": 0.1032,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -304,7 +304,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.2127,
+   "p_referable": 0.2128,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -327,7 +327,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.022,
+   "p_referable": 0.0221,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -339,7 +339,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.266,
+   "attention": 0.267,
    "lesion_method": "unet"
   },
   {
@@ -348,7 +348,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0026,
+   "p_referable": 0.0025,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -436,7 +436,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0153,
+   "p_referable": 0.0152,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -519,7 +519,7 @@
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.503,
+   "attention": 0.501,
    "lesion_method": "unet"
   },
   {
@@ -528,7 +528,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.1047,
+   "p_referable": 0.1046,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -574,7 +574,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0143,
+   "p_referable": 0.0144,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -637,7 +637,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0175,
+   "p_referable": 0.0174,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -660,7 +660,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0546,
+   "p_referable": 0.0545,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -681,7 +681,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0532,
+   "p_referable": 0.0531,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -716,7 +716,7 @@
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.27,
+   "attention": 0.269,
    "lesion_method": "unet"
   },
   {
@@ -739,7 +739,7 @@
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.408,
+   "attention": 0.409,
    "lesion_method": "unet"
   },
   {
@@ -748,7 +748,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9714,
+   "p_referable": 0.9715,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -771,7 +771,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.3807,
+   "p_referable": 0.3811,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -792,7 +792,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0743,
+   "p_referable": 0.0744,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -813,7 +813,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.7668,
+   "p_referable": 0.767,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -823,9 +823,11 @@
     "EX": 0,
     "SE": 0
    },
-   "flag": false,
-   "reasons": [],
-   "attention": 0.181,
+   "flag": true,
+   "reasons": [
+    "attention"
+   ],
+   "attention": 0.184,
    "lesion_method": "unet"
   },
   {
@@ -848,7 +850,7 @@
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.139,
+   "attention": 0.138,
    "lesion_method": "unet"
   },
   {
@@ -903,7 +905,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0513,
+   "p_referable": 0.0512,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -924,7 +926,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0621,
+   "p_referable": 0.0622,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -945,7 +947,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0292,
+   "p_referable": 0.0291,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -987,7 +989,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0286,
+   "p_referable": 0.0285,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -999,7 +1001,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.267,
+   "attention": 0.265,
    "lesion_method": "unet"
   },
   {
@@ -1008,7 +1010,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0205,
+   "p_referable": 0.0206,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -1052,7 +1054,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0468,
+   "p_referable": 0.0467,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -1075,7 +1077,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.1105,
+   "p_referable": 0.1104,
    "referable": true,
    "rule_grade": 0,
    "rule_referable": false,
@@ -1252,7 +1254,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0084,
+   "p_referable": 0.0085,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -1273,7 +1275,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.049,
+   "p_referable": 0.0491,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -1336,7 +1338,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0198,
+   "p_referable": 0.0199,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -1378,7 +1380,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0404,
+   "p_referable": 0.0403,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -1390,7 +1392,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.189,
+   "attention": 0.188,
    "lesion_method": "unet"
   },
   {
@@ -1441,7 +1443,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0189,
+   "p_referable": 0.0188,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -1462,7 +1464,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.1511,
+   "p_referable": 0.151,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -1486,7 +1488,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0243,
+   "p_referable": 0.0244,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -1616,7 +1618,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.048,
+   "p_referable": 0.0481,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -1697,7 +1699,7 @@
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.232,
+   "attention": 0.231,
    "lesion_method": "unet"
   },
   {
@@ -1727,7 +1729,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0465,
+   "p_referable": 0.0464,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -1878,7 +1880,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.8865,
+   "p_referable": 0.8867,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -1899,7 +1901,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.8122,
+   "p_referable": 0.8115,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -1911,7 +1913,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.366,
+   "attention": 0.365,
    "lesion_method": "unet"
   },
   {
@@ -1997,7 +1999,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.152,
+   "attention": 0.157,
    "lesion_method": "unet"
   },
   {
@@ -2006,7 +2008,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.1593,
+   "p_referable": 0.159,
    "referable": true,
    "rule_grade": 0,
    "rule_referable": false,
@@ -2050,7 +2052,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0874,
+   "p_referable": 0.0878,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -2073,7 +2075,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0613,
+   "p_referable": 0.0614,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -2096,7 +2098,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.1133,
+   "p_referable": 0.1138,
    "referable": true,
    "rule_grade": 0,
    "rule_referable": false,
@@ -2227,7 +2229,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.2753,
+   "p_referable": 0.2769,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -2241,7 +2243,7 @@
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.299,
+   "attention": 0.301,
    "lesion_method": "unet"
   },
   {
@@ -2308,7 +2310,7 @@
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.334,
+   "attention": 0.335,
    "lesion_method": "unet"
   },
   {
@@ -2317,7 +2319,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0083,
+   "p_referable": 0.0082,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -2407,7 +2409,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0216,
+   "p_referable": 0.0215,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -2428,7 +2430,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.5,
+   "p_referable": 0.4995,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -2440,7 +2442,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.303,
+   "attention": 0.302,
    "lesion_method": "unet"
   },
   {
@@ -2470,7 +2472,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0158,
+   "p_referable": 0.0157,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -2493,7 +2495,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0208,
+   "p_referable": 0.0207,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -2540,7 +2542,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.1021,
+   "p_referable": 0.1022,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -2555,7 +2557,7 @@
     "CNN grade 0 and rule grade 2 differ by 2 levels",
     "P(referable) 0.10 is within the abstain band \u00b10.35 logit (0.077\u20130.144) around the threshold 0.11"
    ],
-   "attention": 0.261,
+   "attention": 0.263,
    "lesion_method": "unet"
   },
   {
@@ -2564,14 +2566,14 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.1275,
+   "p_referable": 0.1276,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
    "counts": {
     "MA": 6,
     "HE": 0,
-    "EX": 43,
+    "EX": 40,
     "SE": 0
    },
    "flag": true,
@@ -2579,7 +2581,7 @@
     "CNN grade 0 and rule grade 2 differ by 2 levels",
     "P(referable) 0.13 is within the abstain band \u00b10.35 logit (0.077\u20130.144) around the threshold 0.11"
    ],
-   "attention": 0.558,
+   "attention": 0.454,
    "lesion_method": "unet"
   },
   {
@@ -2632,7 +2634,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0646,
+   "p_referable": 0.0644,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -2743,7 +2745,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0163,
+   "p_referable": 0.0162,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -2751,13 +2753,13 @@
     "MA": 9,
     "HE": 4,
     "EX": 0,
-    "SE": 3
+    "SE": 4
    },
    "flag": true,
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.54,
+   "attention": 0.542,
    "lesion_method": "unet"
   },
   {
@@ -2787,7 +2789,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0101,
+   "p_referable": 0.01,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -2808,7 +2810,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.2875,
+   "p_referable": 0.2886,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -2850,7 +2852,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0538,
+   "p_referable": 0.0539,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -2883,7 +2885,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.208,
+   "attention": 0.209,
    "lesion_method": "unet"
   },
   {
@@ -2904,7 +2906,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.223,
+   "attention": 0.225,
    "lesion_method": "unet"
   },
   {
@@ -2913,7 +2915,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.4458,
+   "p_referable": 0.4474,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -2934,7 +2936,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.3187,
+   "p_referable": 0.3191,
    "referable": true,
    "rule_grade": 0,
    "rule_referable": false,
@@ -2958,7 +2960,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.0947,
+   "p_referable": 0.0949,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -2993,7 +2995,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.316,
+   "attention": 0.315,
    "lesion_method": "unet"
   },
   {
@@ -3002,7 +3004,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0908,
+   "p_referable": 0.0907,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3026,7 +3028,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.1899,
+   "p_referable": 0.1893,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3049,7 +3051,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.4159,
+   "p_referable": 0.4158,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3070,7 +3072,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.3204,
+   "p_referable": 0.3205,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3091,7 +3093,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0641,
+   "p_referable": 0.064,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -3147,7 +3149,7 @@
    "reasons": [
     "P(referable) 0.12 is within the abstain band \u00b10.35 logit (0.077\u20130.144) around the threshold 0.11"
    ],
-   "attention": 0.295,
+   "attention": 0.294,
    "lesion_method": "unet"
   },
   {
@@ -3156,7 +3158,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.1432,
+   "p_referable": 0.1429,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3164,7 +3166,7 @@
     "MA": 0,
     "HE": 4,
     "EX": 0,
-    "SE": 1
+    "SE": 2
    },
    "flag": true,
    "reasons": [
@@ -3180,7 +3182,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.053,
+   "p_referable": 0.0528,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3203,7 +3205,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.1933,
+   "p_referable": 0.1936,
    "referable": true,
    "rule_grade": 0,
    "rule_referable": false,
@@ -3270,7 +3272,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.0845,
+   "p_referable": 0.0844,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -3293,7 +3295,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.4064,
+   "p_referable": 0.4066,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3305,7 +3307,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.583,
+   "attention": 0.584,
    "lesion_method": "unet"
   },
   {
@@ -3314,7 +3316,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.96,
+   "p_referable": 0.9601,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3377,7 +3379,7 @@
    "accepted": true,
    "quality": "good",
    "cnn_grade": 1,
-   "p_referable": 0.1222,
+   "p_referable": 0.1224,
    "referable": true,
    "rule_grade": 0,
    "rule_referable": false,
@@ -3392,7 +3394,7 @@
     "CNN calls referable but no lesion was found",
     "P(referable) 0.12 is within the abstain band \u00b10.35 logit (0.077\u20130.144) around the threshold 0.11"
    ],
-   "attention": 0.102,
+   "attention": 0.103,
    "lesion_method": "unet"
   },
   {
@@ -3401,7 +3403,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.1705,
+   "p_referable": 0.1702,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3413,7 +3415,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.289,
+   "attention": 0.288,
    "lesion_method": "unet"
   },
   {
@@ -3422,7 +3424,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.1689,
+   "p_referable": 0.1683,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3436,7 +3438,7 @@
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.359,
+   "attention": 0.361,
    "lesion_method": "unet"
   },
   {
@@ -3482,7 +3484,7 @@
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.327,
+   "attention": 0.326,
    "lesion_method": "unet"
   },
   {
@@ -3491,7 +3493,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0451,
+   "p_referable": 0.045,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -3512,7 +3514,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.3873,
+   "p_referable": 0.3869,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3577,7 +3579,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.7443,
+   "p_referable": 0.7437,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -3598,7 +3600,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.0858,
+   "p_referable": 0.0857,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3621,7 +3623,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9625,
+   "p_referable": 0.9626,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3642,7 +3644,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.1526,
+   "p_referable": 0.1527,
    "referable": true,
    "rule_grade": 0,
    "rule_referable": false,
@@ -3665,7 +3667,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9106,
+   "p_referable": 0.9103,
    "referable": true,
    "rule_grade": 0,
    "rule_referable": false,
@@ -3710,7 +3712,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.8929,
+   "p_referable": 0.8927,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3731,7 +3733,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9164,
+   "p_referable": 0.9163,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3752,7 +3754,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.7886,
+   "p_referable": 0.7892,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3785,7 +3787,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.26,
+   "attention": 0.262,
    "lesion_method": "unet"
   },
   {
@@ -3794,7 +3796,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0886,
+   "p_referable": 0.0884,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3809,7 +3811,7 @@
     "CNN grade 0 and rule grade 2 differ by 2 levels",
     "P(referable) 0.09 is within the abstain band \u00b10.35 logit (0.077\u20130.144) around the threshold 0.11"
    ],
-   "attention": 0.194,
+   "attention": 0.19,
    "lesion_method": "unet"
   },
   {
@@ -3818,7 +3820,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.4455,
+   "p_referable": 0.4457,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3853,7 +3855,7 @@
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.269,
+   "attention": 0.27,
    "lesion_method": "unet"
   },
   {
@@ -3862,7 +3864,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0333,
+   "p_referable": 0.0332,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -3874,7 +3876,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.03,
+   "attention": 0.029,
    "lesion_method": "unet"
   },
   {
@@ -3904,7 +3906,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.1355,
+   "p_referable": 0.1347,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3917,7 +3919,7 @@
    "flag": true,
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels",
-    "P(referable) 0.14 is within the abstain band \u00b10.35 logit (0.077\u20130.144) around the threshold 0.11",
+    "P(referable) 0.13 is within the abstain band \u00b10.35 logit (0.077\u20130.144) around the threshold 0.11",
     "attention"
    ],
    "attention": 0.143,
@@ -3929,7 +3931,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0287,
+   "p_referable": 0.0288,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -3952,7 +3954,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0262,
+   "p_referable": 0.0261,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -3973,7 +3975,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0985,
+   "p_referable": 0.0984,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -3996,28 +3998,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.1453,
-   "referable": true,
-   "rule_grade": 1,
-   "rule_referable": false,
-   "counts": {
-    "MA": 3,
-    "HE": 0,
-    "EX": 0,
-    "SE": 0
-   },
-   "flag": false,
-   "reasons": [],
-   "attention": 0.181,
-   "lesion_method": "unet"
-  },
-  {
-   "image_id": "eyepacs/32566_right",
-   "grade": 1,
-   "accepted": true,
-   "quality": "usable",
-   "cnn_grade": 1,
-   "p_referable": 0.2581,
+   "p_referable": 0.145,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -4031,7 +4012,30 @@
    "reasons": [
     "attention"
    ],
-   "attention": 0.109,
+   "attention": 0.183,
+   "lesion_method": "unet"
+  },
+  {
+   "image_id": "eyepacs/32566_right",
+   "grade": 1,
+   "accepted": true,
+   "quality": "usable",
+   "cnn_grade": 1,
+   "p_referable": 0.2576,
+   "referable": true,
+   "rule_grade": 1,
+   "rule_referable": false,
+   "counts": {
+    "MA": 3,
+    "HE": 0,
+    "EX": 0,
+    "SE": 0
+   },
+   "flag": true,
+   "reasons": [
+    "attention"
+   ],
+   "attention": 0.11,
    "lesion_method": "unet"
   },
   {
@@ -4052,7 +4056,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.273,
+   "attention": 0.272,
    "lesion_method": "unet"
   },
   {
@@ -4061,19 +4065,19 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.8406,
+   "p_referable": 0.8407,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
    "counts": {
     "MA": 10,
     "HE": 9,
-    "EX": 10,
+    "EX": 8,
     "SE": 0
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.561,
+   "attention": 0.54,
    "lesion_method": "unet"
   },
   {
@@ -4082,7 +4086,7 @@
    "accepted": true,
    "quality": "good",
    "cnn_grade": 1,
-   "p_referable": 0.2529,
+   "p_referable": 0.2531,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4103,7 +4107,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0339,
+   "p_referable": 0.034,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -4124,7 +4128,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.807,
+   "p_referable": 0.8073,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4147,7 +4151,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.3077,
+   "p_referable": 0.3086,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4180,7 +4184,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.624,
+   "attention": 0.625,
    "lesion_method": "unet"
   },
   {
@@ -4189,7 +4193,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0785,
+   "p_referable": 0.0784,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4204,7 +4208,7 @@
     "CNN grade 0 and rule grade 2 differ by 2 levels",
     "P(referable) 0.08 is within the abstain band \u00b10.35 logit (0.077\u20130.144) around the threshold 0.11"
    ],
-   "attention": 0.121,
+   "attention": 0.122,
    "lesion_method": "unet"
   },
   {
@@ -4213,7 +4217,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.4555,
+   "p_referable": 0.4549,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4227,7 +4231,7 @@
    "reasons": [
     "attention"
    ],
-   "attention": 0.056,
+   "attention": 0.057,
    "lesion_method": "unet"
   },
   {
@@ -4269,7 +4273,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.342,
+   "attention": 0.346,
    "lesion_method": "unet"
   },
   {
@@ -4278,7 +4282,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.725,
+   "p_referable": 0.7249,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4299,7 +4303,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.2937,
+   "p_referable": 0.2934,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -4341,7 +4345,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9267,
+   "p_referable": 0.9269,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4362,7 +4366,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.3702,
+   "p_referable": 0.3699,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -4427,7 +4431,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.7918,
+   "p_referable": 0.7919,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4448,7 +4452,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.0491,
+   "p_referable": 0.049,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4481,7 +4485,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.035,
+   "attention": 0.036,
    "lesion_method": "unet"
   },
   {
@@ -4513,7 +4517,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0196,
+   "p_referable": 0.0197,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -4525,7 +4529,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.005,
+   "attention": 0.006,
    "lesion_method": "unet"
   },
   {
@@ -4555,7 +4559,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.396,
+   "p_referable": 0.3952,
    "referable": true,
    "rule_grade": 0,
    "rule_referable": false,
@@ -4579,7 +4583,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.4944,
+   "p_referable": 0.4942,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -4589,9 +4593,11 @@
     "EX": 0,
     "SE": 0
    },
-   "flag": false,
-   "reasons": [],
-   "attention": 0.177,
+   "flag": true,
+   "reasons": [
+    "attention"
+   ],
+   "attention": 0.176,
    "lesion_method": "unet"
   },
   {
@@ -4600,7 +4606,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.187,
+   "p_referable": 0.1871,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4667,7 +4673,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.2925,
+   "p_referable": 0.2919,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -4677,8 +4683,10 @@
     "EX": 0,
     "SE": 0
    },
-   "flag": false,
-   "reasons": [],
+   "flag": true,
+   "reasons": [
+    "attention"
+   ],
    "attention": 0.166,
    "lesion_method": "unet"
   },
@@ -4688,7 +4696,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9101,
+   "p_referable": 0.91,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4732,20 +4740,20 @@
    "cnn_grade": 0,
    "p_referable": 0.1125,
    "referable": true,
-   "rule_grade": 0,
-   "rule_referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
    "counts": {
     "MA": 0,
     "HE": 0,
     "EX": 0,
-    "SE": 0
+    "SE": 1
    },
    "flag": true,
    "reasons": [
-    "CNN calls referable but no lesion was found",
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
     "P(referable) 0.11 is within the abstain band \u00b10.35 logit (0.077\u20130.144) around the threshold 0.11"
    ],
-   "attention": null,
+   "attention": 0.389,
    "lesion_method": "unet"
   },
   {
@@ -4754,7 +4762,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.931,
+   "p_referable": 0.9311,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4766,7 +4774,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.665,
+   "attention": 0.664,
    "lesion_method": "unet"
   },
   {
@@ -4775,7 +4783,7 @@
    "accepted": true,
    "quality": "good",
    "cnn_grade": 2,
-   "p_referable": 0.9245,
+   "p_referable": 0.9246,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4819,7 +4827,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.6419,
+   "p_referable": 0.6425,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4831,7 +4839,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.493,
+   "attention": 0.492,
    "lesion_method": "unet"
   },
   {
@@ -4840,7 +4848,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.4613,
+   "p_referable": 0.4608,
    "referable": true,
    "rule_grade": 0,
    "rule_referable": false,
@@ -4901,7 +4909,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.093,
+   "attention": 0.091,
    "lesion_method": "unet"
   },
   {
@@ -4910,7 +4918,7 @@
    "accepted": true,
    "quality": "good",
    "cnn_grade": 2,
-   "p_referable": 0.5665,
+   "p_referable": 0.5667,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -4922,7 +4930,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.239,
+   "attention": 0.238,
    "lesion_method": "unet"
   },
   {
@@ -4954,7 +4962,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9245,
+   "p_referable": 0.9244,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5038,7 +5046,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.5727,
+   "p_referable": 0.5729,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5059,7 +5067,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.271,
+   "p_referable": 0.2714,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5073,7 +5081,7 @@
    "reasons": [
     "attention"
    ],
-   "attention": 0.031,
+   "attention": 0.032,
    "lesion_method": "unet"
   },
   {
@@ -5082,7 +5090,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.5286,
+   "p_referable": 0.5283,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -5149,7 +5157,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.1394,
+   "p_referable": 0.1393,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5172,7 +5180,7 @@
    "accepted": true,
    "quality": "good",
    "cnn_grade": 2,
-   "p_referable": 0.4152,
+   "p_referable": 0.4145,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -5195,7 +5203,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0413,
+   "p_referable": 0.0412,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5218,7 +5226,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.864,
+   "p_referable": 0.8645,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5230,7 +5238,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.765,
+   "attention": 0.764,
    "lesion_method": "unet"
   },
   {
@@ -5239,7 +5247,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0967,
+   "p_referable": 0.0965,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -5262,7 +5270,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.2453,
+   "p_referable": 0.2446,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5283,7 +5291,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.6977,
+   "p_referable": 0.6982,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5304,7 +5312,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.6955,
+   "p_referable": 0.6953,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -5390,7 +5398,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.5478,
+   "p_referable": 0.5475,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5453,7 +5461,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.1845,
+   "p_referable": 0.1839,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -5467,7 +5475,7 @@
    "reasons": [
     "attention"
    ],
-   "attention": 0.036,
+   "attention": 0.035,
    "lesion_method": "unet"
   },
   {
@@ -5488,7 +5496,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.555,
+   "attention": 0.556,
    "lesion_method": "unet"
   },
   {
@@ -5518,7 +5526,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.876,
+   "p_referable": 0.8762,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5539,7 +5547,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.915,
+   "p_referable": 0.9148,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5560,7 +5568,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9076,
+   "p_referable": 0.9074,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5677,7 +5685,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.654,
+   "attention": 0.653,
    "lesion_method": "unet"
   },
   {
@@ -5686,7 +5694,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.5759,
+   "p_referable": 0.5768,
    "referable": true,
    "rule_grade": 4,
    "rule_referable": true,
@@ -5694,7 +5702,7 @@
     "MA": 0,
     "HE": 11,
     "EX": 5,
-    "SE": 2
+    "SE": 3
    },
    "flag": true,
    "reasons": [
@@ -5730,7 +5738,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9427,
+   "p_referable": 0.9426,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5772,7 +5780,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9654,
+   "p_referable": 0.9655,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5805,7 +5813,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.293,
+   "attention": 0.294,
    "lesion_method": "unet"
   },
   {
@@ -5821,12 +5829,12 @@
    "counts": {
     "MA": 0,
     "HE": 5,
-    "EX": 101,
+    "EX": 102,
     "SE": 0
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.717,
+   "attention": 0.804,
    "lesion_method": "unet"
   },
   {
@@ -5868,7 +5876,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.23,
+   "attention": 0.232,
    "lesion_method": "unet"
   },
   {
@@ -5877,7 +5885,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.8666,
+   "p_referable": 0.8664,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -5887,8 +5895,10 @@
     "EX": 0,
     "SE": 0
    },
-   "flag": false,
-   "reasons": [],
+   "flag": true,
+   "reasons": [
+    "attention"
+   ],
    "attention": 0.169,
    "lesion_method": "unet"
   },
@@ -5919,7 +5929,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9206,
+   "p_referable": 0.9205,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5961,7 +5971,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9606,
+   "p_referable": 0.9605,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -5973,7 +5983,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.499,
+   "attention": 0.501,
    "lesion_method": "unet"
   },
   {
@@ -6024,7 +6034,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0838,
+   "p_referable": 0.0836,
    "referable": false,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6039,7 +6049,7 @@
     "CNN grade 0 and rule grade 2 differ by 2 levels",
     "P(referable) 0.08 is within the abstain band \u00b10.35 logit (0.077\u20130.144) around the threshold 0.11"
    ],
-   "attention": 0.153,
+   "attention": 0.155,
    "lesion_method": "unet"
   },
   {
@@ -6048,7 +6058,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9643,
+   "p_referable": 0.9644,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6060,7 +6070,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.6,
+   "attention": 0.599,
    "lesion_method": "unet"
   },
   {
@@ -6111,19 +6121,19 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.6247,
+   "p_referable": 0.6244,
    "referable": true,
-   "rule_grade": 1,
-   "rule_referable": false,
+   "rule_grade": 2,
+   "rule_referable": true,
    "counts": {
     "MA": 7,
     "HE": 0,
     "EX": 0,
-    "SE": 0
+    "SE": 1
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.259,
+   "attention": 0.294,
    "lesion_method": "unet"
   },
   {
@@ -6132,7 +6142,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0505,
+   "p_referable": 0.0504,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -6144,7 +6154,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.036,
+   "attention": 0.037,
    "lesion_method": "unet"
   },
   {
@@ -6153,7 +6163,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.8328,
+   "p_referable": 0.8329,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6186,7 +6196,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.291,
+   "attention": 0.292,
    "lesion_method": "unet"
   },
   {
@@ -6195,7 +6205,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9528,
+   "p_referable": 0.9526,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6216,7 +6226,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.4691,
+   "p_referable": 0.4698,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6258,7 +6268,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0332,
+   "p_referable": 0.033,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -6270,7 +6280,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.152,
+   "attention": 0.151,
    "lesion_method": "unet"
   },
   {
@@ -6312,7 +6322,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.839,
+   "attention": 0.84,
    "lesion_method": "unet"
   },
   {
@@ -6321,7 +6331,7 @@
    "accepted": true,
    "quality": "good",
    "cnn_grade": 2,
-   "p_referable": 0.7394,
+   "p_referable": 0.7397,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6342,7 +6352,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.3972,
+   "p_referable": 0.397,
    "referable": true,
    "rule_grade": 0,
    "rule_referable": false,
@@ -6366,7 +6376,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.4677,
+   "p_referable": 0.4685,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -6389,7 +6399,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9214,
+   "p_referable": 0.9219,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6401,7 +6411,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.385,
+   "attention": 0.384,
    "lesion_method": "unet"
   },
   {
@@ -6410,7 +6420,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9672,
+   "p_referable": 0.9671,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6452,7 +6462,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.4192,
+   "p_referable": 0.4187,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6494,19 +6504,19 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.4045,
+   "p_referable": 0.4016,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
    "counts": {
-    "MA": 2,
+    "MA": 3,
     "HE": 0,
     "EX": 3,
     "SE": 0
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.285,
+   "attention": 0.377,
    "lesion_method": "unet"
   },
   {
@@ -6522,12 +6532,12 @@
    "counts": {
     "MA": 15,
     "HE": 16,
-    "EX": 163,
+    "EX": 160,
     "SE": 2
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.873,
+   "attention": 0.868,
    "lesion_method": "unet"
   },
   {
@@ -6548,7 +6558,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.362,
+   "attention": 0.361,
    "lesion_method": "unet"
   },
   {
@@ -6578,7 +6588,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9424,
+   "p_referable": 0.9423,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6599,7 +6609,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.2995,
+   "p_referable": 0.3001,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6664,7 +6674,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9295,
+   "p_referable": 0.9294,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6697,9 +6707,10 @@
    },
    "flag": true,
    "reasons": [
-    "CNN grade 0 and rule grade 2 differ by 2 levels"
+    "CNN grade 0 and rule grade 2 differ by 2 levels",
+    "attention"
    ],
-   "attention": 0.184,
+   "attention": 0.183,
    "lesion_method": "unet"
   },
   {
@@ -6708,7 +6719,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.7162,
+   "p_referable": 0.7157,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -6729,7 +6740,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.7733,
+   "p_referable": 0.7744,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6771,7 +6782,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.2559,
+   "p_referable": 0.2561,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6792,7 +6803,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.5496,
+   "p_referable": 0.5491,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6813,19 +6824,19 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9897,
+   "p_referable": 0.9896,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
    "counts": {
     "MA": 3,
     "HE": 13,
-    "EX": 9,
-    "SE": 2
+    "EX": 13,
+    "SE": 5
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.56,
+   "attention": 0.562,
    "lesion_method": "unet"
   },
   {
@@ -6855,7 +6866,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9116,
+   "p_referable": 0.9117,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6918,7 +6929,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9662,
+   "p_referable": 0.9661,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6930,7 +6941,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.748,
+   "attention": 0.749,
    "lesion_method": "unet"
   },
   {
@@ -6951,7 +6962,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.543,
+   "attention": 0.542,
    "lesion_method": "unet"
   },
   {
@@ -6960,7 +6971,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9778,
+   "p_referable": 0.9777,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -6993,7 +7004,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.665,
+   "attention": 0.666,
    "lesion_method": "unet"
   },
   {
@@ -7023,7 +7034,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.8551,
+   "p_referable": 0.8545,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -7051,12 +7062,12 @@
    "counts": {
     "MA": 14,
     "HE": 19,
-    "EX": 0,
-    "SE": 3
+    "EX": 3,
+    "SE": 4
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.602,
+   "attention": 0.638,
    "lesion_method": "unet"
   },
   {
@@ -7065,7 +7076,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.1394,
+   "p_referable": 0.1396,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -7090,7 +7101,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9603,
+   "p_referable": 0.9602,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -7132,7 +7143,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.057,
+   "p_referable": 0.0571,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -7216,7 +7227,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.276,
+   "p_referable": 0.2758,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -7237,7 +7248,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9021,
+   "p_referable": 0.9023,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -7266,11 +7277,11 @@
     "MA": 7,
     "HE": 6,
     "EX": 15,
-    "SE": 2
+    "SE": 3
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.577,
+   "attention": 0.594,
    "lesion_method": "unet"
   },
   {
@@ -7327,7 +7338,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9613,
+   "p_referable": 0.9612,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -7432,7 +7443,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 1,
-   "p_referable": 0.2144,
+   "p_referable": 0.2142,
    "referable": true,
    "rule_grade": 1,
    "rule_referable": false,
@@ -7523,12 +7534,12 @@
    "counts": {
     "MA": 5,
     "HE": 4,
-    "EX": 3,
+    "EX": 0,
     "SE": 2
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.311,
+   "attention": 0.309,
    "lesion_method": "unet"
   },
   {
@@ -7537,7 +7548,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.5234,
+   "p_referable": 0.5229,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -7545,11 +7556,11 @@
     "MA": 2,
     "HE": 2,
     "EX": 0,
-    "SE": 0
+    "SE": 1
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.16,
+   "attention": 0.238,
    "lesion_method": "unet"
   },
   {
@@ -7579,7 +7590,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.6571,
+   "p_referable": 0.6564,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -7591,7 +7602,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.205,
+   "attention": 0.206,
    "lesion_method": "unet"
   },
   {
@@ -7600,7 +7611,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0301,
+   "p_referable": 0.0299,
    "referable": false,
    "rule_grade": 0,
    "rule_referable": false,
@@ -7691,12 +7702,12 @@
    "counts": {
     "MA": 42,
     "HE": 58,
-    "EX": 38,
-    "SE": 4
+    "EX": 40,
+    "SE": 6
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.803,
+   "attention": 0.824,
    "lesion_method": "unet"
   },
   {
@@ -7713,7 +7724,7 @@
     "MA": 0,
     "HE": 5,
     "EX": 6,
-    "SE": 5
+    "SE": 6
    },
    "flag": false,
    "reasons": [],
@@ -7726,7 +7737,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9659,
+   "p_referable": 0.966,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -7747,7 +7758,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.0473,
+   "p_referable": 0.0472,
    "referable": false,
    "rule_grade": 1,
    "rule_referable": false,
@@ -7775,12 +7786,12 @@
    "counts": {
     "MA": 11,
     "HE": 11,
-    "EX": 93,
+    "EX": 94,
     "SE": 2
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.777,
+   "attention": 0.778,
    "lesion_method": "unet"
   },
   {
@@ -7789,7 +7800,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9833,
+   "p_referable": 0.9832,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -7838,12 +7849,12 @@
    "counts": {
     "MA": 14,
     "HE": 20,
-    "EX": 36,
+    "EX": 19,
     "SE": 1
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.705,
+   "attention": 0.659,
    "lesion_method": "unet"
   },
   {
@@ -7852,7 +7863,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9604,
+   "p_referable": 0.9603,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -7885,7 +7896,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.493,
+   "attention": 0.494,
    "lesion_method": "unet"
   },
   {
@@ -7915,7 +7926,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9628,
+   "p_referable": 0.9627,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -7964,12 +7975,12 @@
    "counts": {
     "MA": 0,
     "HE": 0,
-    "EX": 43,
+    "EX": 14,
     "SE": 0
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.782,
+   "attention": 0.422,
    "lesion_method": "unet"
   },
   {
@@ -8020,7 +8031,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9504,
+   "p_referable": 0.9505,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -8053,7 +8064,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.518,
+   "attention": 0.519,
    "lesion_method": "unet"
   },
   {
@@ -8116,7 +8127,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.788,
+   "attention": 0.789,
    "lesion_method": "unet"
   },
   {
@@ -8174,12 +8185,12 @@
    "counts": {
     "MA": 22,
     "HE": 38,
-    "EX": 36,
+    "EX": 49,
     "SE": 0
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.644,
+   "attention": 0.692,
    "lesion_method": "unet"
   },
   {
@@ -8209,7 +8220,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9458,
+   "p_referable": 0.9459,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -8300,12 +8311,12 @@
    "counts": {
     "MA": 24,
     "HE": 26,
-    "EX": 69,
+    "EX": 72,
     "SE": 1
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.784,
+   "attention": 0.796,
    "lesion_method": "unet"
   },
   {
@@ -8314,7 +8325,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9712,
+   "p_referable": 0.9713,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -8342,12 +8353,12 @@
    "counts": {
     "MA": 0,
     "HE": 22,
-    "EX": 48,
+    "EX": 50,
     "SE": 2
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.771,
+   "attention": 0.81,
    "lesion_method": "unet"
   },
   {
@@ -8356,7 +8367,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9497,
+   "p_referable": 0.9498,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -8405,7 +8416,7 @@
    "counts": {
     "MA": 30,
     "HE": 37,
-    "EX": 90,
+    "EX": 95,
     "SE": 1
    },
    "flag": false,
@@ -8491,12 +8502,12 @@
    "counts": {
     "MA": 35,
     "HE": 47,
-    "EX": 43,
+    "EX": 53,
     "SE": 7
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.84,
+   "attention": 0.846,
    "lesion_method": "unet"
   },
   {
@@ -8554,12 +8565,12 @@
    "counts": {
     "MA": 45,
     "HE": 29,
-    "EX": 113,
+    "EX": 104,
     "SE": 2
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.908,
+   "attention": 0.895,
    "lesion_method": "unet"
   },
   {
@@ -8568,7 +8579,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9706,
+   "p_referable": 0.9705,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -8643,7 +8654,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.583,
+   "attention": 0.584,
    "lesion_method": "unet"
   },
   {
@@ -8685,7 +8696,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.448,
+   "attention": 0.447,
    "lesion_method": "unet"
   },
   {
@@ -8701,12 +8712,12 @@
    "counts": {
     "MA": 4,
     "HE": 32,
-    "EX": 48,
+    "EX": 58,
     "SE": 2
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.71,
+   "attention": 0.772,
    "lesion_method": "unet"
   },
   {
@@ -8722,14 +8733,14 @@
    "counts": {
     "MA": 11,
     "HE": 32,
-    "EX": 41,
-    "SE": 8
+    "EX": 39,
+    "SE": 9
    },
    "flag": true,
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.527,
+   "attention": 0.526,
    "lesion_method": "unet"
   },
   {
@@ -8771,7 +8782,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.67,
+   "attention": 0.672,
    "lesion_method": "unet"
   },
   {
@@ -8813,7 +8824,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.647,
+   "attention": 0.648,
    "lesion_method": "unet"
   },
   {
@@ -8913,12 +8924,12 @@
    "counts": {
     "MA": 0,
     "HE": 45,
-    "EX": 106,
-    "SE": 8
+    "EX": 101,
+    "SE": 5
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.82,
+   "attention": 0.818,
    "lesion_method": "unet"
   },
   {
@@ -9060,7 +9071,7 @@
    "counts": {
     "MA": 15,
     "HE": 97,
-    "EX": 84,
+    "EX": 85,
     "SE": 5
    },
    "flag": false,
@@ -9086,7 +9097,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.271,
+   "attention": 0.268,
    "lesion_method": "unet"
   },
   {
@@ -9102,12 +9113,12 @@
    "counts": {
     "MA": 0,
     "HE": 18,
-    "EX": 28,
+    "EX": 26,
     "SE": 1
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.768,
+   "attention": 0.767,
    "lesion_method": "unet"
   },
   {
@@ -9128,7 +9139,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.475,
+   "attention": 0.476,
    "lesion_method": "unet"
   },
   {
@@ -9170,7 +9181,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.79,
+   "attention": 0.791,
    "lesion_method": "unet"
   },
   {
@@ -9233,7 +9244,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.391,
+   "attention": 0.392,
    "lesion_method": "unet"
   },
   {
@@ -9249,12 +9260,12 @@
    "counts": {
     "MA": 34,
     "HE": 70,
-    "EX": 7,
+    "EX": 10,
     "SE": 0
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.912,
+   "attention": 0.913,
    "lesion_method": "unet"
   },
   {
@@ -9270,12 +9281,12 @@
    "counts": {
     "MA": 9,
     "HE": 14,
-    "EX": 10,
+    "EX": 14,
     "SE": 3
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.295,
+   "attention": 0.359,
    "lesion_method": "unet"
   },
   {
@@ -9291,12 +9302,12 @@
    "counts": {
     "MA": 16,
     "HE": 9,
-    "EX": 28,
-    "SE": 19
+    "EX": 33,
+    "SE": 20
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.714,
+   "attention": 0.754,
    "lesion_method": "unet"
   },
   {
@@ -9317,7 +9328,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.799,
+   "attention": 0.8,
    "lesion_method": "unet"
   },
   {
@@ -9359,7 +9370,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.628,
+   "attention": 0.627,
    "lesion_method": "unet"
   },
   {
@@ -9417,12 +9428,12 @@
    "counts": {
     "MA": 0,
     "HE": 10,
-    "EX": 3,
+    "EX": 7,
     "SE": 3
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.553,
+   "attention": 0.566,
    "lesion_method": "unet"
   },
   {
@@ -9438,12 +9449,12 @@
    "counts": {
     "MA": 7,
     "HE": 26,
-    "EX": 18,
+    "EX": 19,
     "SE": 3
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.796,
+   "attention": 0.8,
    "lesion_method": "unet"
   },
   {
@@ -9473,7 +9484,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 4,
-   "p_referable": 0.9041,
+   "p_referable": 0.904,
    "referable": true,
    "rule_grade": 4,
    "rule_referable": true,
@@ -9485,7 +9496,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.594,
+   "attention": 0.595,
    "lesion_method": "unet"
   },
   {
@@ -9494,7 +9505,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.5586,
+   "p_referable": 0.5597,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -9606,12 +9617,12 @@
    "counts": {
     "MA": 10,
     "HE": 18,
-    "EX": 23,
+    "EX": 20,
     "SE": 6
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.649,
+   "attention": 0.647,
    "lesion_method": "unet"
   },
   {
@@ -9628,11 +9639,11 @@
     "MA": 0,
     "HE": 25,
     "EX": 6,
-    "SE": 0
+    "SE": 1
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.729,
+   "attention": 0.73,
    "lesion_method": "unet"
   },
   {
@@ -9641,7 +9652,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 0,
-   "p_referable": 0.2047,
+   "p_referable": 0.2046,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -9655,7 +9666,7 @@
    "reasons": [
     "CNN grade 0 and rule grade 2 differ by 2 levels"
    ],
-   "attention": 0.481,
+   "attention": 0.484,
    "lesion_method": "unet"
   },
   {
@@ -9664,7 +9675,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 4,
-   "p_referable": 0.9566,
+   "p_referable": 0.9565,
    "referable": true,
    "rule_grade": 4,
    "rule_referable": true,
@@ -9718,7 +9729,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.733,
+   "attention": 0.734,
    "lesion_method": "unet"
   },
   {
@@ -9727,7 +9738,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 3,
-   "p_referable": 0.9487,
+   "p_referable": 0.9486,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,
@@ -9748,7 +9759,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 4,
-   "p_referable": 0.8437,
+   "p_referable": 0.8433,
    "referable": true,
    "rule_grade": 4,
    "rule_referable": true,
@@ -9777,7 +9788,7 @@
     "MA": 0,
     "HE": 13,
     "EX": 0,
-    "SE": 2
+    "SE": 1
    },
    "flag": false,
    "reasons": [],
@@ -9839,12 +9850,12 @@
    "counts": {
     "MA": 8,
     "HE": 7,
-    "EX": 4,
+    "EX": 0,
     "SE": 2
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.688,
+   "attention": 0.687,
    "lesion_method": "unet"
   },
   {
@@ -9937,7 +9948,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 4,
-   "p_referable": 0.8645,
+   "p_referable": 0.8644,
    "referable": true,
    "rule_grade": 4,
    "rule_referable": true,
@@ -9987,11 +9998,11 @@
     "MA": 0,
     "HE": 23,
     "EX": 21,
-    "SE": 3
+    "SE": 4
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.74,
+   "attention": 0.769,
    "lesion_method": "unet"
   },
   {
@@ -10007,12 +10018,12 @@
    "counts": {
     "MA": 2,
     "HE": 15,
-    "EX": 65,
+    "EX": 71,
     "SE": 0
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.58,
+   "attention": 0.586,
    "lesion_method": "unet"
   },
   {
@@ -10021,7 +10032,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 4,
-   "p_referable": 0.9577,
+   "p_referable": 0.9576,
    "referable": true,
    "rule_grade": 4,
    "rule_referable": true,
@@ -10054,7 +10065,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.6,
+   "attention": 0.601,
    "lesion_method": "unet"
   },
   {
@@ -10107,19 +10118,19 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 4,
-   "p_referable": 0.9899,
+   "p_referable": 0.9898,
    "referable": true,
    "rule_grade": 4,
    "rule_referable": true,
    "counts": {
     "MA": 3,
     "HE": 54,
-    "EX": 105,
-    "SE": 34
+    "EX": 103,
+    "SE": 35
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.796,
+   "attention": 0.797,
    "lesion_method": "unet"
   },
   {
@@ -10128,7 +10139,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 4,
-   "p_referable": 0.8049,
+   "p_referable": 0.8044,
    "referable": true,
    "rule_grade": 4,
    "rule_referable": true,
@@ -10184,7 +10195,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.291,
+   "attention": 0.292,
    "lesion_method": "unet"
   },
   {
@@ -10205,7 +10216,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.755,
+   "attention": 0.754,
    "lesion_method": "unet"
   },
   {
@@ -10221,12 +10232,12 @@
    "counts": {
     "MA": 0,
     "HE": 19,
-    "EX": 9,
+    "EX": 7,
     "SE": 6
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.699,
+   "attention": 0.698,
    "lesion_method": "unet"
   },
   {
@@ -10268,7 +10279,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.842,
+   "attention": 0.844,
    "lesion_method": "unet"
   },
   {
@@ -10277,7 +10288,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 4,
-   "p_referable": 0.9951,
+   "p_referable": 0.995,
    "referable": true,
    "rule_grade": 4,
    "rule_referable": true,
@@ -10298,7 +10309,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 4,
-   "p_referable": 0.9446,
+   "p_referable": 0.9445,
    "referable": true,
    "rule_grade": 4,
    "rule_referable": true,
@@ -10368,12 +10379,12 @@
    "counts": {
     "MA": 8,
     "HE": 7,
-    "EX": 32,
+    "EX": 31,
     "SE": 1
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.629,
+   "attention": 0.626,
    "lesion_method": "unet"
   },
   {
@@ -10412,12 +10423,12 @@
    "counts": {
     "MA": 2,
     "HE": 11,
-    "EX": 0,
-    "SE": 1
+    "EX": 3,
+    "SE": 2
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.789,
+   "attention": 0.814,
    "lesion_method": "unet"
   },
   {
@@ -10455,11 +10466,11 @@
     "MA": 6,
     "HE": 12,
     "EX": 0,
-    "SE": 0
+    "SE": 1
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.561,
+   "attention": 0.562,
    "lesion_method": "unet"
   },
   {
@@ -10522,7 +10533,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.439,
+   "attention": 0.44,
    "lesion_method": "unet"
   },
   {
@@ -10531,7 +10542,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 4,
-   "p_referable": 0.9936,
+   "p_referable": 0.9937,
    "referable": true,
    "rule_grade": 4,
    "rule_referable": true,
@@ -10543,7 +10554,7 @@
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.797,
+   "attention": 0.798,
    "lesion_method": "unet"
   },
   {
@@ -10560,11 +10571,11 @@
     "MA": 19,
     "HE": 27,
     "EX": 110,
-    "SE": 0
+    "SE": 2
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.748,
+   "attention": 0.751,
    "lesion_method": "unet"
   },
   {
@@ -10580,12 +10591,12 @@
    "counts": {
     "MA": 14,
     "HE": 43,
-    "EX": 43,
+    "EX": 54,
     "SE": 1
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.753,
+   "attention": 0.766,
    "lesion_method": "unet"
   },
   {
@@ -10622,12 +10633,12 @@
    "counts": {
     "MA": 14,
     "HE": 9,
-    "EX": 11,
-    "SE": 18
+    "EX": 12,
+    "SE": 19
    },
    "flag": false,
    "reasons": [],
-   "attention": 0.558,
+   "attention": 0.573,
    "lesion_method": "unet"
   },
   {
@@ -10636,7 +10647,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 4,
-   "p_referable": 0.8379,
+   "p_referable": 0.8378,
    "referable": true,
    "rule_grade": 4,
    "rule_referable": true,
@@ -10701,7 +10712,7 @@
    "accepted": true,
    "quality": "usable",
    "cnn_grade": 2,
-   "p_referable": 0.9631,
+   "p_referable": 0.963,
    "referable": true,
    "rule_grade": 2,
    "rule_referable": true,

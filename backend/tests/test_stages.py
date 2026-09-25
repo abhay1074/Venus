@@ -127,6 +127,51 @@ class TestStage1Segment:
         assert result["lesions"]["HE"]["count"] <= 1
         assert result["lesions"]["MA"]["count"] <= 2
 
+    def test_a_white_label_is_never_the_optic_disc(self):
+        """A grey/white image label is brighter than any disc; the detector
+        once put the disc (and so the fovea and the hemorrhage quadrants) on
+        the "A" printed in the corner of a shipped sample."""
+        from backend.venus import stage1_segment
+        size = 512
+        yy, xx = np.mgrid[:size, :size]
+        mask = (((xx - 256) ** 2 + (yy - 256) ** 2) < 240 ** 2).astype(np.uint8) * 255
+        image = np.zeros((size, size, 3), np.uint8)
+        image[mask > 0] = (40, 90, 190)                                        # orange-red retina (BGR)
+        disc = ((xx - 150) ** 2 + (yy - 250) ** 2) < 35 ** 2
+        image[disc] = (120, 200, 245)                                          # pale yellow disc, chromatic
+        image[380:430, 380:430] = (250, 250, 250)                             # white label inside the FOV
+        od = stage1_segment.optic_disc(image, mask, original=image)
+        assert np.hypot(od["centre"][0] - 150, od["centre"][1] - 250) < 35, od["centre"]
+
+    @pytest.mark.parametrize("name, disc", [
+        ("dr_exudates.png", (139, 222)),            # white "A" label in the corner
+        ("usable_dark_vignetted.jpg", (420, 253)),  # dark capture: enhancement flattened the disc
+        ("npdr_hemorrhages_nei.jpg", (40, 216)),    # strong vignetting: disc at the rim
+        ("normal_right_eye.jpg", (424, 253)),
+    ])
+    def test_optic_disc_found_on_the_shipped_samples(self, name, disc):
+        """Regression cases, disc centres marked by eye on the 512 px frame.
+        The held-out measurement is config/experiments/landmark_check.json."""
+        import cv2
+        from backend.venus import stage0_gate, stage1_segment
+        original, mask, _ = stage0_gate.normalise_fov(cv2.imread(str(SAMPLES / name)))
+        od = stage1_segment.optic_disc(original, mask, original=original)
+        assert np.hypot(od["centre"][0] - disc[0], od["centre"][1] - disc[1]) < 1.5 * od["radius"], (name, od["centre"])
+
+    def test_landmark_measurement_supports_the_served_detector(self):
+        """The served detector is the one the labelled check chose on its
+        design half; the record must say so and must beat the old detector
+        on the held-out half."""
+        path = ROOT / "backend/config/experiments/landmark_check.json"
+        if not path.exists():
+            pytest.skip("landmark measurement not present")
+        d = json.loads(path.read_text(encoding="utf-8"))
+        held = d["held_out_half"]
+        assert held["flatfield"]["fovea_within_1dd"] > held["old"]["fovea_within_1dd"] + 0.1
+        design = d["design_half"]
+        best = max(("old", "original", "flatfield"), key=lambda k: design[k]["fovea_within_1dd"])
+        assert best == "flatfield", f"the design half would choose {best}, not the served flat-field detector"
+
     def test_quadrant_counts_sum_to_hemorrhages(self):
         from backend.venus.stage1_segment import quadrant_counts
         comps = [{"centroid": [300, 100]}, {"centroid": [400, 256]}, {"centroid": [256, 400]}, {"centroid": [50, 256]}]

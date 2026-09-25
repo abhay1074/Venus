@@ -73,7 +73,11 @@ function paths = report(result, outDir)
 
     append(d, headed('Recommendation'));
     p = Paragraph(result.recommendation); p.FontSize = '8.5pt'; append(d, p);
-    foot = Paragraph(sprintf('Model %s   |   calibration fingerprint %s...   |   Screening aid, not a diagnosis. Every image is read by an eye-care professional.', ...
+    % Same sentence as backend/venus/report.py and docs/MODEL_CARD.md.
+    disclaimer = Paragraph(['Venus AI is a triage aid for referable diabetic retinopathy. A clinician reviews every case. ' ...
+        'It is not a diagnosis and it is not a cleared medical device.']);
+    disclaimer.FontSize = '7pt'; disclaimer.Color = '#64748B'; append(d, disclaimer);
+    foot = Paragraph(sprintf('Model %s   |   calibration fingerprint %s...   |   Every image is read by an eye-care professional.', ...
         result.modelVersion, result.calibrationFingerprint(1:16)));
     foot.FontSize = '7pt'; foot.Color = '#64748B'; append(d, foot);
     close(d);

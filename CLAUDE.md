@@ -50,9 +50,16 @@ architecture document section by section; `docs/VALIDATION.md` is generated, nev
   thresholds deliberately, then re-run flag_rate → review_policy → write_docs.
 - Human-review rules live in `config/review_policy.json` (chosen on validation by
   `backend.eval.review_policy`); stage2/stage3/stage4 read it through `config.review_policy()`.
-- Tests: `python -m pytest backend/tests -q` (38; weight-dependent ones skip without weights);
-  MATLAB `cd matlab; runTests` (22 incl. CrossCheckTest against `tests/reference/*`, regenerate those
-  with `backend.eval.matlab_reference` and the small .mat dumps if the models change).
+- Tests: `python -m pytest backend/tests -q` (104; weight-dependent ones skip without weights, and
+  `test_docs_consistency.py` fails if a README number disagrees with its JSON — fix the README, not the JSON);
+  MATLAB `cd matlab; runTests` (23 incl. CrossCheckTest against `tests/reference/*`, regenerate those
+  with `backend.eval.matlab_reference` and the small .mat dumps if the models or Stage 1 change).
+- Stage 1 landmarks: the optic disc is found on the un-enhanced frame after flat-fielding, grey/white
+  pixels excluded; measured against clinician fovea marks by `backend/eval/landmark_check.py` (MESSIDOR
+  annotations from uhu.es, design/held-out halves). Change the detector -> re-run it, then
+  flag_rate -> review_policy -> sweep -> timing -> write_docs -> matlab_reference.
+- The repo lives in OneDrive: `backend/weights` and `models/export` are pinned (attrib +P) so they are
+  never turned into cloud-only placeholders; re-pin after copying new checkpoints.
 - Commit messages end with the Co-Authored-By line used in the history; push to
   github.com/abhay1074/Venus `main`.
 

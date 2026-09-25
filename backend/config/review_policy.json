@@ -1,5 +1,5 @@
 {
-  "written_at": "2026-09-21T09:46:50.373700+00:00",
+  "written_at": "2026-09-25T10:53:44.691081+00:00",
   "chosen_on": "validation sample, n = 497 gradable (val)",
   "model_version": "venus-dr-2.0.0",
   "grader": "grader_v2",
@@ -7,49 +7,49 @@
   "attention_floor": 0.2,
   "attention_candidates": {
     "0.1": {
-      "flagged_share_of_referable_calls": 0.0476,
+      "flagged_share_of_referable_calls": 0.0475,
       "error_rate_flagged": 0.5333,
-      "error_rate_unflagged": 0.1967
+      "error_rate_unflagged": 0.1993
     },
     "0.15": {
-      "flagged_share_of_referable_calls": 0.073,
+      "flagged_share_of_referable_calls": 0.0728,
       "error_rate_flagged": 0.6087,
-      "error_rate_unflagged": 0.1815
+      "error_rate_unflagged": 0.1843
     },
     "0.2": {
-      "flagged_share_of_referable_calls": 0.0952,
-      "error_rate_flagged": 0.6,
-      "error_rate_unflagged": 0.1719
+      "flagged_share_of_referable_calls": 0.0918,
+      "error_rate_flagged": 0.6207,
+      "error_rate_unflagged": 0.1742
     },
     "0.25": {
-      "flagged_share_of_referable_calls": 0.1365,
+      "flagged_share_of_referable_calls": 0.1361,
       "error_rate_flagged": 0.5349,
-      "error_rate_unflagged": 0.1618
+      "error_rate_unflagged": 0.1648
     },
     "0.3": {
-      "flagged_share_of_referable_calls": 0.2381,
-      "error_rate_flagged": 0.44,
-      "error_rate_unflagged": 0.1417
+      "flagged_share_of_referable_calls": 0.2278,
+      "error_rate_flagged": 0.4444,
+      "error_rate_unflagged": 0.1475
     },
     "0.35": {
-      "flagged_share_of_referable_calls": 0.2984,
-      "error_rate_flagged": 0.4149,
-      "error_rate_unflagged": 0.1267
+      "flagged_share_of_referable_calls": 0.2911,
+      "error_rate_flagged": 0.4239,
+      "error_rate_unflagged": 0.1295
     },
     "0.4": {
-      "flagged_share_of_referable_calls": 0.3714,
-      "error_rate_flagged": 0.3932,
+      "flagged_share_of_referable_calls": 0.3734,
+      "error_rate_flagged": 0.3983,
       "error_rate_unflagged": 0.1061
     }
   },
-  "resulting_flag_rate": 0.2515,
+  "resulting_flag_rate": 0.2495,
   "flag_reasons": {
-    "disagreement": 80,
-    "no_lesion": 12,
+    "disagreement": 81,
+    "no_lesion": 11,
     "abstain": 29,
-    "attention": 30
+    "attention": 29
   },
-  "error_rate_flagged": 0.288,
-  "error_rate_unflagged": 0.1344,
+  "error_rate_flagged": 0.2903,
+  "error_rate_unflagged": 0.134,
   "share_of_cnn_errors_flagged": 0.4186
 }

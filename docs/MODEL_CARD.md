@@ -41,7 +41,7 @@ Referable DR (ICDR >= 2). Each row names the set it was measured on; 95 % CIs ar
 | Sensitivity / specificity there | 0.937 / 0.754 | — | same |
 | AUC (messidor2, scored once at the same threshold) | 0.963 | [0.9535, 0.9707] | n = 1,744, 874 patients |
 | Sensitivity / specificity (messidor2) | 0.980 / 0.645 | — | same |
-| End-to-end time per image | 1.5 s median, 1.7 s p95 | — | 50 images, 16 CPU threads, no GPU |
+| End-to-end time per image | 1.6 s median, 1.7 s p95 | — | 50 images, 16 CPU threads, no GPU |
 
 The problem statement's targets are sensitivity > 0.9, specificity > 0.85, AUC > 0.95, ECE <= 0.05; on the primary external test this build meets 4 of 4.
 
@@ -58,7 +58,7 @@ Lesion segmentation, DDR test split scored once (pixel AUPR / Dice at the thresh
 
 Image-quality classifier: ungradable-detection AUC 0.992 on held-out patients. It decides good vs usable (whether to enhance); only the hand-crafted hard limits refuse an image.
 
-Human review: the served policy flags 25.1% of gradable images; 28.8% of flagged calls are classifier errors against 13.4% of unflagged ones, catching 41.9% of them. Attention agreement on referable calls: median 0.56 when the classifier is right vs 0.293 when it is wrong (497 validation images).
+Human review: the served policy flags 24.9% of gradable images; 29.0% of flagged calls are classifier errors against 13.4% of unflagged ones, catching 41.9% of them. Attention agreement on referable calls: median 0.561 when the classifier is right vs 0.294 when it is wrong (497 validation images).
 
 ## Populations and settings NOT measured
 

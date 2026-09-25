@@ -182,7 +182,14 @@ export default function ResultView({ result, loading, onBook }) {
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-venus-line p-5">
         <Timing timing={result.timing_ms} />
         <div className="flex gap-2">
-          <a className="btn-secondary" href={reportUrl(result.session_id)} target="_blank" rel="noreferrer"><FileText size={16} /> PDF report</a>
+          {result.report ? (
+            <a className="btn-secondary" href={reportUrl(result.session_id)} target="_blank" rel="noreferrer"><FileText size={16} /> PDF report</a>
+          ) : result.report_error ? (
+            // The grade above is complete; only the file failed (full or unwritable disk).
+            <span className="flex max-w-xs items-start gap-1.5 rounded bg-amber-50 px-3 py-2 text-xs text-amber-800 ring-1 ring-amber-200">
+              <AlertTriangle size={14} className="mt-0.5 shrink-0" /> PDF not saved: {result.report_error}
+            </span>
+          ) : null}
           <button className="btn-primary" onClick={() => onBook(result.session_id)}><CalendarPlus size={16} /> Book appointment</button>
         </div>
       </div>

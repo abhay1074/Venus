@@ -34,7 +34,7 @@ powershell -ExecutionPolicy Bypass -File scripts\serve.ps1
 
 A phone photograph of a fundus screen is 3–8 MB, so the 12 MB cap is roughly double what a
 demo upload needs. The rate limit is generous for a human at a camera and immediate for a
-stuck retry loop; it exists because a screen costs ~1.5 s of the one CPU the operator is
+stuck retry loop; it exists because a screen costs ~1.6 s of the one CPU the operator is
 waiting on.
 
 `grader_v2.weights.h5` and `eye_modality_gate.weights.h5` are required. Without
@@ -56,7 +56,7 @@ sentence the PHC operator sees. Nothing diagnostic ran; tier P0, retake on the s
 
 ## 2. The result (2 min) — Screen
 
-Click **Proliferative DR (NEI)** → Screen (~1.5 s on the laptop CPU).
+Click **Proliferative DR (NEI)** → Screen (~1.6 s on the laptop CPU).
 
 Point at, in order:
 1. **Referable DR — human review · P = 1.00**, ICDR grade 4, **P(NV) = 1.00** — proliferative
@@ -182,6 +182,16 @@ sensitivity 0.98 — and re-fitting the calibration and threshold on about 400 l
 from that site restores 0.89 / 0.90 with ECE 0.02. That is the deployment step, and its price —
 and it is one command: `scripts/site-calibrate.sh <site> <images> <labels.csv>` (a worked example
 from 400 Messidor-2 images is in the repo as `site_mock-messidor`).
+
+**"Why is the disc circle on the white patch in the PDR image?"** Because that is the hard case,
+and we measured how rare it is. The optic disc is found as the brightest disc-sized region after
+removing uneven illumination. In this image new vessels grow over the disc (neovascularization
+at the disc, the sign that makes it proliferative) and hide its brightness, so a bright fibrous
+patch wins. Against clinician-marked fovea centres on 1,008 MESSIDOR images the detector puts
+the fovea within one disc diameter on 99.8 % of the held-out half; the version we shipped until
+this week managed 83.7 %, mostly because it searched the enhanced frame and once took a printed
+"A" in an image corner for a disc. The grade here does not depend on it: P(NV) is 1.00 from the
+classifier and the case is already flagged for review.
 
 **"Does it work offline?"** Yes: models, SQLite records and PDF reports are local; the API
 serves the built front end itself; `scripts/build-offline-bundle.ps1` makes the PHC folder.
